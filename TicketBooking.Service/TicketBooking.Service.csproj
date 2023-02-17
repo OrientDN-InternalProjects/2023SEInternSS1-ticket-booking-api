@@ -6,4 +6,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TicketBooking.Common\TicketBooking.Common.csproj" />
+    <ProjectReference Include="..\TicketBooking.Data\TicketBooking.Data.csproj" />
+    <ProjectReference Include="..\TicketBooking.Model\TicketBooking.Model.csproj" />
+  </ItemGroup>
+
 </Project>
