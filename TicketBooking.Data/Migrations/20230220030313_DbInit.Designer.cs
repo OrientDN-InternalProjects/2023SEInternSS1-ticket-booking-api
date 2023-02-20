@@ -11,7 +11,7 @@ using TicketBooking.Data.DbContext;
 
 namespace TicketBooking.Data.Migrations
 {
-    [DbContext(typeof(MyDbContext))]
+    [DbContext(typeof(TicketBookingDbContext))]
     [Migration("20230220030313_DbInit")]
     partial class DbInit
     {

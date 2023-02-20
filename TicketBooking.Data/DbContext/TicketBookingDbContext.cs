@@ -9,9 +9,9 @@ using TicketBooking.Data.DataModel;
 
 namespace TicketBooking.Data.DbContext
 {
-    public class MyDbContext : IdentityDbContext<ApplicationUser>
+    public class TicketBookingDbContext : IdentityDbContext<ApplicationUser>
     {
-        public MyDbContext(DbContextOptions<MyDbContext> options) : base(options) { }
+        public TicketBookingDbContext(DbContextOptions<TicketBookingDbContext> options) : base(options) { }
         #region
         public DbSet<Aircraft>? Aircrafts { get; set; }
         public DbSet<Airport>? Airports { get; set; }

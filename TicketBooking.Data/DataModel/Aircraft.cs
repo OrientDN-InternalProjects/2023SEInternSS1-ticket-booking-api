@@ -15,7 +15,7 @@ namespace TicketBooking.Data
         public Guid Id { get; set; }
         [Required]
         [MaxLength(6)]
-        public string Model { get; set; }
+        public string Model { get; set; } = null!;
         [Required]
         [MaxLength(6)]
         public string Manufacture { get; set; }
