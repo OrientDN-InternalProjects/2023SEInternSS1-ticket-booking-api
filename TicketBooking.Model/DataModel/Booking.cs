@@ -35,7 +35,8 @@ namespace TicketBooking.Data.DataModel
         public ExtraBaggage ExtraBaggage { get; set; }
         public Guid ContactId { get; set; }
         public ContactDetail ContactDetail { get; set; }
-        public Report Report { get; set; }
+        public string UserId { get; set; }
+        public ApplicationUser User { get; set; }
         public ICollection<BookingList> BookingLists { get; set; }
         public ICollection<Passenger> Passengers { get; set; }
         public ICollection<Ticket> Tickets { get; set; }

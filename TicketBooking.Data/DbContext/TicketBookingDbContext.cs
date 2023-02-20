@@ -13,20 +13,19 @@ namespace TicketBooking.Data.DbContext
     {
         public TicketBookingDbContext(DbContextOptions<TicketBookingDbContext> options) : base(options) { }
         #region
-        public DbSet<Aircraft> Aircrafts { get; set; }
-        public DbSet<Airport> Airports { get; set; }
-        public DbSet<SeatClass> SeatClasses { get; set; }
-        public DbSet<FlightSchedule> FlightSchedules { get; set; }
-        public DbSet<Flight> Flights { get; set; }
-        public DbSet<Seat> Seats { get; set; }
-        public DbSet<ContactDetail> ContactDetails { get; set; }
-        public DbSet<ExtraBaggage> ExtraBaggages { get; set; }
-        public DbSet<Booking> Bookings { get; set; }
-        public DbSet<Passenger> Passengers { get; set; }
-        public DbSet<Ticket> Tickets { get; set; }
-        public DbSet<BookingList> BookingLists { get; set; }
-        public DbSet<ListSeat> ListSeats { get; set; }
-        public DbSet<Report> Reports { get; set; }
+        public DbSet<Aircraft>? Aircrafts { get; set; }
+        public DbSet<Airport>? Airports { get; set; }
+        public DbSet<SeatClass>? SeatClasses { get; set; }
+        public DbSet<FlightSchedule>? FlightSchedules { get; set; }
+        public DbSet<Flight>? Flights { get; set; }
+        public DbSet<Seat>? Seats { get; set; }
+        public DbSet<ContactDetail>? ContactDetails { get; set; }
+        public DbSet<ExtraBaggage>? ExtraBaggages { get; set; }
+        public DbSet<Booking>? Bookings { get; set; }
+        public DbSet<Passenger>? Passengers { get; set; }
+        public DbSet<Ticket>? Tickets { get; set; }
+        public DbSet<BookingList>? BookingLists { get; set; }
+        public DbSet<ListSeat>? ListSeats { get; set; }
         #endregion
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -92,6 +91,9 @@ namespace TicketBooking.Data.DbContext
                 entity.HasOne(e => e.ExtraBaggage)
                 .WithMany(e => e.Bookings)
                 .HasForeignKey(e => e.ExtraBaggageId);
+                entity.HasOne(e => e.User)
+               .WithMany(e => e.Bookings)
+               .HasForeignKey(e => e.UserId);
             });
             modelBuilder.Entity<BookingList>(entity =>
             {
@@ -130,13 +132,6 @@ namespace TicketBooking.Data.DbContext
                .OnDelete(DeleteBehavior.ClientSetNull);
 
 
-            });
-            modelBuilder.Entity<Report>(entity =>
-            {
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
-                entity.HasOne(e => e.ApplicationUser)
-               .WithMany(e => e.Reports)
-               .HasForeignKey(e => e.UserId);
             });
 
         }

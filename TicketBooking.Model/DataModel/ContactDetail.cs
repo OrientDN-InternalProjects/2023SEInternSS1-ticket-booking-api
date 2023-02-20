@@ -29,6 +29,6 @@ namespace TicketBooking.Data.DataModel
         [Required, MaxLength(11)]
         public string PhoneNumber { get; set; }
         //One to one relationship 
-        public Booking? Booking { get; set; }
+        public Booking Booking { get; set; }
     }
 }

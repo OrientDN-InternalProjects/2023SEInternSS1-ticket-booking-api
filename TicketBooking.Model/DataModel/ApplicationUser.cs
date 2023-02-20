@@ -11,10 +11,10 @@ namespace TicketBooking.Data.DataModel
     {
         public string FirstName { get; set; } = null!;
         public string LastName { get; set; } = null!;
-        public ICollection<Report> Reports { get; set; }
+        public ICollection<Booking> Bookings { get; set; }
         public ApplicationUser()
         {
-            Reports = new List<Report>();
+            Bookings = new List<Booking>();
         }
     }
 }

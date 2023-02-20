@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TicketBooking.Data.DbContext;
 
@@ -11,9 +12,10 @@ using TicketBooking.Data.DbContext;
 namespace TicketBooking.Data.Migrations
 {
     [DbContext(typeof(TicketBookingDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230220084717_DbInit")]
+    partial class DbInit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -251,11 +253,9 @@ namespace TicketBooking.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
@@ -340,12 +340,17 @@ namespace TicketBooking.Data.Migrations
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(10,2)");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ContactId")
                         .IsUnique();
 
                     b.HasIndex("ExtraBaggageId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Booking");
                 });
@@ -450,35 +455,6 @@ namespace TicketBooking.Data.Migrations
                     b.HasIndex("BookingId");
 
                     b.ToTable("Passenger");
-                });
-
-            modelBuilder.Entity("TicketBooking.Data.DataModel.Report", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("BookingId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("BookingPrice")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<DateTime>("DateBooking")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BookingId")
-                        .IsUnique();
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Report");
                 });
 
             modelBuilder.Entity("TicketBooking.Data.DataModel.Ticket", b =>
@@ -757,9 +733,15 @@ namespace TicketBooking.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("TicketBooking.Data.DataModel.ApplicationUser", "User")
+                        .WithMany("Bookings")
+                        .HasForeignKey("UserId");
+
                     b.Navigation("ContactDetail");
 
                     b.Navigation("ExtraBaggage");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TicketBooking.Data.DataModel.Passenger", b =>
@@ -769,25 +751,6 @@ namespace TicketBooking.Data.Migrations
                         .HasForeignKey("BookingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Booking");
-                });
-
-            modelBuilder.Entity("TicketBooking.Data.DataModel.Report", b =>
-                {
-                    b.HasOne("TicketBooking.Data.DataModel.Booking", "Booking")
-                        .WithOne("Report")
-                        .HasForeignKey("TicketBooking.Data.DataModel.Report", "BookingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TicketBooking.Data.DataModel.ApplicationUser", "ApplicationUser")
-                        .WithMany("Reports")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ApplicationUser");
 
                     b.Navigation("Booking");
                 });
@@ -902,7 +865,7 @@ namespace TicketBooking.Data.Migrations
 
             modelBuilder.Entity("TicketBooking.Data.DataModel.ApplicationUser", b =>
                 {
-                    b.Navigation("Reports");
+                    b.Navigation("Bookings");
                 });
 
             modelBuilder.Entity("TicketBooking.Data.DataModel.Booking", b =>
@@ -911,16 +874,12 @@ namespace TicketBooking.Data.Migrations
 
                     b.Navigation("Passengers");
 
-                    b.Navigation("Report")
-                        .IsRequired();
-
                     b.Navigation("Tickets");
                 });
 
             modelBuilder.Entity("TicketBooking.Data.DataModel.ContactDetail", b =>
                 {
-                    b.Navigation("Booking")
-                        .IsRequired();
+                    b.Navigation("Booking");
                 });
 
             modelBuilder.Entity("TicketBooking.Data.DataModel.ExtraBaggage", b =>
@@ -930,8 +889,7 @@ namespace TicketBooking.Data.Migrations
 
             modelBuilder.Entity("TicketBooking.Data.DataModel.Passenger", b =>
                 {
-                    b.Navigation("Ticket")
-                        .IsRequired();
+                    b.Navigation("Ticket");
                 });
 
             modelBuilder.Entity("TicketBooking.Data.Flight", b =>
@@ -948,8 +906,7 @@ namespace TicketBooking.Data.Migrations
 
             modelBuilder.Entity("TicketBooking.Data.Seat", b =>
                 {
-                    b.Navigation("ListSeat")
-                        .IsRequired();
+                    b.Navigation("ListSeat");
                 });
 
             modelBuilder.Entity("TicketBooking.Data.SeatClass", b =>
