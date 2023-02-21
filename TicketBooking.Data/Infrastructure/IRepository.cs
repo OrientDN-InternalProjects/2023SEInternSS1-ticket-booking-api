@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TicketBooking.Data.Infrastructure
 {
-    public interface IRepository<T,X> where T : class where X : Type
+    public interface IRepository<T,X> where T : class where X : new()
     {
         Task<T?> GetById(X id);
         Task<IEnumerable<T>> GetAll(params string[] includes);

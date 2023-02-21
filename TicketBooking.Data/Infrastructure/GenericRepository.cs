@@ -10,7 +10,7 @@ using TicketBooking.Data.DbContext;
 
 namespace TicketBooking.Data.Infrastructure
 {
-    public class GenericRepository<T, X> : IRepository<T, X> where T : class where X : Type
+    public class GenericRepository<T, X> : IRepository<T, X> where T : class where X : new()
     {
         protected TicketBookingDbContext _context;
         protected DbSet<T> dbSet;
