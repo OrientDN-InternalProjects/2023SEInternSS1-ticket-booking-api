@@ -168,7 +168,6 @@ namespace TicketBooking.Data.DbContext
                .HasForeignKey(e => e.BookingId)
                .OnDelete(DeleteBehavior.ClientSetNull);
 
-
             });
 
         }
