@@ -7,13 +7,14 @@ using System.Threading.Tasks;
 
 namespace TicketBooking.Data.Infrastructure
 {
-    public interface IRepository<T,X> where T : class where X : class
+    public interface IRepository<T,X> where T : class where X : Type
     {
         Task<T?> GetById(X id);
-        Task<IEnumerable<T>> GetAll();
+        Task<IEnumerable<T>> GetAll(params string[] includes);
         IEnumerable<T> Find(Expression<Func<T, bool>> expression);
         Task<bool> Add(T entity);
         Task<bool> Remove(X id);
         Task<bool> Update(T entity);
+        Task<IEnumerable<T>> GetPagedAdvancedReponseAsync(int pageNumber, int pageSize, string orderBy, string fields);
     }
 }

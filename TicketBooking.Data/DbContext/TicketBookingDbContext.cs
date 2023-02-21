@@ -11,15 +11,8 @@ namespace TicketBooking.Data.DbContext
 {
     public class TicketBookingDbContext : IdentityDbContext<ApplicationUser>
     {
-        public static TicketBookingDbContext Create()
-        {
-            return new TicketBookingDbContext();
-        }
         public TicketBookingDbContext(DbContextOptions<TicketBookingDbContext> options) : base(options) { }
 
-        public TicketBookingDbContext()
-        {
-        }
         #region
         public DbSet<Aircraft>? Aircrafts { get; set; }
         public DbSet<Airport>? Airports { get; set; }

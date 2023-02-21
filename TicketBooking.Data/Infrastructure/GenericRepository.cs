@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 using TicketBooking.Data.DbContext;
 
@@ -23,20 +24,43 @@ namespace TicketBooking.Data.Infrastructure
             await dbSet.AddAsync(entity);
             return true;
         }
-        
+
+        public async Task<IEnumerable<T>> GetPagedAdvancedReponseAsync(int pageNumber, int pageSize, string orderBy, string fields)
+        {
+            return await _context
+                 .Set<T>()
+                 .Skip((pageNumber - 1) * pageSize)
+                 .Take(pageSize)
+                 .Select<T>("new(" + fields + ")")
+                 .OrderBy(orderBy)
+                 .AsNoTracking()
+                 .ToListAsync();
+        }
+
         public IEnumerable<T> Find(Expression<Func<T, bool>> expression)
         {
             return dbSet.Where(expression);
         }
         
-        public async Task<IEnumerable<T>> GetAll()
+        public async Task<IEnumerable<T>> GetAll(params string[] includes)
         {
-            return await dbSet.ToListAsync();
+            IQueryable<T> query = dbSet;
+            if (includes.Length > 0)
+            {
+                foreach (var include in includes)
+                    query = query.Include(include);
+            }
+            return query;
         }
-        
-        public async Task<T?> GetById(X id)
+
+        public async Task<T?> GetById(X id,params string[] includes)
         {
-            return await dbSet.FindAsync(id);
+            var model = await dbSet.FindAsync(id);
+            foreach (var path in includes)
+            {
+                _context.Entry(model).Reference(path).Load();
+            }
+            return model;
         }
         
         public async Task<bool> Remove(X id)
@@ -54,8 +78,13 @@ namespace TicketBooking.Data.Infrastructure
         
         public async Task<bool> Update(T entity)
         {
-            dbSet.Remove(entity);
+            this._context.Entry<T>(entity).State = EntityState.Modified;
             return true;
+        }
+
+        public async Task<T?> GetById(X id)
+        {
+            return await dbSet.FindAsync(id);
         }
     }
 }
