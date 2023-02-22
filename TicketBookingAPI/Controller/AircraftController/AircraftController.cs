@@ -24,24 +24,18 @@ namespace TicketBookingAPI.Controller.AircraftController
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddAircraft(AircraftDTO aircraftDTO)
+        public async Task<ActionResult> AircraftRequestModel(AircraftDTO? aircraftDto)
         {
-            if (aircraftDTO == null)
+            if (aircraftDto == null)
             {
                 return NotFound();
             }
-
-            try
+            else
             {
-                _service.InsertAsync(aircraftDTO);
-                _service.CompleteAsync();
-                return Ok("Added");
+                await _service.InsertAsync(aircraftDto);
+                await _service.CompleteAsync();
+                return Accepted("Added");
             }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
-            }
-            
         }
 
         [HttpDelete]
@@ -49,19 +43,21 @@ namespace TicketBookingAPI.Controller.AircraftController
         {
             await _service.RemoveAsync(id);
             await _service.CompleteAsync();
-            return Ok();
+            return Accepted();
         }
 
         [HttpPut]
-        public async Task<ActionResult> UpdateAirCraft(AircraftDTO aircraftDTO)
+        public async Task<ActionResult> AircraftModelUpdate(AircraftDTO aircraftDto)
         {
-            await _service.UpdateAircraftAsync(aircraftDTO);
+            await _service.UpdateAircraftAsync(aircraftDto);
             await _service.CompleteAsync();
-            return Ok();
+            return Accepted();
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetAircraft() => Ok(await _service.GetAircraftAsync());
-        
+        public async Task<ActionResult> GetAircraft() => Accepted(await _service.GetAircraftAsync());
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult> GetAircraftbyId(Guid id) => Accepted(await _service.GetAircraftAsync(id));
     }
 }

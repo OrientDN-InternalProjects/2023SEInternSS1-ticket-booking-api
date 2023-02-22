@@ -24,6 +24,12 @@ namespace TicketBooking.Service.AircraftService
             return _mapper.Map<IEnumerable<AircraftDTO>>(aircraft);
         }
 
+        public async Task<AircraftDTO> GetAircraftAsync(Guid id)
+        {
+            var aircraft = await _unitOfWork.Aircrafts.GetById(id);
+            return aircraft == null ? throw new Exception("ID is not found") : _mapper.Map<AircraftDTO> (aircraft);
+        }
+
         public async Task<bool> UpdateAircraftAsync(AircraftDTO aircraftDto)
         {
             var aircraft = _mapper.Map<Aircraft>(aircraftDto);
@@ -39,7 +45,8 @@ namespace TicketBooking.Service.AircraftService
         public async Task<bool> RemoveAsync(Guid id)
         {
             var aircraft = _unitOfWork.Aircrafts.Find(c => c.Id == id).FirstOrDefault();
-            return await _unitOfWork.Aircrafts.Remove(aircraft.Id);
+            return aircraft == null ? throw new Exception("ID is not found") : await _unitOfWork.Aircrafts.Remove(aircraft.Id);
+
         }
 
         public async Task<int> CompleteAsync()
