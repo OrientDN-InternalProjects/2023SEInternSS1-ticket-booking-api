@@ -27,7 +27,7 @@ namespace TicketBooking.Service.AircraftService
         public async Task<AircraftDTO> GetAircraftAsync(Guid id)
         {
             var aircraft = await _unitOfWork.Aircrafts.GetById(id);
-            return aircraft == null ? throw new Exception("ID is not found") : _mapper.Map<AircraftDTO> (aircraft);
+            return aircraft == null ? throw new Exception("ID cannot be found") : _mapper.Map<AircraftDTO> (aircraft);
         }
 
         public async Task<bool> UpdateAircraftAsync(AircraftDTO aircraftDto)
