@@ -1,4 +1,5 @@
 ﻿using TicketBooking.Data.DbContext;
+using TicketBooking.Data.Repository;
 
 namespace TicketBooking.Data.Infrastructure
 {
@@ -8,6 +9,8 @@ namespace TicketBooking.Data.Infrastructure
 
         public UnitOfWork(TicketBookingDbContext context)
         { _context = context; }
+
+        public IAircraftRepository Aircrafts {get; private set; }
 
         public async Task<int> CompletedAsync()
         {

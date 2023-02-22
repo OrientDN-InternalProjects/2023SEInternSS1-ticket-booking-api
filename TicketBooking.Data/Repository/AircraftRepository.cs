@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TicketBooking.Data.DbContext;
 using TicketBooking.Data.Infrastructure;
 
 namespace TicketBooking.Data.Repository
@@ -14,6 +15,8 @@ namespace TicketBooking.Data.Repository
 
     public class AircraftRepository : GenericRepository<Aircraft, Guid>, IAircraftRepository
     {
-        // To keep the folder from being skipped by gitignore
+        AircraftRepository(TicketBookingDbContext context) : base(context)
+        {   
+        } 
     }
 }
