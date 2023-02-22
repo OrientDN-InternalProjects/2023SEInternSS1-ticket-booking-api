@@ -11,11 +11,10 @@ namespace TicketBooking.Service.AircraftService
         public Guid Id { get; set; }
         public string Model { get; set; }
         public string Manufacture { get; set; }
-        // public ICollection<Flight> Flight { get; set; }
-        //
-        // public AircraftDTO()
-        // {
-        //     Flight = new List<Flight>();
-        // }
+        public ICollection<Flight> Flight { get; set; }
+        public AircraftDTO()
+        {
+            Flight = new List<Flight>();
+        }
     }
 }
