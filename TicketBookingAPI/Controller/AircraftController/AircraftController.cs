@@ -61,11 +61,7 @@ namespace TicketBookingAPI.Controller.AircraftController
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetAircraft()
-        {
-            await _service.GetAircraftAsync();
-            await _service.CompleteAsync();
-            return Ok();
-        }
+        public async Task<ActionResult> GetAircraft() => Ok(await _service.GetAircraftAsync());
+        
     }
 }

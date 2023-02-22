@@ -41,10 +41,14 @@ namespace TicketBooking.Data.Infrastructure
         {
             return dbSet.Where(expression);
         }
-        
-        public async Task<IEnumerable<T>> GetAll(params string[] includes)
+
+        public async Task<IEnumerable<T>> GetAll(params string[]? includes)
         {
             IQueryable<T> query = dbSet;
+            if (includes == null)
+            {
+                throw new Exception("No data to get");
+            }
             if (includes.Length > 0)
             {
                 foreach (var include in includes)

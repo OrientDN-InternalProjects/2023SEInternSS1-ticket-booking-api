@@ -20,12 +20,8 @@ namespace TicketBooking.Service.AircraftService
 
         public async Task<IEnumerable<AircraftDTO>> GetAircraftAsync()
         {
-            var r1 = _unitOfWork;
-            var r2 = r1.Aircrafts;
-            var r3 = await r2.GetAll();
-            //var aircraft = await _unitOfWork.Aircrafts.GetAll();
-            // return _mapper.Map<IEnumerable<AircraftDTO>>(aircraft);
-            return _mapper.Map<IEnumerable<AircraftDTO>>(r3);
+            var aircraft = await _unitOfWork.Aircrafts.GetAll();
+            return _mapper.Map<IEnumerable<AircraftDTO>>(aircraft);
         }
 
         public async Task<bool> UpdateAircraftAsync(AircraftDTO aircraftDto)

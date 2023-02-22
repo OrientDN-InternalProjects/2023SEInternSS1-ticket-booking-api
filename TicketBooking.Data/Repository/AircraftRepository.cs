@@ -15,7 +15,7 @@ namespace TicketBooking.Data.Repository
 
     public class AircraftRepository : GenericRepository<Aircraft, Guid>, IAircraftRepository
     {
-        AircraftRepository(TicketBookingDbContext context) : base(context)
+        public AircraftRepository(TicketBookingDbContext context) : base(context)
         {   
         } 
     }
