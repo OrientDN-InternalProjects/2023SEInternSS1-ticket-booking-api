@@ -8,16 +8,19 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using TicketBooking.Common.AppExceptions;
+using TicketBookingAPI.Controllers;
 
 namespace TicketBooking.Common.Middlewares
 {
     public class ExceptionMiddlewareExtension
     {
         private readonly RequestDelegate _next;
+        private readonly ILogger _logger;
 
-        public ExceptionMiddlewareExtension(RequestDelegate next)
+        public ExceptionMiddlewareExtension(RequestDelegate next, ILogger logger)
         {
             _next = next;
+            _logger = logger;
         }
 
         public async Task Invoke(HttpContext context)
@@ -35,14 +38,17 @@ namespace TicketBooking.Common.Middlewares
                 {
                     case AppException e:
                         // custom application error
+                        _logger.LogError("custom application error");
                         response.StatusCode = (int)HttpStatusCode.BadRequest;
                         break;
                     case KeyNotFoundException e:
                         // not found error
+                        _logger.LogError("not found error");
                         response.StatusCode = (int)HttpStatusCode.NotFound;
                         break;
                     default:
                         // unhandled error
+                        _logger.LogError("unhandled error");
                         response.StatusCode = (int)HttpStatusCode.InternalServerError;
                         break;
                 }
