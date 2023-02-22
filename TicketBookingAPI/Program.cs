@@ -1,7 +1,7 @@
 using AutoWrapper;
+using ErrorManagement.Configurations;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
-using TicketBooking.Common.Middlewares;
 using TicketBooking.Data.DbContext;
 using TicketBooking.Data.Infrastructure;
 var builder = WebApplication.CreateBuilder(args);

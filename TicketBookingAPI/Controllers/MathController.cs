@@ -21,15 +21,7 @@ namespace TicketBookingAPI.Controllers
         [HttpGet]
         public decimal Divide(decimal numerator, decimal denominator)
         {
-            try
-            {
                 return (numerator / denominator);
-            }
-            catch
-            {
-
-                throw new AppException("Parameter is incorrect");
-            }
         }
     }
 
