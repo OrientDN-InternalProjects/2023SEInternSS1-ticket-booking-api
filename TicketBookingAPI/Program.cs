@@ -33,7 +33,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-app.UseMiddleware<ExceptionMiddlewareExtension>();
+app.UseMiddleware<HandleExceptionMiddleware>();
 
 app.MapControllers();
 app.UseApiResponseAndExceptionWrapper();
