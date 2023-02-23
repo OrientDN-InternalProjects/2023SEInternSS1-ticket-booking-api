@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TicketBooking.Data.DataModel;
+using TicketBooking.Model.DataModel;
 
 namespace TicketBooking.Data.DbContext
 {
@@ -14,19 +15,20 @@ namespace TicketBooking.Data.DbContext
         public TicketBookingDbContext(DbContextOptions<TicketBookingDbContext> options) : base(options) { }
 
         #region
-        public DbSet<Aircraft>? Aircrafts { get; set; }
-        public DbSet<Airport>? Airports { get; set; }
-        public DbSet<SeatClass>? SeatClasses { get; set; }
-        public DbSet<FlightSchedule>? FlightSchedules { get; set; }
-        public DbSet<Flight>? Flights { get; set; }
-        public DbSet<Seat>? Seats { get; set; }
-        public DbSet<ContactDetail>? ContactDetails { get; set; }
-        public DbSet<ExtraBaggage>? ExtraBaggages { get; set; }
-        public DbSet<Booking>? Bookings { get; set; }
-        public DbSet<Passenger>? Passengers { get; set; }
-        public DbSet<Ticket>? Tickets { get; set; }
-        public DbSet<BookingList>? BookingLists { get; set; }
-        public DbSet<ListSeat>? ListSeats { get; set; }
+        public DbSet<Aircraft> Aircrafts { get; set; }
+        public DbSet<Airport> Airports { get; set; }
+        public DbSet<SeatClass> SeatClasses { get; set; }
+        public DbSet<FlightSchedule> FlightSchedules { get; set; }
+        public DbSet<Flight> Flights { get; set; }
+        public DbSet<Seat> Seats { get; set; }
+        public DbSet<ContactDetail> ContactDetails { get; set; }
+        public DbSet<ExtraBaggage> ExtraBaggages { get; set; }
+        public DbSet<Booking> Bookings { get; set; }
+        public DbSet<Passenger> Passengers { get; set; }
+        public DbSet<Ticket> Tickets { get; set; }
+        public DbSet<BookingList> BookingLists { get; set; }
+        public DbSet<ListSeat> ListSeats { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
         #endregion
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

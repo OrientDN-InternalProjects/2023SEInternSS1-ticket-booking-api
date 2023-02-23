@@ -53,7 +53,7 @@ namespace TicketBooking.Data.Infrastructure
             return query;
         }
 
-        public async Task<T?> GetById(X id,params string[] includes)
+        public async Task<T> GetById(X id,params string[] includes)
         {
             var model = await dbSet.FindAsync(id);
             foreach (var path in includes)
@@ -82,7 +82,7 @@ namespace TicketBooking.Data.Infrastructure
             return true;
         }
 
-        public async Task<T?> GetById(X id)
+        public async Task<T> GetById(X id)
         {
             return await dbSet.FindAsync(id);
         }

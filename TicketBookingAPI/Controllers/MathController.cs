@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TicketBooking.Common.AppExceptions;
 
 namespace TicketBookingAPI.Controllers
@@ -19,6 +20,7 @@ namespace TicketBookingAPI.Controllers
 
         }
         [HttpGet]
+        [Authorize(Roles = "Admin", AuthenticationSchemes = "Bearer")]
         public decimal Divide(decimal numerator, decimal denominator)
         {
                 return (numerator / denominator);
