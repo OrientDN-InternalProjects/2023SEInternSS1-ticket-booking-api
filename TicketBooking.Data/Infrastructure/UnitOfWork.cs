@@ -10,11 +10,7 @@ namespace TicketBooking.Data.Infrastructure
         public UnitOfWork(TicketBookingDbContext context)
         {
             _context = context;
-
-            //Aircrafts = new AircraftRepository(_context);
         }
-
-        //public IAircraftRepository Aircrafts {get;}
 
         public async Task<int> CompletedAsync()
         {

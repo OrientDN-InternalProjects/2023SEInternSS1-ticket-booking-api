@@ -12,7 +12,7 @@ namespace TicketBooking.Service
     {
         public AutoMapperProfile()
         {
-            CreateMap<AircraftDTO, Aircraft>().ReverseMap()
+            CreateMap<AircraftViewModel, Aircraft>().ReverseMap()
             .ForMember(dest => dest.Id, act => act.MapFrom(src => src.Id))
             .ForMember(dest => dest.Model, act => act.MapFrom(src => src.Model))
             .ForMember(dest => dest.Manufacture, act => act.MapFrom(src => src.Manufacture));

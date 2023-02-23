@@ -14,7 +14,7 @@ namespace TicketBooking.Data.DbContext
         public TicketBookingDbContext(DbContextOptions<TicketBookingDbContext> options) : base(options) { }
 
         #region
-        public DbSet<Aircraft>? Aircrafts { get; set; }
+        public DbSet<Aircraft> Aircrafts { get; set; }
         public DbSet<Airport>? Airports { get; set; }
         public DbSet<SeatClass>? SeatClasses { get; set; }
         public DbSet<FlightSchedule>? FlightSchedules { get; set; }

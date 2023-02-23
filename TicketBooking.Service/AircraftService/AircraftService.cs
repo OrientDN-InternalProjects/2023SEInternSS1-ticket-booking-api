@@ -13,58 +13,80 @@ namespace TicketBooking.Service.AircraftService
 {
     public class AircraftService : IAircraftSerivce
     {
-        private IAircraftRepository Aircrafts;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public AircraftService(IUnitOfWork unitOfWork, IMapper mapper, TicketBookingDbContext _context)
+        public IAircraftRepository _aircrafts;
+
+        public AircraftService(IUnitOfWork unitOfWork, IMapper mapper, IAircraftRepository aircrafts)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
-            Aircrafts = new AircraftRepository(_context);
+            _aircrafts = aircrafts;
         }
 
-        public async Task<IEnumerable<AircraftDTO>> GetAircraftAsync()
+        public async Task<IEnumerable<AircraftViewModel>> GetAircraftAsync()
         {
-            var aircraft = await Aircrafts.GetAll();
+            var aircraft = await _aircrafts.GetAll();
             if (aircraft == null)
             {
                 throw new Exception("No data to display");
             }
             else
             {
-                return _mapper.Map<IEnumerable<AircraftDTO>>(aircraft);
+                return _mapper.Map<IEnumerable<AircraftViewModel>>(aircraft);
             }
         }
 
-        public async Task<AircraftDTO> GetAircraftAsync(Guid id)
+        public async Task<AircraftViewModel> GetAircraftAsync(Guid id)
         {
-            var aircraft = await Aircrafts.GetById(id);
-            return aircraft == null ? throw new Exception("ID cannot be found") : _mapper.Map<AircraftDTO> (aircraft);
+            var aircraft = await _aircrafts.GetById(id);
+            return aircraft == null ? throw new Exception("ID cannot be found") : _mapper.Map<AircraftViewModel> (aircraft);
         }
 
-        public async Task<bool> UpdateAircraftAsync(AircraftDTO aircraftDto)
+        public async Task<int> UpdateAircraftAsync(AircraftViewModel aircraftDto)
         {
             var aircraft = _mapper.Map<Aircraft>(aircraftDto);
-            return await Aircrafts.Update(aircraft);
-        }
-
-        public async Task<int> InsertAsync(AircraftDTO aircraftDto)
-        {
-            var aircraft = _mapper.Map<Aircraft>(aircraftDto);
-            await Aircrafts.Add(aircraft);
+            await _aircrafts.Update(aircraft);
             return await _unitOfWork.CompletedAsync();
         }
 
-        public async Task<bool> RemoveAsync(Guid id)
+        public async Task<int> InsertAsync(AircraftViewModel aircraftDto)
         {
-            var aircraft = Aircrafts.Find(c => c.Id == id).FirstOrDefault();
-            return aircraft == null ? throw new Exception("ID is not found") : await Aircrafts.Remove(aircraft.Id);
+            var aircraft = _mapper.Map<Aircraft>(aircraftDto);
+            if (aircraft.Model.Length > 6 && aircraft != null)
+            {
+                throw new Exception("Model name's length cannot be larger than 6");
+            }
 
+            else if (aircraft.Manufacture.Length > 10 && aircraft != null)
+            {
+                throw new Exception("Manufacture name's length cannot be larger than 10");
+            }
+
+            else if (aircraft == null)
+            {
+                throw new Exception("Nothing to add");
+            }
+
+            else
+            {
+                await _aircrafts.Add(aircraft);
+                return await _unitOfWork.CompletedAsync();
+            }
         }
 
-        public async Task<int> CompleteAsync()
+        public async Task<int> RemoveAsync(Guid id)
         {
-            return await _unitOfWork.CompletedAsync();
-        }  
+            var aircraft = _aircrafts.Find(c => c.Id == id).FirstOrDefault();
+            if (aircraft == null)
+            {
+                throw new Exception("ID is not found");
+            }
+            else
+            {
+                await _aircrafts.Remove(aircraft.Id);
+                return await _unitOfWork.CompletedAsync();
+            }
+        }
     }
 }

@@ -17,48 +17,44 @@ namespace TicketBookingAPI.Controller.AircraftController
     [ApiController]
     public class AircraftController : ControllerBase
     {
-        private readonly AircraftService _service;
-
-        public AircraftController(AircraftService service)
+        private IAircraftSerivce Service { get; }
+        public AircraftController(IAircraftSerivce service)
         {
-            _service = service;
+            Service = service;
         }
 
         [HttpPost]
-        public async Task<ActionResult> AircraftRequestModel(AircraftDTO? aircraftDto)
+        public async Task<ActionResult> AddAircraft(AircraftViewModel? aircraftModel)
         {
-            if (aircraftDto == null)
+            if (aircraftModel == null)
             {
                 return NotFound();
             }
             else
             {
-                await _service.InsertAsync(aircraftDto);
-                await _service.CompleteAsync();
-                return Accepted("Added");
+                await Service.InsertAsync(aircraftModel);
+                return Accepted("{id} Added", aircraftModel.Id);
             }
         }
 
         [HttpDelete]
         public async Task<ActionResult> RemoveAircraft(Guid id)
         {
-            await _service.RemoveAsync(id);
-            await _service.CompleteAsync();
+            Service.RemoveAsync(id);
             return Accepted();
         }
 
         [HttpPut]
-        public async Task<ActionResult> AircraftModelUpdate(AircraftDTO aircraftDto)
+        public async Task<ActionResult> UpdateAircraft(AircraftViewModel aircraftDto)
         {
-            await _service.UpdateAircraftAsync(aircraftDto);
-            await _service.CompleteAsync();
+            await Service.UpdateAircraftAsync(aircraftDto);
             return Accepted();
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetAircraft() => Accepted(await _service.GetAircraftAsync());
+        public async Task<ActionResult> GetAircraft() => Ok(await Service.GetAircraftAsync());
 
         [HttpGet("{id}")]
-        public async Task<ActionResult> GetAircraftbyId(Guid id) => Accepted(await _service.GetAircraftAsync(id));
+        public async Task<ActionResult> GetAircraftbyId(Guid id) => Ok(await Service.GetAircraftAsync(id));
     }
 }
