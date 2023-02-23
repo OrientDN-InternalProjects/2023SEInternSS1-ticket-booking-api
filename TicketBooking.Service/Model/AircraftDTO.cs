@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TicketBooking.Data;
 
-namespace TicketBooking.Service.AircraftService
+namespace TicketBooking.Service.Model
 {
     public class AircraftDTO
     {

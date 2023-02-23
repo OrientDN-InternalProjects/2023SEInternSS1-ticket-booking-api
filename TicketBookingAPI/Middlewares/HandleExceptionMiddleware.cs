@@ -17,7 +17,7 @@ public class HandleExceptionMiddleware
     private readonly RequestDelegate _next;
     private readonly ILogger _logger;
 
-    public HandleExceptionMiddleware(RequestDelegate next, ILogger logger)
+    public HandleExceptionMiddleware(RequestDelegate next, ILogger<HandleExceptionMiddleware> logger)
     {
         _next = next;
         _logger = logger;
@@ -32,11 +32,11 @@ public class HandleExceptionMiddleware
         catch (Exception ex)
         {
             _logger.LogError(ex, ex.Source, ex.HelpLink, ex.TargetSite);
-            await HandleExceptionAsync(context, ex, _logger);
+            await HandleExceptionAsync(context, ex);
         }
     }
 
-    private static Task HandleExceptionAsync(HttpContext context, Exception exception, ILogger _logger)
+    private static Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         HttpStatusCode status;
         string? requestId;

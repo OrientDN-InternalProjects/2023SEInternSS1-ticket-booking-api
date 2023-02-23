@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using TicketBooking.Data;
 using TicketBooking.Service.AircraftService;
 using TicketBooking.Data.DbContext;
+using TicketBooking.Service.Model;
 
 namespace TicketBookingAPI.Controller.AircraftController
 {

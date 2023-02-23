@@ -2,12 +2,14 @@ using AutoMapper;
 using AutoWrapper;
 using ErrorManagement.Configurations;
 using Microsoft.EntityFrameworkCore;
+using NLog.Config;
 using Serilog;
 using TicketBooking.Data.DbContext;
 using TicketBooking.Data.Infrastructure;
 using TicketBooking.Service;
 using TicketBooking.Service.AircraftService;
 using TicketBookingAPI.Controller.AircraftController;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,8 +28,7 @@ builder.Services.AddDbContext<TicketBookingDbContext>(op =>
     op.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped(typeof(AircraftService), typeof(AircraftService));
-
-
+    
 var config = new MapperConfiguration(cfg =>
     {
         cfg.AddProfile(new AutoMapperProfile());
