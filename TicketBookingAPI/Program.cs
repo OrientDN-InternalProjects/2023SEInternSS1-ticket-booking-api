@@ -6,6 +6,7 @@ using NLog.Config;
 using Serilog;
 using TicketBooking.Data.DbContext;
 using TicketBooking.Data.Infrastructure;
+using TicketBooking.Data.Repository;
 using TicketBooking.Service;
 using TicketBooking.Service.AircraftService;
 using TicketBookingAPI.Controller.AircraftController;
@@ -27,6 +28,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<TicketBookingDbContext>(op =>
     op.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
 builder.Services.AddScoped<IAircraftSerivce, AircraftService>();
     
 var config = new MapperConfiguration(cfg =>

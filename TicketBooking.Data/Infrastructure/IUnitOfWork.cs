@@ -10,7 +10,6 @@ namespace TicketBooking.Data.Infrastructure
     
     public interface IUnitOfWork : IDisposable
     {
-        //IAircraftRepository Aircrafts {get;}
         Task<int> CompletedAsync();
     }
 }

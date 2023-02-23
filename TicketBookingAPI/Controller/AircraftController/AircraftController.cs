@@ -33,7 +33,7 @@ namespace TicketBookingAPI.Controller.AircraftController
             else
             {
                 await Service.InsertAsync(aircraftModel);
-                return Accepted("{id} Added", aircraftModel.Id);
+                return Accepted(aircraftModel.Id + "Added");
             }
         }
 
