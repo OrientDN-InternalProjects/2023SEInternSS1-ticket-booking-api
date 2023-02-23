@@ -6,47 +6,59 @@ using TicketBooking.Data;
 using TicketBooking.Data.Infrastructure;
 using AutoMapper;
 using TicketBooking.Service.Model;
+using TicketBooking.Data.Repository;
+using TicketBooking.Data.DbContext;
 
 namespace TicketBooking.Service.AircraftService
 {
     public class AircraftService : IAircraftSerivce
     {
+        private IAircraftRepository Aircrafts;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public AircraftService(IUnitOfWork unitOfWork, IMapper mapper)
+        public AircraftService(IUnitOfWork unitOfWork, IMapper mapper, TicketBookingDbContext _context)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            Aircrafts = new AircraftRepository(_context);
         }
 
         public async Task<IEnumerable<AircraftDTO>> GetAircraftAsync()
         {
-            var aircraft = await _unitOfWork.Aircrafts.GetAll();
-            return _mapper.Map<IEnumerable<AircraftDTO>>(aircraft);
+            var aircraft = await Aircrafts.GetAll();
+            if (aircraft == null)
+            {
+                throw new Exception("No data to display");
+            }
+            else
+            {
+                return _mapper.Map<IEnumerable<AircraftDTO>>(aircraft);
+            }
         }
 
         public async Task<AircraftDTO> GetAircraftAsync(Guid id)
         {
-            var aircraft = await _unitOfWork.Aircrafts.GetById(id);
+            var aircraft = await Aircrafts.GetById(id);
             return aircraft == null ? throw new Exception("ID cannot be found") : _mapper.Map<AircraftDTO> (aircraft);
         }
 
         public async Task<bool> UpdateAircraftAsync(AircraftDTO aircraftDto)
         {
             var aircraft = _mapper.Map<Aircraft>(aircraftDto);
-            return await _unitOfWork.Aircrafts.Update(aircraft);
+            return await Aircrafts.Update(aircraft);
         }
 
-        public async Task<bool> InsertAsync(AircraftDTO aircraftDto)
+        public async Task<int> InsertAsync(AircraftDTO aircraftDto)
         {
             var aircraft = _mapper.Map<Aircraft>(aircraftDto);
-            return await _unitOfWork.Aircrafts.Add(aircraft);
+            await Aircrafts.Add(aircraft);
+            return await _unitOfWork.CompletedAsync();
         }
 
         public async Task<bool> RemoveAsync(Guid id)
         {
-            var aircraft = _unitOfWork.Aircrafts.Find(c => c.Id == id).FirstOrDefault();
-            return aircraft == null ? throw new Exception("ID is not found") : await _unitOfWork.Aircrafts.Remove(aircraft.Id);
+            var aircraft = Aircrafts.Find(c => c.Id == id).FirstOrDefault();
+            return aircraft == null ? throw new Exception("ID is not found") : await Aircrafts.Remove(aircraft.Id);
 
         }
 

@@ -11,10 +11,10 @@ namespace TicketBooking.Data.Infrastructure
         {
             _context = context;
 
-            Aircrafts = new AircraftRepository(_context);
+            //Aircrafts = new AircraftRepository(_context);
         }
 
-        public IAircraftRepository Aircrafts {get;}
+        //public IAircraftRepository Aircrafts {get;}
 
         public async Task<int> CompletedAsync()
         {
