@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TicketBooking.Data.Migrations
 {
-    public partial class createRole : Migration
+    public partial class createRefreshToken : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

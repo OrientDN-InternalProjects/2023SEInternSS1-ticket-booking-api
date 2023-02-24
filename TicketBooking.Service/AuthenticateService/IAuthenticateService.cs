@@ -10,9 +10,8 @@ namespace TicketBooking.Service.AuthenticateService
 {
     public interface IAuthenticateService
     {
-        public Task<Response> SignUp(SignUp model);
+        public Task<Response> SignUp(SignUp model,bool IsAdmin);
         public Task<Response> SignIn(SignIn model);
-        public Task<Response> SignUpForAdmin (SignUp model);
         public Task<Response> RenewToken(TokenResponse token);
     }
 }

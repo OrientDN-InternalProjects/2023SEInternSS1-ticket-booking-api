@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -7,7 +6,8 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using TicketBooking.Data.DataModel;
-using TicketBooking.Data.DbContext;
+using TicketBooking.Data.Infrastructure;
+using TicketBooking.Data.Repository;
 using TicketBooking.Model.AuthenticateModel;
 using TicketBooking.Model.DataModel;
 
@@ -19,14 +19,22 @@ namespace TicketBooking.Service.AuthenticateService
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly IConfiguration configuration;
-        private readonly TicketBookingDbContext context;
-        public AuthenticateService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration, TicketBookingDbContext context)
+        private readonly IRefreshTokenRepository refreshTokenRepo;
+        private IUnitOfWork unit;
+        public AuthenticateService(UserManager<ApplicationUser> userManager
+            , RoleManager<IdentityRole> roleManager
+            , SignInManager<ApplicationUser> signInManager
+            , IConfiguration configuration
+            , IRefreshTokenRepository refreshToken,
+            IUnitOfWork unitOfWork
+            )
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.roleManager = roleManager;
-            this.context = context;
             this.configuration = configuration;
+            this.refreshTokenRepo = refreshToken;
+            this.unit = unitOfWork;
         }
         //Sign in
         public async Task<Response> SignIn(SignIn model)
@@ -38,7 +46,7 @@ namespace TicketBooking.Service.AuthenticateService
                 {
                     Status = false,
                     Message = "Invalid username/password",
-                    Data = null,     
+                    Data = null,
                 };
             }
             var user = await userManager.FindByEmailAsync(model.Email);
@@ -50,12 +58,12 @@ namespace TicketBooking.Service.AuthenticateService
                 Data = token
             };
         }
-        
+
         public async Task<TokenResponse> GenerateToken(ApplicationUser user)
         {
-            var jwtTokenHandler = new JwtSecurityTokenHandler();      
+            var jwtTokenHandler = new JwtSecurityTokenHandler();
             var authenKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]));
-            
+
             var userRoles = await userManager.GetRolesAsync(user);
             var authClaims = new List<Claim>
             {
@@ -88,8 +96,8 @@ namespace TicketBooking.Service.AuthenticateService
                 IssuedAt = DateTime.UtcNow,
                 ExpiredAt = DateTime.UtcNow.AddHours(1)
             };
-            await context.AddAsync(refreshTokenEntity);
-            await context.SaveChangesAsync();
+            await refreshTokenRepo.AddToken(refreshTokenEntity);
+            await unit.CompletedAsync();
             return new TokenResponse
             {
                 AccessToken = accessToken,
@@ -98,7 +106,7 @@ namespace TicketBooking.Service.AuthenticateService
         }
 
         //Sign up for nomal user
-        public async Task<Response> SignUp(SignUp model)
+        public async Task<Response> SignUp(SignUp model, bool IsAdmin)
         {
             var userExists = await userManager.FindByNameAsync(model.Email);
             //Check sign up information
@@ -117,7 +125,12 @@ namespace TicketBooking.Service.AuthenticateService
 
             await CreateRoleAsync();
             var result = await userManager.CreateAsync(user, model.Password);
-            await userManager.AddToRoleAsync(user, UserRoles.User);
+            if (IsAdmin == true)
+            {
+                await userManager.AddToRoleAsync(user, UserRoles.Admin);
+            }
+            else
+                await userManager.AddToRoleAsync(user, UserRoles.User);
             //Check sign up succeed or not
             if (!result.Succeeded)
                 return new Response { Status = false, Message = "User creation failed! Please check user details and try again." };
@@ -125,28 +138,6 @@ namespace TicketBooking.Service.AuthenticateService
             return new Response { Status = true, Message = "User created successfully!" };
         }
         //Sign up for admin
-        public async Task<Response> SignUpForAdmin(SignUp model)
-        {
-            var userExists = await userManager.FindByNameAsync(model.Email);
-            //Check sign up information
-            if (userExists != null)
-                return new Response { Status = false, Message = "User already exists!" };
-            if (model.Password != model.ConfirmPassword)
-                return new Response { Status = false, Message = "Confirm password is not same the Password!" };
-            
-            var admin = new ApplicationUser()
-            {
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                Email = model.Email,
-                UserName = model.Email,
-            };
-
-            await CreateRoleAsync();
-            var result = await userManager.CreateAsync(admin, model.Password);
-            await userManager.AddToRoleAsync(admin, UserRoles.Admin);
-            return new Response { Status = true, Message = "User created successfully!" };
-        }
         private async Task CreateRoleAsync()
         {
             if (!await roleManager.RoleExistsAsync(UserRoles.Admin))
@@ -212,7 +203,7 @@ namespace TicketBooking.Service.AuthenticateService
                     };
                 }
                 //check 3: check refresh token exist in DB
-                var storedToken = context.RefreshTokens.FirstOrDefault(x => x.Token == refreshToken);
+                var storedToken = refreshTokenRepo.FindRefreshToken(refreshToken);
                 if (storedToken == null)
                 {
                     return new Response
@@ -251,10 +242,10 @@ namespace TicketBooking.Service.AuthenticateService
                 //Update token is  used
                 storedToken.IsReVoke = true;
                 storedToken.IsUsed = true;
-                context.Update(storedToken);
-                await context.SaveChangesAsync();
+                await refreshTokenRepo.UpdateToken(storedToken);
+                await unit.CompletedAsync();
                 // create new token 
-                var user = await context.Users.SingleOrDefaultAsync(nd => nd.Id == storedToken.UserId);
+                var user = await userManager.FindByIdAsync(storedToken.UserId);
                 var token = await GenerateToken(user);
                 return new Response
                 {

@@ -10,7 +10,7 @@ using TicketBooking.Data.DbContext;
 
 namespace TicketBooking.Data.Infrastructure
 {
-    public class GenericRepository<T, X> : IRepository<T, X> where T : class where X : Type
+    public class GenericRepository<T> : IRepository<T> where T : class
     {
         protected TicketBookingDbContext _context;
         protected DbSet<T> dbSet;
@@ -53,7 +53,7 @@ namespace TicketBooking.Data.Infrastructure
             return query;
         }
 
-        public async Task<T> GetById(X id,params string[] includes)
+        public async Task<T> GetById(string id,params string[] includes)
         {
             var model = await dbSet.FindAsync(id);
             foreach (var path in includes)
@@ -63,7 +63,7 @@ namespace TicketBooking.Data.Infrastructure
             return model;
         }
         
-        public async Task<bool> Remove(X id)
+        public async Task<bool> Remove(string id)
         {
             var t = await dbSet.FindAsync(id);
             
@@ -82,7 +82,7 @@ namespace TicketBooking.Data.Infrastructure
             return true;
         }
 
-        public async Task<T> GetById(X id)
+        public async Task<T> GetById(string id)
         {
             return await dbSet.FindAsync(id);
         }

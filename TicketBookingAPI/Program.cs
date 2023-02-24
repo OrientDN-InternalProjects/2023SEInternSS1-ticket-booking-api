@@ -11,6 +11,7 @@ using System.Text;
 using TicketBooking.Data.DataModel;
 using TicketBooking.Data.DbContext;
 using TicketBooking.Data.Infrastructure;
+using TicketBooking.Data.Repository;
 using TicketBooking.Service.AuthenticateService;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,6 +32,8 @@ builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.Al
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<TicketBookingDbContext>().AddDefaultTokenProviders();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+
 builder.Services.AddScoped<IAuthenticateService, AuthenticateService>();
 
 builder.Services.AddAuthentication(options => {
@@ -50,20 +53,9 @@ builder.Services.AddAuthentication(options => {
         ClockSkew = TimeSpan.Zero
     };
 });
-//.AddCookie(options =>
-//{
-//    options.LoginPath = "/Account/Login";
-//    options.LogoutPath = "/Account/Logout";
-//    options.AccessDeniedPath = options.LoginPath;
-//    options.ReturnUrlParameter = "returnUrl";
-//});
+
 builder.Services.AddDbContext<TicketBookingDbContext>(op =>
     op.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-
-
-
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

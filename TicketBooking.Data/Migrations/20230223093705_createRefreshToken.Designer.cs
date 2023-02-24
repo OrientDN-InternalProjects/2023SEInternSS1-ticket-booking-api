@@ -12,8 +12,8 @@ using TicketBooking.Data.DbContext;
 namespace TicketBooking.Data.Migrations
 {
     [DbContext(typeof(TicketBookingDbContext))]
-    [Migration("20230223093705_createRole")]
-    partial class createRole
+    [Migration("20230223093705_createRefreshToken")]
+    partial class createRefreshToken
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
