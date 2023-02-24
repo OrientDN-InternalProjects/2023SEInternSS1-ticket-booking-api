@@ -10,24 +10,24 @@ using TicketBooking.Data.DbContext;
 
 namespace TicketBooking.Data.Infrastructure
 {
-    public class GenericRepository<T, X> : IRepository<T, X> where T : class where X : new()
+public class GenericRepository<T,X> : IRepository<T,X> where T : class where X : new()
     {
-        protected TicketBookingDbContext Context;
-        protected DbSet<T> DbSet;
+        protected TicketBookingDbContext _context;
+        protected DbSet<T> dbSet;
         public GenericRepository(TicketBookingDbContext context)
         {
-            Context = context;
-            DbSet = Context.Set<T>();
+            _context = context;
+            dbSet = _context.Set<T>();
         }
         public async Task<bool> Add(T entity)
         {
-            await DbSet.AddAsync(entity);
+            await dbSet.AddAsync(entity);
             return true;
         }
 
         public async Task<IEnumerable<T>> GetPagedAdvancedReponseAsync(int pageNumber, int pageSize, string orderBy, string fields)
         {
-            return await Context
+            return await _context
                  .Set<T>()
                  .Skip((pageNumber - 1) * pageSize)
                  .Take(pageSize)
@@ -39,16 +39,12 @@ namespace TicketBooking.Data.Infrastructure
 
         public IEnumerable<T> Find(Expression<Func<T, bool>> expression)
         {
-            return DbSet.Where(expression);
+            return dbSet.Where(expression);
         }
-
-        public async Task<IEnumerable<T>> GetAll(params string[]? includes)
+        
+        public async Task<IEnumerable<T>> GetAll(params string[] includes)
         {
-            IQueryable<T> query = DbSet;
-            if (includes == null)
-            {
-                throw new Exception("No data to get");
-            }
+            IQueryable<T> query = dbSet;
             if (includes.Length > 0)
             {
                 foreach (var include in includes)
@@ -57,23 +53,23 @@ namespace TicketBooking.Data.Infrastructure
             return query;
         }
 
-        public async Task<T?> GetById(X id, params string[] includes)
+        public async Task<T> GetById(X id,params string[] includes)
         {
-            var model = await DbSet.FindAsync(id);
+            var model = await dbSet.FindAsync(id);
             foreach (var path in includes)
             {
-                Context.Entry(model).Reference(path).Load();
+                _context.Entry(model).Reference(path).Load();
             }
             return model;
         }
         
         public async Task<bool> Remove(X id)
         {
-            var t = await DbSet.FindAsync(id);
+            var t = await dbSet.FindAsync(id);
             
                if (t != null)
             {
-                DbSet.Remove(t);
+                dbSet.Remove(t);
                 return true;
             }
             else
@@ -82,8 +78,13 @@ namespace TicketBooking.Data.Infrastructure
         
         public async Task<bool> Update(T entity)
         {
-            this.Context.Entry<T>(entity).State = EntityState.Modified;
+            this._context.Entry<T>(entity).State = EntityState.Modified;
             return true;
+        }
+
+        public async Task<T> GetById(X id)
+        {
+            return await dbSet.FindAsync(id);
         }
     }
 }

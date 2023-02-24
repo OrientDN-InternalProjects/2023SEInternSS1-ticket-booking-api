@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TicketBooking.Data.DataModel;
+using TicketBooking.Model.DataModel;
 
 namespace TicketBooking.Data.DbContext
 {
@@ -28,6 +29,7 @@ namespace TicketBooking.Data.DbContext
         public DbSet<BookingList>? BookingLists { get; set; }
         public DbSet<ListSeat>? ListSeats { get; set; }
         #endregion
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
