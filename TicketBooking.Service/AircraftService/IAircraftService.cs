@@ -13,7 +13,7 @@ namespace TicketBooking.Service.AircraftService
     public interface IAircraftSerivce
     {
         Task<IEnumerable<AircraftViewModel>> GetAircraftAsync();
-        Task<AircraftViewModel> GetAircraftAsync(Guid id);
+        Task<AircraftViewModel> GetAircraftAsync(string id);
         Task<int> UpdateAircraftAsync(AircraftViewModel aircraftDto);
         Task<int> InsertAsync(AircraftViewModel aircraftDto);
         Task<int> RemoveAsync(Guid id);

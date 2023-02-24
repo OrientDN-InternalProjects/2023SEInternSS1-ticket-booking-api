@@ -17,10 +17,10 @@ namespace TicketBookingAPI.Controllers
             accountService = account;
         }
         [HttpPost("sign-up")]
-        public async Task<IActionResult> SignUp(SignUp model,bool IsAdmin)
+        public async Task<IActionResult> SignUp(SignUp model, bool IsAdmin)
         {
             var result = await accountService.SignUp(model, IsAdmin);
-            if (result!=null)
+            if (result != null)
             {
                 return Ok(result);
             }

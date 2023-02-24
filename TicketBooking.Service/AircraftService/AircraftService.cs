@@ -37,7 +37,7 @@ namespace TicketBooking.Service.AircraftService
             }
         }
 
-        public async Task<AircraftViewModel> GetAircraftAsync(Guid id)
+        public async Task<AircraftViewModel> GetAircraftAsync(string id)
         {
             var aircraft = await _aircrafts.GetById(id);
             return aircraft == null ? throw new Exception("ID cannot be found") : _mapper.Map<AircraftViewModel> (aircraft);
@@ -80,7 +80,7 @@ namespace TicketBooking.Service.AircraftService
 
             else
             {
-                await _aircrafts.Remove(aircraft.Id);
+                await _aircrafts.Remove(aircraft.Id.ToString());
                 return await _unitOfWork.CompletedAsync();
             }
         }

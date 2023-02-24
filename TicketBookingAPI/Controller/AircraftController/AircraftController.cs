@@ -38,7 +38,7 @@ namespace TicketBookingAPI.Controller.AircraftController
         [HttpDelete]
         public async Task<ActionResult> RemoveAircraft(Guid id)
         {
-            _service.RemoveAsync(id);
+            await _service.RemoveAsync(id);
             return Accepted();
         }
 
@@ -53,6 +53,6 @@ namespace TicketBookingAPI.Controller.AircraftController
         public async Task<ActionResult> GetAircraft() => Ok(await _service.GetAircraftAsync());
 
         [HttpGet("{id}")]
-        public async Task<ActionResult> GetAircraftbyId(Guid id) => Ok(await _service.GetAircraftAsync(id));
+        public async Task<ActionResult> GetAircraftbyId(string id) => Ok(await _service.GetAircraftAsync(id));
     }
 }

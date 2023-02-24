@@ -16,20 +16,20 @@ namespace TicketBooking.Data.DbContext
 
         #region
         public DbSet<Aircraft> Aircrafts { get; set; }
-        public DbSet<Airport>? Airports { get; set; }
-        public DbSet<SeatClass>? SeatClasses { get; set; }
-        public DbSet<FlightSchedule>? FlightSchedules { get; set; }
-        public DbSet<Flight>? Flights { get; set; }
-        public DbSet<Seat>? Seats { get; set; }
-        public DbSet<ContactDetail>? ContactDetails { get; set; }
-        public DbSet<ExtraBaggage>? ExtraBaggages { get; set; }
-        public DbSet<Booking>? Bookings { get; set; }
-        public DbSet<Passenger>? Passengers { get; set; }
-        public DbSet<Ticket>? Tickets { get; set; }
-        public DbSet<BookingList>? BookingLists { get; set; }
-        public DbSet<ListSeat>? ListSeats { get; set; }
+        public DbSet<Airport> Airports { get; set; }
+        public DbSet<SeatClass> SeatClasses { get; set; }
+        public DbSet<FlightSchedule> FlightSchedules { get; set; }
+        public DbSet<Flight> Flights { get; set; }
+        public DbSet<Seat> Seats { get; set; }
+        public DbSet<ContactDetail> ContactDetails { get; set; }
+        public DbSet<ExtraBaggage> ExtraBaggages { get; set; }
+        public DbSet<Booking> Bookings { get; set; }
+        public DbSet<Passenger> Passengers { get; set; }
+        public DbSet<Ticket> Tickets { get; set; }
+        public DbSet<BookingList> BookingLists { get; set; }
+        public DbSet<ListSeat> ListSeats { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
         #endregion
-        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -50,12 +50,12 @@ namespace TicketBooking.Data.DbContext
                 entity.HasOne(e => e.AirportDepart)
                 .WithMany(e => e.DepartureAirports)
                 .HasForeignKey(e => e.DepartureAirportId)
-                .OnDelete(DeleteBehavior.ClientSetNull); 
+                .OnDelete(DeleteBehavior.ClientSetNull);
 
                 entity.HasOne(e => e.AirportArrival)
                 .WithMany(e => e.ArrivalAirports)
                 .HasForeignKey(e => e.ArrivalAirportId)
-                .OnDelete(DeleteBehavior.ClientSetNull); 
+                .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
             modelBuilder.Entity<Flight>(entity =>
@@ -166,5 +166,5 @@ namespace TicketBooking.Data.DbContext
             });
 
         }
-        }
+    }
 }

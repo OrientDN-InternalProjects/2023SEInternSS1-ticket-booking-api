@@ -16,7 +16,7 @@ namespace TicketBooking.Model.DataModel
         public Guid Id { get; set; }
         public string UserId { get; set; }
         [ForeignKey(nameof(UserId))]
-        public ApplicationUser User { get; set; }
+        public ApplicationUser? User { get; set; }
         public string Token { get; set; }
         public string JwtId { get; set; }
         public bool IsUsed { get; set; }

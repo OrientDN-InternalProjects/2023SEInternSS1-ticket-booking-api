@@ -65,11 +65,11 @@ builder.Services.AddDbContext<TicketBookingDbContext>(op =>
     op.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IAircraftRepository, AircraftRepository>();
 builder.Services.AddScoped<IAircraftSerivce, AircraftService>();
-    
+
 var config = new MapperConfiguration(cfg =>
-    {
-        cfg.AddProfile(new AutoMapperProfile());
-    }
+{
+    cfg.AddProfile(new AutoMapperProfile());
+}
 );
 IMapper mapper = config.CreateMapper();
 builder.Services.AddSingleton(mapper);
