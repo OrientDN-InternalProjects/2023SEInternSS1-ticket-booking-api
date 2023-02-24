@@ -30,11 +30,9 @@ namespace TicketBookingAPI.Controller.AircraftController
             {
                 return NotFound();
             }
-            else
-            {
-                await _service.InsertAsync(aircraftModel);
-                return Accepted(aircraftModel.Id);
-            }
+
+            await _service.InsertAsync(aircraftModel);
+            return Accepted(aircraftModel.Id);
         }
 
         [HttpDelete]
