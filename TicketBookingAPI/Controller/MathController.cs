@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TicketBooking.Common.AppExceptions;
 
-namespace TicketBookingAPI.Controllers
+namespace TicketBookingAPI.Controller
 {
     [Route("api/[controller]")]
     [ApiController]

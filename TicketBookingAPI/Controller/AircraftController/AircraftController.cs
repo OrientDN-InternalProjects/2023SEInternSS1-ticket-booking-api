@@ -17,10 +17,10 @@ namespace TicketBookingAPI.Controller.AircraftController
     [ApiController]
     public class AircraftController : ControllerBase
     {
-        private IAircraftSerivce _service { get; }
+        private IAircraftSerivce Aircraftservice { get; }
         public AircraftController(IAircraftSerivce service)
         {
-            _service = service;
+            Aircraftservice = service;
         }
 
         [HttpPost]
@@ -31,28 +31,28 @@ namespace TicketBookingAPI.Controller.AircraftController
                 return NotFound();
             }
 
-            await _service.InsertAsync(aircraftModel);
+            await Aircraftservice.InsertAsync(aircraftModel);
             return Accepted(aircraftModel.Id);
         }
 
         [HttpDelete]
         public async Task<ActionResult> RemoveAircraft(Guid id)
         {
-            await _service.RemoveAsync(id);
+            await Aircraftservice.RemoveAsync(id);
             return Accepted();
         }
 
         [HttpPut]
         public async Task<ActionResult> UpdateAircraft(AircraftViewModel aircraftModel)
         {
-            await _service.UpdateAircraftAsync(aircraftModel);
+            await Aircraftservice.UpdateAircraftAsync(aircraftModel);
             return Accepted();
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetAircraft() => Ok(await _service.GetAircraftAsync());
+        public async Task<ActionResult> GetAircraft() => Ok(await Aircraftservice.GetAircraftAsync());
 
         [HttpGet("{id}")]
-        public async Task<ActionResult> GetAircraftbyId(string id) => Ok(await _service.GetAircraftAsync(id));
+        public async Task<ActionResult> GetAircraftbyId(string id) => Ok(await Aircraftservice.GetAircraftAsync(id));
     }
 }

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using TicketBooking.Model.AuthenticateModel;
 using TicketBooking.Service.AuthenticateService;
 
-namespace TicketBookingAPI.Controllers
+namespace TicketBookingAPI.Controller
 {
     [Route("api/[controller]")]
     [ApiController]
