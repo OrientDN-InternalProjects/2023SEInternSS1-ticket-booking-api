@@ -18,6 +18,8 @@ namespace TicketBooking.Data
         [Required]
         public Guid BookingId { get; set; }
         public Booking Booking { get; set; }
+        public Guid ExtraServiceId { get; set; }
+        public ExtraService ExtraService { get; set; }
         [Required]
         public Guid FlightId { get; set; }
         public Flight Flight { get; set; }
@@ -26,10 +28,10 @@ namespace TicketBooking.Data
         [Required]
         [Column(TypeName = "decimal(10, 2)")]
         public decimal FlightPrice { get; set; }
-        public ICollection<ListSeat> ListSeats { get; set; }
+        public ICollection<BookingSeat> ListSeats { get; set; }
         public BookingList()
         {
-            ListSeats = new List<ListSeat>();
+            ListSeats = new List<BookingSeat>();
         }
     }
 }

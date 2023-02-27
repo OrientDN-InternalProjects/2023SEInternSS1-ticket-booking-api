@@ -53,7 +53,7 @@ namespace TicketBooking.Data.Infrastructure
             return query;
         }
 
-        public async Task<T> GetById(string id, params string[] includes)
+        public async Task<T> GetById(Guid id, params string[] includes)
         {
             var model = await dbSet.FindAsync(id);
             foreach (var path in includes)
@@ -63,13 +63,13 @@ namespace TicketBooking.Data.Infrastructure
             return model;
         }
 
-        public async Task<bool> Remove(string id)
+        public async Task<bool> Remove(Guid id)
         {
-            var t = await dbSet.FindAsync(id);
+            var entityRemove = await dbSet.FindAsync(id);
 
-            if (t != null)
+            if (entityRemove != null)
             {
-                dbSet.Remove(t);
+                dbSet.Remove(entityRemove);
                 return true;
             }
             else
@@ -82,7 +82,7 @@ namespace TicketBooking.Data.Infrastructure
             return true;
         }
 
-        public async Task<T> GetById(string id)
+        public async Task<T> GetById(Guid id)
         {
             return await dbSet.FindAsync(id);
         }

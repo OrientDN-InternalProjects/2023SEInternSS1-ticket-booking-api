@@ -1,10 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TicketBooking.Data.DataModel;
 using TicketBooking.Model.DataModel;
 
@@ -22,12 +17,12 @@ namespace TicketBooking.Data.DbContext
         public DbSet<Flight> Flights { get; set; }
         public DbSet<Seat> Seats { get; set; }
         public DbSet<ContactDetail> ContactDetails { get; set; }
-        public DbSet<ExtraBaggage> ExtraBaggages { get; set; }
+        public DbSet<ExtraService> ExtraBaggages { get; set; }
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<Passenger> Passengers { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<BookingList> BookingLists { get; set; }
-        public DbSet<ListSeat> ListSeats { get; set; }
+        public DbSet<BookingSeat> ListSeats { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         #endregion
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -82,9 +77,13 @@ namespace TicketBooking.Data.DbContext
                 .WithMany(e => e.Seats)
                 .HasForeignKey(e => e.SeatClassId);
 
+                entity.HasOne(e => e.Aircraft)
+                .WithMany(e => e.Seats)
+                .HasForeignKey(e => e.AirCraftId);
+
                 entity.HasOne(e => e.ListSeat)
                 .WithOne(e => e.Seat)
-                .HasForeignKey<ListSeat>(e => e.SeatId);
+                .HasForeignKey<BookingSeat>(e => e.SeatId);
             });
 
             modelBuilder.Entity<ContactDetail>(entity =>
@@ -96,7 +95,7 @@ namespace TicketBooking.Data.DbContext
                 .HasForeignKey<Booking>(e => e.ContactId);
             });
 
-            modelBuilder.Entity<ExtraBaggage>(entity =>
+            modelBuilder.Entity<ExtraService>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
             });
@@ -109,9 +108,6 @@ namespace TicketBooking.Data.DbContext
 
                 entity.Property(e => e.IsRoundFlight).HasDefaultValue("false");
 
-                entity.HasOne(e => e.ExtraBaggage)
-                .WithMany(e => e.Bookings)
-                .HasForeignKey(e => e.ExtraBaggageId);
 
                 entity.HasOne(e => e.User)
                .WithMany(e => e.Bookings)
@@ -124,14 +120,21 @@ namespace TicketBooking.Data.DbContext
 
                 entity.HasOne(e => e.Booking)
                 .WithMany(e => e.BookingLists)
-                .HasForeignKey(e => e.BookingId);
+                .HasForeignKey(e => e.BookingId)
+                 .OnDelete(DeleteBehavior.ClientSetNull);
+
+                entity.HasOne(e => e.ExtraService)
+                .WithMany(e => e.BookingLists)
+                .HasForeignKey(e => e.ExtraServiceId)
+                 .OnDelete(DeleteBehavior.ClientSetNull);
 
                 entity.HasOne(e => e.Flight)
                .WithMany(e => e.BookingLists)
-               .HasForeignKey(e => e.FlightId);
+               .HasForeignKey(e => e.FlightId)
+                 .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
-            modelBuilder.Entity<ListSeat>(entity =>
+            modelBuilder.Entity<BookingSeat>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 

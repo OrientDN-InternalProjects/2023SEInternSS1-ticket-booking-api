@@ -7,11 +7,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using TicketBooking.Data;
-using TicketBooking.Service.AircraftService;
 using TicketBooking.Data.DbContext;
 using TicketBooking.Service.Model;
+using TicketBooking.Service.Services.AircraftService;
 
-namespace TicketBookingAPI.Controller.AircraftController
+namespace TicketBookingAPI.Controllers
 {
     [Route("api/[Controller]")]
     [ApiController]
@@ -27,6 +27,11 @@ namespace TicketBookingAPI.Controller.AircraftController
         public async Task<ActionResult> AddAircraft(AircraftViewModel aircraftModel)
         {
             if (aircraftModel == null)
+            {
+                return NotFound();
+            }
+
+            if (aircraftModel.Model?.Length > 6 || aircraftModel.Manufacture?.Length > 10)
             {
                 return NotFound();
             }
@@ -53,6 +58,6 @@ namespace TicketBookingAPI.Controller.AircraftController
         public async Task<ActionResult> GetAircraft() => Ok(await Aircraftservice.GetAircraftAsync());
 
         [HttpGet("{id}")]
-        public async Task<ActionResult> GetAircraftbyId(string id) => Ok(await Aircraftservice.GetAircraftAsync(id));
+        public async Task<ActionResult> GetAircraftbyId(Guid id) => Ok(await Aircraftservice.GetAircraftAsync(id));
     }
 }

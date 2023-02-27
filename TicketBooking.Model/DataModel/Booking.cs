@@ -31,8 +31,8 @@ namespace TicketBooking.Data.DataModel
         public bool IsPaid { get; set; }
         [Required]
         public bool IsRoundFlight { get; set; }
-        public int ExtraBaggageId { get; set; }
-        public ExtraBaggage ExtraBaggage { get; set; }
+        public Guid ExtraBaggageId { get; set; }
+        public ExtraService ExtraBaggage { get; set; }
         public Guid ContactId { get; set; }
         public ContactDetail ContactDetail { get; set; }
         public string UserId { get; set; }

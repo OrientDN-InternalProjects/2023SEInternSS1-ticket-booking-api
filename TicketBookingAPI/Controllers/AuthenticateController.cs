@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
-using TicketBooking.Model.AuthenticateModel;
-using TicketBooking.Service.AuthenticateService;
+using System.Net;
+using TicketBooking.Service.Model;
+using TicketBooking.Service.Services.AuthenticateService;
 
-namespace TicketBookingAPI.Controller
+namespace TicketBookingAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -16,16 +17,22 @@ namespace TicketBookingAPI.Controller
         {
             accountService = account;
         }
+
         [HttpPost("sign-up")]
         public async Task<IActionResult> SignUp(SignUp model, bool IsAdmin)
         {
-            var result = await accountService.SignUp(model, IsAdmin);
-            if (result != null)
+            if (!ModelState.IsValid)
             {
-                return Ok(result);
+                var result = await accountService.SignUp(model, IsAdmin);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+                return BadRequest("Sign up failed");
             }
-            return Unauthorized();
+            return BadRequest(ModelState);
         }
+
         [HttpPost("sign-in")]
         public async Task<IActionResult> SignIn(SignIn model)
         {
@@ -36,15 +43,21 @@ namespace TicketBookingAPI.Controller
             }
             return Unauthorized();
         }
+
         [HttpPost("renew-token")]
         public async Task<IActionResult> RenewToken(TokenResponse model)
         {
-            var result = await accountService.RenewToken(model);
-            if (result != null)
+            if (!ModelState.IsValid)
             {
-                return Ok(result);
+                var result = await accountService.RenewToken(model);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+                return Unauthorized();
             }
-            return Unauthorized();
+            else
+                return BadRequest(ModelState);
         }
     }
 }

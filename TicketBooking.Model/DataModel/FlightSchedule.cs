@@ -12,12 +12,12 @@ namespace TicketBooking.Data
     public class FlightSchedule
     {
         [Key]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         [Required]
-        public int DepartureAirportId { get; set; }
+        public Guid DepartureAirportId { get; set; }
         public Airport AirportDepart { get; set; }
         [Required]
-        public int ArrivalAirportId { get; set; }
+        public Guid ArrivalAirportId { get; set; }
         public Airport AirportArrival { get; set; }
         [Required]
         public DateTime DepartureTime { get; set; }
