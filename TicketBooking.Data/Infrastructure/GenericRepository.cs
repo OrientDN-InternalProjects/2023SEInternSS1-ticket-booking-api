@@ -10,7 +10,7 @@ using TicketBooking.Data.DbContext;
 
 namespace TicketBooking.Data.Infrastructure
 {
-public class GenericRepository<T,X> : IRepository<T,X> where T : class where X : new()
+    public class GenericRepository<T> : IRepository<T> where T : class
     {
         protected TicketBookingDbContext _context;
         protected DbSet<T> dbSet;
@@ -41,7 +41,7 @@ public class GenericRepository<T,X> : IRepository<T,X> where T : class where X :
         {
             return dbSet.Where(expression);
         }
-        
+
         public async Task<IEnumerable<T>> GetAll(params string[] includes)
         {
             IQueryable<T> query = dbSet;
@@ -53,7 +53,7 @@ public class GenericRepository<T,X> : IRepository<T,X> where T : class where X :
             return query;
         }
 
-        public async Task<T> GetById(X id,params string[] includes)
+        public async Task<T> GetById(Guid id, params string[] includes)
         {
             var model = await dbSet.FindAsync(id);
             foreach (var path in includes)
@@ -62,27 +62,27 @@ public class GenericRepository<T,X> : IRepository<T,X> where T : class where X :
             }
             return model;
         }
-        
-        public async Task<bool> Remove(X id)
+
+        public async Task<bool> Remove(Guid id)
         {
-            var t = await dbSet.FindAsync(id);
-            
-               if (t != null)
+            var entityRemove = await dbSet.FindAsync(id);
+
+            if (entityRemove != null)
             {
-                dbSet.Remove(t);
+                dbSet.Remove(entityRemove);
                 return true;
             }
             else
                 return false;
         }
-        
+
         public async Task<bool> Update(T entity)
         {
             this._context.Entry<T>(entity).State = EntityState.Modified;
             return true;
         }
 
-        public async Task<T> GetById(X id)
+        public async Task<T> GetById(Guid id)
         {
             return await dbSet.FindAsync(id);
         }

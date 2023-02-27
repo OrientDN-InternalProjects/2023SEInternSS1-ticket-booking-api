@@ -26,13 +26,11 @@ namespace TicketBooking.Data
         [Required]
         public int DefaultBaggage { set; get; }
         [Required]
-        public int ScheduleId { set; get; }
+        public Guid ScheduleId { set; get; }
         public FlightSchedule Schedule { set; get; }
-        public ICollection<Seat> Seats { get; set; }
         public ICollection<BookingList> BookingLists { get; set; }
         public Flight()
         {
-            Seats = new List<Seat>();
             BookingLists= new List<BookingList>();
         }
     }

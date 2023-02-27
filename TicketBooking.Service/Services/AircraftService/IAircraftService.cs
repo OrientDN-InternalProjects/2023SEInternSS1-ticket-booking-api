@@ -8,7 +8,7 @@ using TicketBooking.Data.Infrastructure;
 using TicketBooking.Data.Repository;
 using TicketBooking.Service.Model;
 
-namespace TicketBooking.Service.AircraftService
+namespace TicketBooking.Service.Services.AircraftService
 {
     public interface IAircraftSerivce
     {

@@ -8,11 +8,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TicketBooking.Data
 {
-    [Table("ListSeat")]
-    public class ListSeat
+    [Table("BookingSeat")]
+    public class BookingSeat
     {
         [Key]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
+        [Required]
+        [Column(TypeName = "decimal(10, 2)")]
+        public decimal PriceSeat { get; set; }
         [Required]
         public Guid SeatId { get; set; }
         public Seat Seat { get; set; }

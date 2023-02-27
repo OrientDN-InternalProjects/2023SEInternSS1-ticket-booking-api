@@ -8,12 +8,12 @@ using TicketBooking.Data.Infrastructure;
 
 namespace TicketBooking.Data.Repository
 {
-    public interface IAircraftRepository : IRepository<Aircraft, Guid>
+    public interface IAircraftRepository : IRepository<Aircraft>
     {
 
     }
 
-    public class AircraftRepository : GenericRepository<Aircraft, Guid>, IAircraftRepository
+    public class AircraftRepository : GenericRepository<Aircraft>, IAircraftRepository
     {
         public AircraftRepository(TicketBookingDbContext context) : base(context)
         {

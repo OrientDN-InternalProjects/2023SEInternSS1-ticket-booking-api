@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TicketBooking.Model.AuthenticateModel
+namespace TicketBooking.Service.Model
 {
     public static class UserRoles
     {

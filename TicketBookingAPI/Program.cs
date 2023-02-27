@@ -13,16 +13,13 @@ using TicketBooking.Data.DataModel;
 using TicketBooking.Data.DbContext;
 using TicketBooking.Data.Infrastructure;
 using TicketBooking.Data.Repository;
-using TicketBooking.Service.AuthenticateService;
 
 using TicketBooking.Service;
-using TicketBooking.Service.AircraftService;
-using TicketBookingAPI.Controller.AircraftController;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
-
+using TicketBooking.Service.Services.AircraftService;
+using TicketBooking.Service.Services.AuthenticateService;
 
 var builder = WebApplication.CreateBuilder(args);
-
 // Add services to the container.
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
@@ -65,16 +62,17 @@ builder.Services.AddDbContext<TicketBookingDbContext>(op =>
     op.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IAircraftRepository, AircraftRepository>();
 builder.Services.AddScoped<IAircraftSerivce, AircraftService>();
-    
+
 var config = new MapperConfiguration(cfg =>
-    {
-        cfg.AddProfile(new AutoMapperProfile());
-    }
+{
+    cfg.AddProfile(new AutoMapperProfile());
+}
 );
 IMapper mapper = config.CreateMapper();
 builder.Services.AddSingleton(mapper);
 var app = builder.Build();
 
+app.UseMiddleware<HandleExceptionMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -84,8 +82,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.UseAuthorization();
-app.UseMiddleware<HandleExceptionMiddleware>();
 
 app.MapControllers();
 app.UseApiResponseAndExceptionWrapper();

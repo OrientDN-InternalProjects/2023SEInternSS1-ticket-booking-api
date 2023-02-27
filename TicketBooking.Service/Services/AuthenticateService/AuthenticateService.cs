@@ -8,10 +8,10 @@ using System.Text;
 using TicketBooking.Data.DataModel;
 using TicketBooking.Data.Infrastructure;
 using TicketBooking.Data.Repository;
-using TicketBooking.Model.AuthenticateModel;
+using TicketBooking.Service.Model;
 using TicketBooking.Model.DataModel;
 
-namespace TicketBooking.Service.AuthenticateService
+namespace TicketBooking.Service.Services.AuthenticateService
 {
     public class AuthenticateService : IAuthenticateService
     {
@@ -21,6 +21,7 @@ namespace TicketBooking.Service.AuthenticateService
         private readonly IConfiguration configuration;
         private readonly IRefreshTokenRepository refreshTokenRepo;
         private IUnitOfWork unit;
+
         public AuthenticateService(UserManager<ApplicationUser> userManager
             , RoleManager<IdentityRole> roleManager
             , SignInManager<ApplicationUser> signInManager
@@ -33,9 +34,10 @@ namespace TicketBooking.Service.AuthenticateService
             this.signInManager = signInManager;
             this.roleManager = roleManager;
             this.configuration = configuration;
-            this.refreshTokenRepo = refreshToken;
-            this.unit = unitOfWork;
+            refreshTokenRepo = refreshToken;
+            unit = unitOfWork;
         }
+
         //Sign in
         public async Task<Response> SignIn(SignIn model)
         {
@@ -137,6 +139,7 @@ namespace TicketBooking.Service.AuthenticateService
 
             return new Response { Status = true, Message = "User created successfully!" };
         }
+
         //Sign up for admin
         private async Task CreateRoleAsync()
         {
@@ -148,7 +151,7 @@ namespace TicketBooking.Service.AuthenticateService
 
         private string GenerateRefreshToken()
         {
-            var random = new Byte[32];
+            var random = new byte[32];
             using (var rng = RandomNumberGenerator.Create())
             {
                 rng.GetBytes(random);

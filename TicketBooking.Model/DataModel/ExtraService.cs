@@ -8,20 +8,22 @@ using System.Threading.Tasks;
 
 namespace TicketBooking.Data.DataModel
 {
-    [Table("ExtraBaggage")]
-    public class ExtraBaggage
+    [Table("ExtraService")]
+    public class ExtraService
     {
         [Key]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         [Required]
-        public byte Weight { get; set; }
+        public string NameService { get; set; }
         [Required]
         [Column(TypeName = "decimal(10, 2)")]
         public decimal Price { get; set; }
-        public ICollection<Booking> Bookings { get; set; }
-        public ExtraBaggage()
+        [MaxLength(150)]
+        public string Description { get; set; }
+        public ICollection<BookingList> BookingLists { get; set; }
+        public ExtraService()
         {
-            Bookings = new List<Booking>();
+            BookingLists = new List<BookingList>();
         }
     }
 }
