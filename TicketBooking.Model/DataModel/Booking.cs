@@ -31,11 +31,11 @@ namespace TicketBooking.Data.DataModel
         public bool IsPaid { get; set; }
         [Required]
         public bool IsRoundFlight { get; set; }
-        public Guid ExtraBaggageId { get; set; }
+        public Guid? ExtraBaggageId { get; set; }
         public ExtraService ExtraBaggage { get; set; }
-        public Guid ContactId { get; set; }
+        public Guid? ContactId { get; set; }
         public ContactDetail ContactDetail { get; set; }
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
         public ApplicationUser User { get; set; }
         public ICollection<BookingList> BookingLists { get; set; }
         public ICollection<Passenger> Passengers { get; set; }

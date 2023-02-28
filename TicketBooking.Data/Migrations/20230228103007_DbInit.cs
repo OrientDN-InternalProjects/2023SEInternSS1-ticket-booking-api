@@ -290,8 +290,8 @@ namespace TicketBooking.Data.Migrations
                     TotalPrice = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     IsPaid = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     IsRoundFlight = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    ExtraBaggageId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ContactId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ExtraBaggageId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ContactId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
@@ -306,14 +306,12 @@ namespace TicketBooking.Data.Migrations
                         name: "FK_Booking_ContactDetail_ContactId",
                         column: x => x.ContactId,
                         principalTable: "ContactDetail",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Booking_ExtraService_ExtraBaggageId",
                         column: x => x.ExtraBaggageId,
                         principalTable: "ExtraService",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -406,7 +404,7 @@ namespace TicketBooking.Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     BookingId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ExtraServiceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ExtraServiceId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     FlightId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     NumberSeat = table.Column<int>(type: "int", nullable: false),
                     FlightPrice = table.Column<decimal>(type: "decimal(10,2)", nullable: false)
@@ -530,7 +528,8 @@ namespace TicketBooking.Data.Migrations
                 name: "IX_Booking_ContactId",
                 table: "Booking",
                 column: "ContactId",
-                unique: true);
+                unique: true,
+                filter: "[ContactId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Booking_ExtraBaggageId",

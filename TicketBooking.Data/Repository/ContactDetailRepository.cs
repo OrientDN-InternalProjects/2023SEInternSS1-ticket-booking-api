@@ -9,16 +9,13 @@ using TicketBooking.Data.Infrastructure;
 
 namespace TicketBooking.Data.Repository
 {
-    public interface IAircraftRepository : IRepository<Aircraft>
+    public interface IContactDetailRepository : IRepository<ContactDetail>
     {
-
     }
-
-    public class AircraftRepository : GenericRepository<Aircraft>, IAircraftRepository
+    public class ContactDetailRepository : GenericRepository<ContactDetail>, IContactDetailRepository
     {
-        public AircraftRepository(TicketBookingDbContext context) : base(context)
+        public ContactDetailRepository(TicketBookingDbContext context) : base(context)
         {
-
-        } 
+        }
     }
 }

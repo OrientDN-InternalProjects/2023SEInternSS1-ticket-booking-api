@@ -5,13 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TicketBooking.Service.Model
+namespace TicketBooking.Model.Models
 {
-    public class TokenResponse
+    public class SignIn
     {
         [Required]
-        public string? AccessToken { get; set; }
+        public string Email { get; set; }
+
         [Required]
-        public string? RefreshToken { get; set; }
+        public string Password { get; set; }
     }
 }

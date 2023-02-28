@@ -8,8 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using TicketBooking.Data;
 using TicketBooking.Data.DbContext;
-using TicketBooking.Service.Model;
 using TicketBooking.Service.Services.AircraftService;
+using TicketBooking.Model.Models;
 
 namespace TicketBookingAPI.Controllers
 {

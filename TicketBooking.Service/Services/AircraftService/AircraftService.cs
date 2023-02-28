@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using TicketBooking.Data;
 using TicketBooking.Data.Infrastructure;
 using AutoMapper;
-using TicketBooking.Service.Model;
+using TicketBooking.Model.Models;
 using TicketBooking.Data.Repository;
-using TicketBooking.Data.DbContext;
+using TicketBooking.Data.DataModel;
 
 namespace TicketBooking.Service.Services.AircraftService
 {

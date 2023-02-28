@@ -18,6 +18,9 @@ using TicketBooking.Service;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 using TicketBooking.Service.Services.AircraftService;
 using TicketBooking.Service.Services.AuthenticateService;
+using TicketBooking.Service.Helper;
+using TicketBooking.Service.Services.ContactDetailService;
+using TicketBooking.Service.Services.BookingService;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -57,19 +60,30 @@ builder.Services.AddAuthentication(options => {
         ClockSkew = TimeSpan.Zero
     };
 });
-
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddDbContext<TicketBookingDbContext>(op =>
     op.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IAircraftRepository, AircraftRepository>();
 builder.Services.AddScoped<IAircraftSerivce, AircraftService>();
+
+builder.Services.AddScoped<IContactDetailRepository, ContactDetailRepository>();
+builder.Services.AddScoped<IContactDetailServcie, ContactDetailservice>();
+
+builder.Services.AddScoped<IAircraftRepository, AircraftRepository>();
+builder.Services.AddScoped<IBookingListRepository, BookingListRepository>();
+builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+builder.Services.AddScoped<IBookingSeatRepository, BookingSeatRepository>();
+builder.Services.AddScoped<IFlightRepository, FlightRepository>();
+builder.Services.AddScoped<IPassengerRepository, PassengerRepository>();
+builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+builder.Services.AddScoped<IBookingService, BookingService>();
 
 var config = new MapperConfiguration(cfg =>
 {
     cfg.AddProfile(new AutoMapperProfile());
 }
 );
-IMapper mapper = config.CreateMapper();
-builder.Services.AddSingleton(mapper);
+
 var app = builder.Build();
 
 app.UseMiddleware<HandleExceptionMiddleware>();

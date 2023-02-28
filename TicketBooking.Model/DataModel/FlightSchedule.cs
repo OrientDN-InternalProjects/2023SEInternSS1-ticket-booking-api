@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace TicketBooking.Data
+namespace TicketBooking.Data.DataModel
 {
     [Table("FlightSchedule")]
     public class FlightSchedule

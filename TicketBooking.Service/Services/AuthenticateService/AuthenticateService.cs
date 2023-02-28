@@ -8,7 +8,7 @@ using System.Text;
 using TicketBooking.Data.DataModel;
 using TicketBooking.Data.Infrastructure;
 using TicketBooking.Data.Repository;
-using TicketBooking.Service.Model;
+using TicketBooking.Model.Models;
 using TicketBooking.Model.DataModel;
 
 namespace TicketBooking.Service.Services.AuthenticateService
@@ -20,7 +20,7 @@ namespace TicketBooking.Service.Services.AuthenticateService
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly IConfiguration configuration;
         private readonly IRefreshTokenRepository refreshTokenRepo;
-        private IUnitOfWork unit;
+        private readonly IUnitOfWork unit;
 
         public AuthenticateService(UserManager<ApplicationUser> userManager
             , RoleManager<IdentityRole> roleManager
