@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using TicketBooking.Data;
-using TicketBooking.Service.Model;
+using TicketBooking.Model.Models;
 
 namespace TicketBooking.Service
 {

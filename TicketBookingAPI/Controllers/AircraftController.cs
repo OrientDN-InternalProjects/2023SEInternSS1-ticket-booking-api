@@ -8,8 +8,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using TicketBooking.Data;
 using TicketBooking.Data.DbContext;
-using TicketBooking.Service.Model;
+using TicketBooking.Data.DbSeeder;
+using TicketBooking.Model.Models;
 using TicketBooking.Service.Services.AircraftService;
+using TicketBooking.Data.DbSeeder;
 
 namespace TicketBookingAPI.Controllers
 {
@@ -18,9 +20,14 @@ namespace TicketBookingAPI.Controllers
     public class AircraftController : ControllerBase
     {
         private IAircraftSerivce Aircraftservice { get; }
-        public AircraftController(IAircraftSerivce service)
+        private IDataSeeder dataSeeder { get; }
+        //private IDataSeeder dataSeeder { get; }
+
+        public AircraftController(IAircraftSerivce service, IDataSeeder dataSeeder)
         {
             Aircraftservice = service;
+            this.dataSeeder = dataSeeder;
+            //this.dataSeeder = dataSeeder;
         }
 
         [HttpPost]
@@ -55,7 +62,13 @@ namespace TicketBookingAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetAircraft() => Ok(await Aircraftservice.GetAircraftAsync());
+        // public async Task<ActionResult> GetAircraft() => Ok(await Aircraftservice.GetAircraftAsync());        
+        public async Task<ActionResult> GetAircraft()
+        {
+            dataSeeder.InitDataBase();
+            return Ok(await Aircraftservice.GetAircraftAsync());
+        }
+        
 
         [HttpGet("{id}")]
         public async Task<ActionResult> GetAircraftbyId(Guid id) => Ok(await Aircraftservice.GetAircraftAsync(id));

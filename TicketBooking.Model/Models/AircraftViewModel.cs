@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using TicketBooking.Data;
 using System.ComponentModel.DataAnnotations;
 
-namespace TicketBooking.Service.Model
+namespace TicketBooking.Model.Models
 {
     public class AircraftViewModel
     {

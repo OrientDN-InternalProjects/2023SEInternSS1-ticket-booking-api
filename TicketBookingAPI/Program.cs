@@ -13,11 +13,12 @@ using TicketBooking.Data.DataModel;
 using TicketBooking.Data.DbContext;
 using TicketBooking.Data.Infrastructure;
 using TicketBooking.Data.Repository;
-
 using TicketBooking.Service;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 using TicketBooking.Service.Services.AircraftService;
 using TicketBooking.Service.Services.AuthenticateService;
+using TicketBooking.Data.DbSeeder;
+using System.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -32,19 +33,28 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
+builder.Services.AddCors(options =>
+    options.AddDefaultPolicy(policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
 
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<TicketBookingDbContext>().AddDefaultTokenProviders();
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<TicketBookingDbContext>()
+    .AddDefaultTokenProviders();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
-
 builder.Services.AddScoped<IAuthenticateService, AuthenticateService>();
+builder.Services.AddScoped<IAircraftDataSeeder, AircraftDataSeeder>();
+builder.Services.AddScoped<IAirportDataSeeder, AirportDataSeeder>();
+builder.Services.AddScoped<IFlightScheduleDataSeeder, FlightScheDataSeeder>();
+builder.Services.AddScoped<IDataSeeder, DataSeeder>();
+// builder.Services.AddTransient<AircraftDataSeeder>();
+// builder.Services.AddTransient<DataSeeder>();
 
-builder.Services.AddAuthentication(options => {
+builder.Services.AddAuthentication(options =>
+{
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options => {
+}).AddJwtBearer(options =>
+{
     options.SaveToken = true;
     options.RequireHttpsMetadata = false;
     options.TokenValidationParameters = new TokenValidationParameters
@@ -63,14 +73,25 @@ builder.Services.AddDbContext<TicketBookingDbContext>(op =>
 builder.Services.AddScoped<IAircraftRepository, AircraftRepository>();
 builder.Services.AddScoped<IAircraftSerivce, AircraftService>();
 
-var config = new MapperConfiguration(cfg =>
-{
-    cfg.AddProfile(new AutoMapperProfile());
-}
+var config = new MapperConfiguration(cfg => { cfg.AddProfile(new AutoMapperProfile()); }
 );
 IMapper mapper = config.CreateMapper();
 builder.Services.AddSingleton(mapper);
 var app = builder.Build();
+
+// SeedData(app);
+//
+// void SeedData(IHost app)
+// {
+//     var scopeFactory = app.Services.GetService<IServiceScopeFactory>();
+//     using (var scope = scopeFactory.CreateScope())
+//     {
+//         var Aircraftservices = scope.ServiceProvider.GetRequiredService<AircraftDataSeeder>();
+//         var services = scope.ServiceProvider.GetRequiredService<DataSeeder>();
+//         Aircraftservices.InitDataBase();
+//         services.InitDataBase();
+//     }
+// }
 
 app.UseMiddleware<HandleExceptionMiddleware>();
 

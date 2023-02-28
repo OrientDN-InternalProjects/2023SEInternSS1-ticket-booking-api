@@ -8,7 +8,7 @@ using System.Text;
 using TicketBooking.Data.DataModel;
 using TicketBooking.Data.Infrastructure;
 using TicketBooking.Data.Repository;
-using TicketBooking.Service.Model;
+using TicketBooking.Model.Models;
 using TicketBooking.Model.DataModel;
 
 namespace TicketBooking.Service.Services.AuthenticateService

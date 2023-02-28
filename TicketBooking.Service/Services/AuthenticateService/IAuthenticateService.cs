@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TicketBooking.Service.Model;
+using TicketBooking.Model.Models;
 
 namespace TicketBooking.Service.Services.AuthenticateService
 {
