@@ -25,7 +25,7 @@ namespace TicketBooking.Service.Services.ContactDetailService
 
         public async Task<Response> CreateContactInfo(ContactViewModel contact)
         {
-            var contactDetail = mapper.Map<ContactDetail>(contact);
+            var contactDetail = new ContactDetail 
             await contactRepo.Add(contactDetail);
             await unitOfWork.CompletedAsync();
             return new Response
