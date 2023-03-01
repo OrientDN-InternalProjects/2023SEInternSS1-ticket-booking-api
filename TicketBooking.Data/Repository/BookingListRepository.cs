@@ -11,7 +11,7 @@ namespace TicketBooking.Data.Repository
 {
     public interface IBookingListRepository : IRepository<BookingList>
     {
-        IEnumerable<BookingList> GetBookingList(Guid bookingId);
+        IEnumerable<BookingList> GetBookingList(Guid? bookingId);
     }
     public class BookingListRepository : GenericRepository<BookingList>, IBookingListRepository
     {
@@ -19,7 +19,7 @@ namespace TicketBooking.Data.Repository
         {
         }
 
-        public IEnumerable<BookingList> GetBookingList(Guid bookingId)
+        public IEnumerable<BookingList> GetBookingList(Guid? bookingId)
         {
             return Find(x => x.BookingId == bookingId);
         }

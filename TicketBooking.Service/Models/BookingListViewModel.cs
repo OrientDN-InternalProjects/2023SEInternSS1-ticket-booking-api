@@ -12,13 +12,9 @@ namespace TicketBooking.Service.Models
 {
     public class BookingListViewModel
     {
-        [Required]
-        public Guid BookingId { get; set; }
-        [Required]
+        public Guid? BookingId { get; set; }
         public Guid? FlightId { get; set; }
-        [Required]
-        public int NumberSeat { get; set; }
-        [Required]
-        public decimal FlightPrice { get; set; }
+        public int? NumberSeat { get; set; }
+        public decimal? FlightPrice { get; set; }
     }
 }

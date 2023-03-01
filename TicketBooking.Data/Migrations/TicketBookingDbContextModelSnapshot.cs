@@ -311,7 +311,8 @@ namespace TicketBooking.Data.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
-                    b.Property<int>("NumberPeople")
+                    b.Property<int?>("NumberPeople")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<string>("Reference")
@@ -345,17 +346,17 @@ namespace TicketBooking.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("BookingId")
+                    b.Property<Guid?>("BookingId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("FlightId")
-                        .IsRequired()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("FlightPrice")
                         .HasColumnType("decimal(10,2)");
 
-                    b.Property<int>("NumberSeat")
+                    b.Property<int?>("NumberSeat")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -807,13 +808,11 @@ namespace TicketBooking.Data.Migrations
                 {
                     b.HasOne("TicketBooking.Data.DataModel.Booking", "Booking")
                         .WithMany("BookingLists")
-                        .HasForeignKey("BookingId")
-                        .IsRequired();
+                        .HasForeignKey("BookingId");
 
                     b.HasOne("TicketBooking.Data.DataModel.Flight", "Flight")
                         .WithMany("BookingLists")
-                        .HasForeignKey("FlightId")
-                        .IsRequired();
+                        .HasForeignKey("FlightId");
 
                     b.Navigation("Booking");
 

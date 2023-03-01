@@ -7,30 +7,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using TicketBooking.Data.DataModel;
 
 namespace TicketBooking.Service.Models
 {
     public class BookingRequestModel
     {
         [Required]
-        public int NumberPeople { get; set; }
+        public int? NumberPeople { get; set; }
         [Required]
-        [DataType(DataType.DateTime)]
         public DateTime DateBooking { get; set; }
         [Required]
-        [MaxLength(6)]
         public string? Reference { get; set; }
-        [Required]
-        public decimal TotalPrice { get; set; }
         [Required]
         public bool IsPaid { get; set; }
         [Required]
-        public string Status { get; set; }
+        public string? Status { get; set; }
         [Required]
         public bool IsRoundFlight { get; set; }
-        public Guid? ContactId { get; set; }
-        public string? UserId { get; set; }
         public Guid FlightId { get; set; }
-        public Guid RoundFlightId { get; set; }
+        public Guid? RoundFlightId { get; set; }
+        public List<ListRequest>? Requests { get; set; }
     }
 }

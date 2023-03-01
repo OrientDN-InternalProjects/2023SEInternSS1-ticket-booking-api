@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TicketBooking.Data.DataModel;
 using TicketBooking.Model.Models;
 using TicketBooking.Service.Models;
 using TicketBooking.Service.Services.AuthenticateService;
+using TicketBooking.Service.Services.BookingListService;
 using TicketBooking.Service.Services.BookingService;
 using TicketBooking.Service.Services.ContactDetailService;
 
@@ -14,11 +16,13 @@ namespace TicketBookingAPI.Controllers
     {
         private readonly IBookingService bookingService;
         private readonly IContactDetailServcie contactService;
+        private readonly ILogger<BookingController> logger;
 
-        public BookingController(IBookingService bookingService, IContactDetailServcie contactService)
+        public BookingController(IBookingService bookingService, IContactDetailServcie contactService, ILogger<BookingController> logger)
         {
             this.bookingService = bookingService;
             this.contactService = contactService;
+            this.logger = logger;
         }
 
         [HttpPost("request-booking")]
@@ -28,15 +32,14 @@ namespace TicketBookingAPI.Controllers
             {
                 try
                 {
+                    logger.LogInformation("Start Booking");
                     var result = await bookingService.RequestBooking(model);
-                    if (result != null)
-                    {
-                        return Ok(result);
-                    }
+                    return StatusCode(StatusCodes.Status201Created, Ok(result));
                 }
-                catch
+                catch (Exception e)
                 {
-                    return BadRequest("Booking failed");
+                    logger.LogError("Booking failed");
+                    return BadRequest(e.Message);
                 }
             }
             return BadRequest(ModelState);
@@ -48,15 +51,14 @@ namespace TicketBookingAPI.Controllers
             {
                 try
                 {
+                    logger.LogInformation("Add more service");
                     var result = await bookingService.AddBookingService(extraServices, bookingList);
-                    if (result != null)
-                    {
-                        return Ok(result);
-                    }
+                    return StatusCode(StatusCodes.Status201Created, Ok(result));
                 }
-                catch
+                catch (Exception e)
                 {
-                    return BadRequest("Booking failed");
+                    logger.LogError("Add service failed");
+                    return BadRequest(e.Message);
                 }
             }
             return BadRequest(ModelState);

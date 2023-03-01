@@ -12,11 +12,12 @@ namespace TicketBooking.Data.DataModel
     public class Booking
     {
         [Key]
-        public Guid Id { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid? Id { get; set; }
 
         [Required]
         [Display(Name = "Number People")]
-        public int NumberPeople { get; set; }
+        public int? NumberPeople { get; set; }
 
         [Required]
         [DataType(DataType.DateTime)]
@@ -37,10 +38,12 @@ namespace TicketBooking.Data.DataModel
         public string? Status { get; set; }
         [Required]
         public bool IsRoundFlight { get; set; }
+
         public Guid? ContactId { get; set; }
         public ContactDetail? ContactDetail { get; set; }
         public string? UserId { get; set; }
         public ApplicationUser? User { get; set; }
+
         public ICollection<BookingList>? BookingLists { get; set; }
         public ICollection<Passenger>? Passengers { get; set; }
         public ICollection<Ticket>? Tickets { get; set; }

@@ -15,18 +15,18 @@ namespace TicketBooking.Data.DataModel
     public class BookingList
     {
         [Key]
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
         [Required]
-        public Guid BookingId { get; set; }
-        public Booking Booking { get; set; }
-        [Required]
-        public Guid? FlightId { get; set; }
-        public Flight? Flight { get; set; }
-        [Required]
-        public int NumberSeat { get; set; }
+        public int? NumberSeat { get; set; }
         [Required]
         [Column(TypeName = "decimal(10, 2)")]
         public decimal FlightPrice { get; set; }
+
+        public Guid? BookingId { get; set; }
+        public Booking? Booking { get; set; }
+        public Guid? FlightId { get; set; }
+        public Flight? Flight { get; set; }
+       
         public ICollection<BookingSeat>? ListSeats { get; set; }
         public ICollection<BookingExtraService>? BookingServices { get; set; }
         public BookingList()
