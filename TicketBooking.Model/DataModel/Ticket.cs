@@ -16,33 +16,32 @@ namespace TicketBooking.Data.DataModel
         [Required]
         [Display(Name ="Passenger Name")]
         [Column(TypeName = "varchar")]
-        public string PassengerName { get; set; }
-        [Required]
+        public string? PassengerName { get; set; }
+
         [MaxLength(50)]
         [Display(Name ="Location From")]
         [Column(TypeName = "varchar")]
-        public string LocationFrom { get; set; }
-        [Required]
+        public string? LocationFrom { get; set; }
         [MaxLength(50)]
         [Display(Name = "Location To")]
         [Column(TypeName = "varchar")]
-        public string LocationTo { get; set; }
-        [Required]
+        public string? LocationTo { get; set; }
+
         [MaxLength(20)]
         [Column(TypeName = "varchar")]
-        public string SeatClass { get; set; }
-        [Required]
+        public string? SeatClass { get; set; }
+  
         public DateTime DepartureTime { get; set; }
-        [Required]
+
         [MaxLength(50)]
         [Column(TypeName = "varchar")]
-        public string AirlineName { get; set; }
-        [Required]
+        public string? AirlineName { get; set; }
+
         [MaxLength(6)]
-        public string AircraftModel { get; set; }
-        public Guid BookingId { get; set; }
-        public Booking Booking { get; set; }
-        public Guid PassengerId { get; set; }
-        public Passenger Passenger { get; set; }
+        public string? AircraftModel { get; set; }
+        public Guid? BookingId { get; set; }
+        public Booking? Booking { get; set; }
+        public Guid? PassengerId { get; set; }
+        public Passenger? Passenger { get; set; }
     }
 }

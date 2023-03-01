@@ -13,29 +13,39 @@ namespace TicketBooking.Data.DataModel
     {
         [Key]
         public Guid Id { get; set; }
+
         [Required, MaxLength(50)]
         [Column(TypeName = "varchar")]
-        public string FirstName { get; set; }
+        public string? FirstName { get; set; }
+
         [Required, MaxLength(50)]
         [Column(TypeName = "varchar")]
-        public string LastName { get; set; }
+        public string? LastName { get; set; }
+
         [Required]
         [DataType(DataType.Date)]
         public DateTime DateOfBirth { get; set; }
+
         [Required, MaxLength(50)]
         [Column(TypeName = "varchar")]
-        public string Nation { get; set; }
+        public string? Nation { get; set; }
+
         [Required, MaxLength(20)]
-        public string IdentityCard { get; set; }
+        public string? IdentityCard { get; set; }
+
         [Required, MaxLength(50)]
         [Display(Name ="Provide Nation")]
         [Column(TypeName = "varchar")]
-        public string ProvideNa { get; set; }
+        public string? ProvideNa { get; set; }
+
         [DataType(DataType.Date)]
         [Display(Name = "Expire Nation")]
-        public DateTime ExpDate { get; set; }
-        public Guid BookingId { get; set; }
-        public Booking Booking { get; set; }
-        public Ticket Ticket { get; set; }
+        public DateTime? ExpDate { get; set; }
+
+        public Guid? BookingId { get; set; }
+
+        public Booking? Booking { get; set; }
+
+        public Ticket? Ticket { get; set; }
     }
 }

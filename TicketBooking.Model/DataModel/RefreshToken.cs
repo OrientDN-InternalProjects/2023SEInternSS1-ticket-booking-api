@@ -7,21 +7,21 @@ using System.Text;
 using System.Threading.Tasks;
 using TicketBooking.Data.DataModel;
 
-namespace TicketBooking.Model.DataModel
+namespace TicketBooking.Data.DataModel
 {
     [Table("RefreshToken")]
     public class RefreshToken
     {
         [Key]
         public Guid Id { get; set; }
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
         [ForeignKey(nameof(UserId))]
-        public ApplicationUser User { get; set; }
-        public string Token { get; set; }
-        public string JwtId { get; set; }
+        public ApplicationUser? User { get; set; }
+        public string? Token { get; set; }
+        public string? JwtId { get; set; }
         public bool IsUsed { get; set; }
         public bool IsReVoke { get; set; }
-        public DateTime IssuedAt { get; set; }
-        public DateTime ExpiredAt { get; set; }
+        public DateTime? IssuedAt { get; set; }
+        public DateTime? ExpiredAt { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TicketBooking.Data.DbContext;
 
@@ -11,9 +12,10 @@ using TicketBooking.Data.DbContext;
 namespace TicketBooking.Data.Migrations
 {
     [DbContext(typeof(TicketBookingDbContext))]
-    partial class TicketBookingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230301065900_add_BookingService_table")]
+    partial class add_BookingService_table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -345,7 +347,8 @@ namespace TicketBooking.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("BookingId")
+                    b.Property<Guid?>("BookingId")
+                        .IsRequired()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("FlightId")
@@ -546,40 +549,6 @@ namespace TicketBooking.Data.Migrations
                     b.ToTable("Passenger");
                 });
 
-            modelBuilder.Entity("TicketBooking.Data.DataModel.RefreshToken", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("ExpiredAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsReVoke")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsUsed")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("IssuedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("JwtId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Token")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("RefreshToken");
-                });
-
             modelBuilder.Entity("TicketBooking.Data.DataModel.Seat", b =>
                 {
                     b.Property<Guid>("Id")
@@ -651,10 +620,12 @@ namespace TicketBooking.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("AircraftModel")
+                        .IsRequired()
                         .HasMaxLength(6)
                         .HasColumnType("nvarchar(6)");
 
                     b.Property<string>("AirlineName")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
@@ -665,10 +636,12 @@ namespace TicketBooking.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("LocationFrom")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
                     b.Property<string>("LocationTo")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
@@ -680,6 +653,7 @@ namespace TicketBooking.Data.Migrations
                         .HasColumnType("varchar");
 
                     b.Property<string>("SeatClass")
+                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("varchar(20)");
 
@@ -694,7 +668,7 @@ namespace TicketBooking.Data.Migrations
                     b.ToTable("Ticket");
                 });
 
-            modelBuilder.Entity("TicketBooking.Model.DataModel.BookingExtraService", b =>
+            modelBuilder.Entity("TicketBooking.Model.DataModel.BookingService", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -735,6 +709,40 @@ namespace TicketBooking.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ExtraService");
+                });
+
+            modelBuilder.Entity("TicketBooking.Model.DataModel.RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ExpiredAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsReVoke")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("IssuedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("JwtId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Token")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshToken");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -882,15 +890,6 @@ namespace TicketBooking.Data.Migrations
                     b.Navigation("Booking");
                 });
 
-            modelBuilder.Entity("TicketBooking.Data.DataModel.RefreshToken", b =>
-                {
-                    b.HasOne("TicketBooking.Data.DataModel.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("TicketBooking.Data.DataModel.Seat", b =>
                 {
                     b.HasOne("TicketBooking.Data.DataModel.Aircraft", "Aircraft")
@@ -923,7 +922,7 @@ namespace TicketBooking.Data.Migrations
                     b.Navigation("Passenger");
                 });
 
-            modelBuilder.Entity("TicketBooking.Model.DataModel.BookingExtraService", b =>
+            modelBuilder.Entity("TicketBooking.Model.DataModel.BookingService", b =>
                 {
                     b.HasOne("TicketBooking.Data.DataModel.BookingList", "BookingList")
                         .WithMany("BookingServices")
@@ -938,6 +937,15 @@ namespace TicketBooking.Data.Migrations
                     b.Navigation("BookingList");
 
                     b.Navigation("ExtraService");
+                });
+
+            modelBuilder.Entity("TicketBooking.Model.DataModel.RefreshToken", b =>
+                {
+                    b.HasOne("TicketBooking.Data.DataModel.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TicketBooking.Data.DataModel.Aircraft", b =>

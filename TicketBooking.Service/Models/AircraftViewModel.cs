@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using TicketBooking.Data;
 using System.ComponentModel.DataAnnotations;
 
-namespace TicketBooking.Model.Models
+namespace TicketBooking.Service.Models
 {
     public class AircraftViewModel
     {
@@ -14,11 +14,11 @@ namespace TicketBooking.Model.Models
 
         [Required]
         [MaxLength(6)]
-        public string Model { get; set; }
+        public string? Model { get; set; }
 
         [Required]
         [MaxLength(6)]
-        public string Manufacture { get; set; }
+        public string? Manufacture { get; set; }
 
         [Required]
         public int NumRowSeat { get; set; }

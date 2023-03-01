@@ -10,6 +10,7 @@ using TicketBooking.Data;
 using TicketBooking.Data.DbContext;
 using TicketBooking.Service.Services.AircraftService;
 using TicketBooking.Model.Models;
+using TicketBooking.Service.Models;
 
 namespace TicketBookingAPI.Controllers
 {

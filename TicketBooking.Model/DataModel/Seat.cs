@@ -16,7 +16,7 @@ namespace TicketBooking.Data.DataModel
 
         [Required]
         [MaxLength(10)]
-        public string SeatCode { get; set; }
+        public string? SeatCode { get; set; }
 
         [Required]
         public Guid SeatClassId { get; set; }
@@ -29,18 +29,18 @@ namespace TicketBooking.Data.DataModel
 
         [Required]
         [MaxLength(1)]
-        public string CoordinateX { get; set; }
+        public string? CoordinateX { get; set; }
 
         [Required]
         public int CoordinateY { get; set; }
 
-        public SeatClass SeatClass { get; set; }
+        public SeatClass? SeatClass { get; set; }
 
         [Required]
         public Guid AirCraftId { get; set; }
 
         //One to one relationship with ListSeat
-        public Aircraft Aircraft { get; set; }
-        public BookingSeat ListSeat { get; set; }
+        public Aircraft? Aircraft { get; set; }
+        public BookingSeat? ListSeat { get; set; }
     }
 }

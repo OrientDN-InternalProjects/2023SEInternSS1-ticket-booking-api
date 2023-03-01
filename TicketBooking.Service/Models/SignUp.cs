@@ -5,20 +5,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TicketBooking.Model.Models
+namespace TicketBooking.Service.Models
 {
     public class SignUp
     {
         [Required]
-        public string FirstName { get; set; }
+        public string? FirstName { get; set; }
         [Required]
-        public string LastName { get; set; } 
+        public string? LastName { get; set; } 
         [Required]
         [EmailAddress]
-        public string Email { get; set; }
+        public string? Email { get; set; }
         [Required]
-        public string Password { get; set; }
+        public string? Password { get; set; }
         [Required]
-        public string ConfirmPassword { get; set; }
+        public string? ConfirmPassword { get; set; }
     }
 }

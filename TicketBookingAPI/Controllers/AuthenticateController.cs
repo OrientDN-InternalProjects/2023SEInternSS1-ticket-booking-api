@@ -3,6 +3,7 @@ using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using TicketBooking.Service.Services.AuthenticateService;
+using TicketBooking.Service.Models;
 using TicketBooking.Model.Models;
 
 namespace TicketBookingAPI.Controllers
@@ -21,7 +22,7 @@ namespace TicketBookingAPI.Controllers
         [HttpPost("sign-up")]
         public async Task<IActionResult> SignUp(SignUp model, bool IsAdmin)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 var result = await accountService.SignUp(model, IsAdmin);
                 if (result != null)
@@ -47,7 +48,7 @@ namespace TicketBookingAPI.Controllers
         [HttpPost("renew-token")]
         public async Task<IActionResult> RenewToken(TokenResponse model)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 var result = await accountService.RenewToken(model);
                 if (result != null)

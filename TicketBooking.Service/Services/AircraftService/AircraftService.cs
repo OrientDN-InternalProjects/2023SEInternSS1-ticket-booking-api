@@ -8,6 +8,7 @@ using AutoMapper;
 using TicketBooking.Model.Models;
 using TicketBooking.Data.Repository;
 using TicketBooking.Data.DataModel;
+using TicketBooking.Service.Models;
 
 namespace TicketBooking.Service.Services.AircraftService
 {

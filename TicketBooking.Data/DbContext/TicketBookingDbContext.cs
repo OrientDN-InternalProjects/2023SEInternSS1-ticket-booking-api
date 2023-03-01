@@ -24,6 +24,7 @@ namespace TicketBooking.Data.DbContext
         public DbSet<BookingList> BookingLists { get; set; }
         public DbSet<BookingSeat> ListSeats { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<BookingExtraService> BookingServices { get; set; }
         #endregion
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -34,6 +35,10 @@ namespace TicketBooking.Data.DbContext
             });
 
             modelBuilder.Entity<Airport>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+            });
+            modelBuilder.Entity<ContactDetail>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
             });
@@ -75,15 +80,18 @@ namespace TicketBooking.Data.DbContext
 
                 entity.HasOne(e => e.SeatClass)
                 .WithMany(e => e.Seats)
-                .HasForeignKey(e => e.SeatClassId);
+                .HasForeignKey(e => e.SeatClassId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
 
                 entity.HasOne(e => e.Aircraft)
                 .WithMany(e => e.Seats)
-                .HasForeignKey(e => e.AirCraftId);
+                .HasForeignKey(e => e.AirCraftId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
 
                 entity.HasOne(e => e.ListSeat)
                 .WithOne(e => e.Seat)
-                .HasForeignKey<BookingSeat>(e => e.SeatId);
+                .HasForeignKey<BookingSeat>(e => e.SeatId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
             modelBuilder.Entity<ContactDetail>(entity =>
@@ -123,11 +131,6 @@ namespace TicketBooking.Data.DbContext
                 .HasForeignKey(e => e.BookingId)
                  .OnDelete(DeleteBehavior.ClientSetNull);
 
-                entity.HasOne(e => e.ExtraService)
-                .WithMany(e => e.BookingLists)
-                .HasForeignKey(e => e.ExtraServiceId)
-                 .OnDelete(DeleteBehavior.ClientSetNull);
-
                 entity.HasOne(e => e.Flight)
                .WithMany(e => e.BookingLists)
                .HasForeignKey(e => e.FlightId)
@@ -165,7 +168,29 @@ namespace TicketBooking.Data.DbContext
                .WithMany(e => e.Tickets)
                .HasForeignKey(e => e.BookingId)
                .OnDelete(DeleteBehavior.ClientSetNull);
+            });
+            modelBuilder.Entity<Ticket>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
+                entity.HasOne(e => e.Booking)
+               .WithMany(e => e.Tickets)
+               .HasForeignKey(e => e.BookingId)
+               .OnDelete(DeleteBehavior.ClientSetNull);
+            });
+            modelBuilder.Entity<BookingExtraService>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.HasOne(e => e.BookingList)
+               .WithMany(e => e.BookingServices)
+               .HasForeignKey(e => e.BookingListId)
+               .OnDelete(DeleteBehavior.ClientSetNull);
+
+                entity.HasOne(e => e.ExtraService)
+               .WithMany(e => e.BookingServices)
+               .HasForeignKey(e => e.ExtraServiceId)
+               .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
         }

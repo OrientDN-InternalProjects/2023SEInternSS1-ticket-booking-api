@@ -18,9 +18,9 @@ namespace TicketBooking.Data.DataModel
         public decimal PriceSeat { get; set; }
         [Required]
         public Guid SeatId { get; set; }
-        public Seat Seat { get; set; }
+        public Seat? Seat { get; set; }
         [Required]
         public Guid BookingListId { get; set; }
-        public BookingList BookingList { get; set; }
+        public BookingList? BookingList { get; set; }
     }
 }

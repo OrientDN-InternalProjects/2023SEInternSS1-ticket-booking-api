@@ -9,18 +9,19 @@ using TicketBooking.Data.Infrastructure;
 
 namespace TicketBooking.Data.Repository
 {
-    public interface IBookingListRepository
+    public interface IBookingListRepository : IRepository<BookingList>
     {
-        Task<bool> AddListBooking(BookingList list);
+        IEnumerable<BookingList> GetBookingList(Guid bookingId);
     }
     public class BookingListRepository : GenericRepository<BookingList>, IBookingListRepository
     {
         public BookingListRepository(TicketBookingDbContext context) : base(context)
         {
         }
-        public async Task<bool> AddListBooking(BookingList list)
+
+        public IEnumerable<BookingList> GetBookingList(Guid bookingId)
         {
-            return await Add(list);
+            return Find(x => x.BookingId == bookingId);
         }
     }
 }

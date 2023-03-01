@@ -21,6 +21,7 @@ using TicketBooking.Service.Services.AuthenticateService;
 using TicketBooking.Service.Helper;
 using TicketBooking.Service.Services.ContactDetailService;
 using TicketBooking.Service.Services.BookingService;
+using TicketBooking.Service.Services.BookingListService;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -34,7 +35,6 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<TicketBookingDbContext>().AddDefaultTokenProviders();
@@ -60,7 +60,6 @@ builder.Services.AddAuthentication(options => {
         ClockSkew = TimeSpan.Zero
     };
 });
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddDbContext<TicketBookingDbContext>(op =>
     op.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IAircraftRepository, AircraftRepository>();
@@ -69,24 +68,23 @@ builder.Services.AddScoped<IAircraftSerivce, AircraftService>();
 builder.Services.AddScoped<IContactDetailRepository, ContactDetailRepository>();
 builder.Services.AddScoped<IContactDetailServcie, ContactDetailservice>();
 
+builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+builder.Services.AddScoped<IBookingService, BookingService>();
+builder.Services.AddScoped<IBookingListService, BookingListService>();
+
+builder.Services.AddScoped<IBookingServiceRepository, BookingServiceRepository>();
+builder.Services.AddScoped<IExtraServiceRepository, ExtraServiceRepository>();
+
 builder.Services.AddScoped<IAircraftRepository, AircraftRepository>();
 builder.Services.AddScoped<IBookingListRepository, BookingListRepository>();
-builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+
 builder.Services.AddScoped<IBookingSeatRepository, BookingSeatRepository>();
 builder.Services.AddScoped<IFlightRepository, FlightRepository>();
 builder.Services.AddScoped<IPassengerRepository, PassengerRepository>();
 builder.Services.AddScoped<ITicketRepository, TicketRepository>();
-builder.Services.AddScoped<IBookingService, BookingService>();
 
-var config = new MapperConfiguration(cfg =>
-{
-    cfg.AddProfile(new AutoMapperProfile());
-}
-);
-
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 var app = builder.Build();
-
-app.UseMiddleware<HandleExceptionMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -96,8 +94,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
+app.UseMiddleware<HandleExceptionMiddleware>();
 
 app.MapControllers();
 app.UseApiResponseAndExceptionWrapper();

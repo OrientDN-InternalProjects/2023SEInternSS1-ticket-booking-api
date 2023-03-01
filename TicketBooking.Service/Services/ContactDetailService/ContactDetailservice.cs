@@ -8,6 +8,7 @@ using TicketBooking.Data.DataModel;
 using TicketBooking.Data.Infrastructure;
 using TicketBooking.Data.Repository;
 using TicketBooking.Model.Models;
+using TicketBooking.Service.Models;
 
 namespace TicketBooking.Service.Services.ContactDetailService
 {
@@ -25,15 +26,15 @@ namespace TicketBooking.Service.Services.ContactDetailService
 
         public async Task<Response> CreateContactInfo(ContactViewModel contact)
         {
-            var contactDetail = new ContactDetail 
+            var contactDetail = mapper.Map<ContactDetail>(contact);
             await contactRepo.Add(contactDetail);
             await unitOfWork.CompletedAsync();
             return new Response
             {
                 Status = true,
                 Message = "Create Contact Successfully",
-                Data = contactDetail.Id
             };
         }
+
     }
 }

@@ -14,15 +14,15 @@ namespace TicketBooking.Data.DataModel
         [Key]
         public Guid Id { get; set; }
         [Required]
-        public Guid DepartureAirportId { get; set; }
-        public Airport AirportDepart { get; set; }
+        public Guid? DepartureAirportId { get; set; }
+        public Airport? AirportDepart { get; set; }
         [Required]
-        public Guid ArrivalAirportId { get; set; }
-        public Airport AirportArrival { get; set; }
+        public Guid? ArrivalAirportId { get; set; }
+        public Airport? AirportArrival { get; set; }
         [Required]
-        public DateTime DepartureTime { get; set; }
+        public DateTime? DepartureTime { get; set; }
         [Required]
-        public DateTime ArrivalTime { get; set; }
+        public DateTime? ArrivalTime { get; set; }
         public ICollection<Flight> Flights { get; set; }
         public FlightSchedule()
         {

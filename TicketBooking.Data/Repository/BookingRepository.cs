@@ -7,11 +7,10 @@ using System.Threading.Tasks;
 using TicketBooking.Data.DataModel;
 using TicketBooking.Data.DbContext;
 using TicketBooking.Data.Infrastructure;
-using TicketBooking.Model.Models;
 
 namespace TicketBooking.Data.Repository
 {
-    public interface IBookingRepository
+    public interface IBookingRepository : IRepository<Booking>
     {
         Task<bool> AddBooking(Booking model);
     }

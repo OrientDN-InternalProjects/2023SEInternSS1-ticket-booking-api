@@ -1,16 +1,9 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Dynamic.Core.Tokenizer;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using TicketBooking.Data.DataModel;
 using TicketBooking.Data.Infrastructure;
 using TicketBooking.Data.Repository;
-using TicketBooking.Model.Models;
+using TicketBooking.Model.DataModel;
+using TicketBooking.Service.Models;
 
 namespace TicketBooking.Service.Services.BookingService
 {
@@ -19,11 +12,13 @@ namespace TicketBooking.Service.Services.BookingService
         private readonly IBookingRepository bookingRepo;
         private readonly IBookingListRepository bookingListRepo;
         private readonly IBookingSeatRepository bookingSeatRepo;
+        private readonly IBookingServiceRepository bookingServiceRepo;
         private readonly IPassengerRepository passengerRepo;
         private readonly ITicketRepository ticketRepo;
         private readonly IContactDetailRepository contactRepo;
         private IUnitOfWork unitOfWork;
         private readonly IFlightRepository flightRepo;
+        private readonly IExtraServiceRepository extraServiceRepo;
         private readonly IMapper mapper;
 
         public BookingService(IBookingRepository booking
@@ -34,7 +29,9 @@ namespace TicketBooking.Service.Services.BookingService
             , IBookingSeatRepository bookingSeat
             , IBookingListRepository bookingList
             , IContactDetailRepository contactRepo
-            , IFlightRepository flightRepo)
+            , IFlightRepository flightRepo
+            , IBookingServiceRepository serviceRepository
+            , IExtraServiceRepository extra)
         {
             bookingRepo = booking;
             this.unitOfWork = unitOfWork;
@@ -45,6 +42,8 @@ namespace TicketBooking.Service.Services.BookingService
             passengerRepo = passenger;
             this.contactRepo = contactRepo;
             this.flightRepo = flightRepo;
+            bookingServiceRepo = serviceRepository;
+            extraServiceRepo = extra;
         }
 
         public void InsertPassenger(int numPeople, Guid bookingId)
@@ -59,25 +58,40 @@ namespace TicketBooking.Service.Services.BookingService
             unitOfWork.CompletedAsync();
         }
 
-        public async Task<Response> RequestBooking(BookingViewModel model, Guid flightId, Guid? roundFlight)
+        public async Task<Response> RequestBooking(BookingRequestModel model)
         {
             var booking = mapper.Map<Booking>(model);
-            var flight = await flightRepo.GetFlight(flightId);
+            var flight = await flightRepo.GetFlight(model.FlightId);
             if (flight != null)
             {
                 await bookingRepo.AddBooking(booking);
-                for (int i = 0; i < booking.NumberPeople; i++)
-                {
-                    InsertPassenger(booking.NumberPeople, booking.Id);
-                }
+                //for (int i = 0; i < booking.NumberPeople; i++)
+                //{
+                //    InsertPassenger(booking.NumberPeople, booking.Id);
+                //}
                 if (booking.IsRoundFlight != true)
                 {
-                    await bookingListRepo.AddListBooking(new BookingList { NumberSeat = booking.NumberPeople, BookingId = booking.Id, FlightId = flightId });
+                    await bookingListRepo.Add(new BookingList { Id=new Guid(), NumberSeat = booking.NumberPeople, BookingId = booking.Id, FlightId = model.FlightId });
+                    await unitOfWork.CompletedAsync();
                 }
-                else if(roundFlight != null)
+                else if (model.RoundFlightId != null)
                 {
-                    await bookingListRepo.AddListBooking(new BookingList { NumberSeat = booking.NumberPeople, BookingId = booking.Id, FlightId = flightId });
-                    await bookingListRepo.AddListBooking(new BookingList { NumberSeat = booking.NumberPeople, BookingId = booking.Id, FlightId = roundFlight }); 
+                    var goFlight = new BookingList { 
+                        Id = Guid.NewGuid(), 
+                        NumberSeat = booking.NumberPeople, 
+                        BookingId = booking.Id, 
+                        FlightId = model.FlightId 
+                    };
+                    var roundFlight = new BookingList
+                    {
+                        Id = Guid.NewGuid(),
+                        NumberSeat = booking.NumberPeople,
+                        BookingId = booking.Id,
+                        FlightId = model.RoundFlightId
+                    };
+                    await bookingListRepo.Add(goFlight);
+                    await bookingListRepo.Add(roundFlight);
+                    await unitOfWork.CompletedAsync();
                 }
                 else
                 {
@@ -88,7 +102,6 @@ namespace TicketBooking.Service.Services.BookingService
                         Data = booking
                     };
                 }
-                await unitOfWork.CompletedAsync();
                 return new Response
                 {
                     Status = true,
@@ -104,5 +117,82 @@ namespace TicketBooking.Service.Services.BookingService
             };
 
         }
+
+        public async Task<Response> CancelBooking(Guid bookingId)
+        {
+            var booking = await bookingRepo.GetById(bookingId);
+            if (booking != null)
+            {
+                booking.Status = "Cancel";
+                await bookingRepo.Update(booking);
+                await unitOfWork.CompletedAsync();
+                return new Response
+                {
+                    Status = true,
+                    Message = "Cancel successfully"
+                };
+            }
+            return new Response
+            {
+                Status = true,
+                Message = "Cancel failed!! Invalid booking"
+            };
+        }
+
+        public async Task<Response> AddBookingService(List<Guid> extraServices, Guid bookingList)
+        {
+            var checkBooking = await bookingListRepo.GetById(bookingList);
+            decimal sum = 0;
+            if (checkBooking != null)
+            {
+                if (extraServices.Count > 0)
+                {
+                    for (int i = 0; i < extraServices.Count; i++)
+                    {
+                        ExtraService priceService = await extraServiceRepo.GetById(extraServices[i]);
+                        sum += priceService.Price;
+                        var bookingService = new BookingExtraService
+                        {
+                            ExtraServiceId = extraServices[i],
+                            BookingListId = bookingList
+                        };
+                        await bookingServiceRepo.Add(bookingService);
+                    }
+                    checkBooking.FlightPrice = sum;
+                    await bookingListRepo.Update(checkBooking);
+                    UpdateBooking(checkBooking.BookingId);
+                    await unitOfWork.CompletedAsync();
+                }
+                else
+                    checkBooking.FlightPrice += 0;
+                return new Response
+                {
+                    Status = true,
+                    Message = "Cancel failed!! Invalid booking",
+                    Data = checkBooking
+                };
+            }
+            return new Response
+            {
+                Status = false,
+                Message = "Cancel failed!! Invalid booking"
+            };
+        }
+        public async void UpdateBooking (Guid bookingId)
+        {
+            var checkBooking = await bookingRepo.GetById(bookingId);
+            if (checkBooking != null)
+            {
+                checkBooking.TotalPrice = 0;
+                var list = bookingListRepo.GetBookingList(bookingId);
+                foreach(var item in list)
+                {
+                    checkBooking.TotalPrice = item.FlightPrice;
+                }
+                await bookingRepo.Update(checkBooking);
+                await unitOfWork.CompletedAsync();
+            }
+        }
+
     }
 }

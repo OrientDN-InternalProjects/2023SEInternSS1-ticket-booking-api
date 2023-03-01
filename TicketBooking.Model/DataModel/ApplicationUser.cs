@@ -9,8 +9,8 @@ namespace TicketBooking.Data.DataModel
 {
     public class ApplicationUser : IdentityUser
     {
-        public string FirstName { get; set; } = null!;
-        public string LastName { get; set; } = null!;
-        public ICollection<Booking> Bookings { get; set; }
+        public string? FirstName { get; set; } = null!;
+        public string? LastName { get; set; } = null!;
+        public ICollection<Booking>? Bookings { get; set; }
     }
 }

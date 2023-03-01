@@ -10,6 +10,7 @@ using TicketBooking.Data.Infrastructure;
 using TicketBooking.Data.Repository;
 using TicketBooking.Model.Models;
 using TicketBooking.Model.DataModel;
+using TicketBooking.Service.Models;
 
 namespace TicketBooking.Service.Services.AuthenticateService
 {
