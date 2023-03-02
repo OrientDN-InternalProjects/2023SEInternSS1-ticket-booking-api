@@ -16,11 +16,11 @@ namespace TicketBooking.Data.DataModel
 
         [Required, MaxLength(50)]
         [Column(TypeName = "varchar")]
-        public string? FirstName { get; set; }
+        public string FirstName { get; set; }
 
         [Required, MaxLength(50)]
         [Column(TypeName = "varchar")]
-        public string? LastName { get; set; }
+        public string LastName { get; set; }
 
         [Required]
         [DataType(DataType.Date)]
@@ -28,10 +28,10 @@ namespace TicketBooking.Data.DataModel
 
         [Required, MaxLength(50)]
         [Column(TypeName = "varchar")]
-        public string? Nation { get; set; }
+        public string Nation { get; set; }
 
         [Required, MaxLength(20)]
-        public string? IdentityCard { get; set; }
+        public string IdentityCard { get; set; }
 
         [Required, MaxLength(50)]
         [Display(Name ="Provide Nation")]
@@ -40,7 +40,7 @@ namespace TicketBooking.Data.DataModel
 
         [DataType(DataType.Date)]
         [Display(Name = "Expire Nation")]
-        public DateTime? ExpDate { get; set; }
+        public DateTime ExpDate { get; set; }
 
         public Guid? BookingId { get; set; }
 

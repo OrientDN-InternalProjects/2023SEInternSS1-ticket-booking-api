@@ -16,10 +16,10 @@ namespace TicketBooking.Data.DataModel
 
         [Required]
         [MaxLength(10)]
-        public string? SeatCode { get; set; }
+        public string SeatCode { get; set; }
 
         [Required]
-        public Guid SeatClassId { get; set; }
+        public Guid? SeatClassId { get; set; }
 
         [Required]
         public bool IsAvailable { get; set; }

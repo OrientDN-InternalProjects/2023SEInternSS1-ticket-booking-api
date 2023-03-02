@@ -24,16 +24,16 @@ namespace TicketBooking.Data.DataModel
         public string? Manufacture { get; set; }
 
         [Required]
-        public int? NumRowSeat { get; set; }
+        public int NumRowSeat { get; set; }
 
         [Required]
-        public int? NumColumnSeat { get; set; }
+        public int NumColumnSeat { get; set; }
 
         [Required]
-        public int? NumRowBusiness { get; set; }
+        public int NumRowBusiness { get; set; }
 
         [Required]
-        public int? NumRowEconomy { get; set; }
+        public int NumRowEconomy { get; set; }
 
         public ICollection<Seat>? Seats { get; set; }
         public ICollection<Flight>? Flights { get; set; }

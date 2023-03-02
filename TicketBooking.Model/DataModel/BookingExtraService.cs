@@ -16,9 +16,9 @@ namespace TicketBooking.Model.DataModel
         public Guid Id { get; set; }
         [Required]
         public Guid BookingListId { get; set; }
-        public BookingList BookingList { get; set; }
+        public BookingList? BookingList { get; set; }
         [Required]
         public Guid ExtraServiceId { get; set; }
-        public ExtraService ExtraService { get; set; }
+        public ExtraService? ExtraService { get; set; }
     }
 }

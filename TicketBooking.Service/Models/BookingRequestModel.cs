@@ -14,7 +14,7 @@ namespace TicketBooking.Service.Models
     public class BookingRequestModel
     {
         [Required]
-        public int? NumberPeople { get; set; }
+        public int NumberPeople { get; set; }
         [Required]
         public DateTime DateBooking { get; set; }
         [Required]

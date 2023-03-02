@@ -18,15 +18,15 @@ namespace TicketBooking.Data.DataModel
         public Guid? AircraftId { set; get; }
         public Aircraft? Aircraft { set; get;}
         [Required]
-        public int? TotalSeat { set; get; }
+        public int TotalSeat { set; get; }
         [Required]
         public int? RemainingSeat { set; get; }
         [Required]
         public bool IsFlightActive { set; get; }
         [Required]
-        public int? DefaultBaggage { set; get; }
-        public decimal? BusinessPrice { set; get; }
-        public decimal? EconomyPrice { set; get; }
+        public int DefaultBaggage { set; get; }
+        public decimal BusinessPrice { set; get; }
+        public decimal EconomyPrice { set; get; }
 
         [Required]
         public Guid? ScheduleId { set; get; }

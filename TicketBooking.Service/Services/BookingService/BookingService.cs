@@ -121,6 +121,7 @@ namespace TicketBooking.Service.Services.BookingService
                     booking.BookingLists?.Add(bookingRoundFlight);
                     await bookingListRepo.Add(bookingGoFlight);
                     await bookingListRepo.Add(bookingRoundFlight);
+                    await unitOfWork.CompletedAsync();
                 }
                 else
                 {

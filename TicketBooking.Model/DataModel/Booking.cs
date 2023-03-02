@@ -17,7 +17,7 @@ namespace TicketBooking.Data.DataModel
 
         [Required]
         [Display(Name = "Number People")]
-        public int? NumberPeople { get; set; }
+        public int NumberPeople { get; set; }
 
         [Required]
         [DataType(DataType.DateTime)]
@@ -31,7 +31,7 @@ namespace TicketBooking.Data.DataModel
         [Required]
         [Display(Name = "Total Price")]
         [Column(TypeName = "decimal(10, 2)")]
-        public decimal? TotalPrice { get; set; }
+        public decimal TotalPrice { get; set; }
 
         [Required]
         public bool IsPaid { get; set; }
