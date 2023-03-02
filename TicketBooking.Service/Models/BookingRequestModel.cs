@@ -29,5 +29,6 @@ namespace TicketBooking.Service.Models
         public Guid FlightId { get; set; }
         public Guid? RoundFlightId { get; set; }
         public List<ListRequest>? Requests { get; set; }
+        public List<Guid> Services { get; set; }
     }
 }
