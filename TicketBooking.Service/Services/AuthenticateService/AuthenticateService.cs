@@ -246,7 +246,7 @@ namespace TicketBooking.Service.Services.AuthenticateService
                 //Update token is  used
                 storedToken.IsReVoke = true;
                 storedToken.IsUsed = true;
-                await refreshTokenRepo.UpdateToken(storedToken);
+                refreshTokenRepo.UpdateToken(storedToken);
                 await unit.CompletedAsync();
                 // create new token 
                 var user = await userManager.FindByIdAsync(storedToken.UserId);

@@ -47,7 +47,7 @@ namespace TicketBooking.Service.Services.AircraftService
         public async Task<int> UpdateAircraftAsync(AircraftViewModel aircraftDto)
         {
             var aircraft = mapper.Map<Aircraft>(aircraftDto);
-            await aircraftRepo.Update(aircraft);
+            aircraftRepo.Update(aircraft);
             return await unitOfWork.CompletedAsync();
         }
 

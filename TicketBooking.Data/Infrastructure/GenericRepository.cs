@@ -76,10 +76,9 @@ namespace TicketBooking.Data.Infrastructure
                 return false;
         }
 
-        public async Task<bool> Update(T entity)
+        public void Update(T entity)
         {
-            this._context.Entry<T>(entity).State = EntityState.Modified;
-            return true;
+            dbSet.Update(entity);
         }
 
         public async Task<T> GetById(Guid? id)

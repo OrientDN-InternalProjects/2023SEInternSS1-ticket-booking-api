@@ -14,7 +14,7 @@ namespace TicketBooking.Data.Infrastructure
         IEnumerable<T> Find(Expression<Func<T, bool>> expression);
         Task<bool> Add(T entity);
         Task<bool> Remove(Guid? id);
-        Task<bool> Update(T entity);
+        void Update(T entity);
         Task<IEnumerable<T>> GetPagedAdvancedReponseAsync(int pageNumber, int pageSize, string orderBy, string fields);
     }
 }

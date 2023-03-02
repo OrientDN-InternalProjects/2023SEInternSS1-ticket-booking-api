@@ -15,7 +15,7 @@ namespace TicketBooking.Data.Repository
     {
         RefreshToken FindRefreshToken(string token);
         Task<bool> AddToken(RefreshToken token);
-        Task<bool> UpdateToken(RefreshToken token);
+        void UpdateToken(RefreshToken token);
     }
     public class RefreshTokenRepository : GenericRepository<RefreshToken>, IRefreshTokenRepository
     {
@@ -33,9 +33,9 @@ namespace TicketBooking.Data.Repository
             return Find(element => element.Token.Equals(token)).FirstOrDefault();
         }
 
-        public Task<bool> UpdateToken(RefreshToken token)
+        public void UpdateToken(RefreshToken token)
         {
-            return Update(token);
+            Update(token);
         }
     }
 }

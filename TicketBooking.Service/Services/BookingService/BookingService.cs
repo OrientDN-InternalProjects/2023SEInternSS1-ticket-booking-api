@@ -46,18 +46,6 @@ namespace TicketBooking.Service.Services.BookingService
             extraServiceRepo = extra;
         }
 
-        public void InsertPassenger(int numPeople, Guid bookingId)
-        {
-            for (int i = 0; i < numPeople; i++)
-            {
-                var passenger = new Passenger { BookingId = bookingId };
-                var ticket = new Ticket { BookingId = bookingId };
-                passengerRepo.AddPassenger(passenger);
-                ticketRepo.AddTicket(ticket);
-            }
-            unitOfWork.CompletedAsync();
-        }
-
         public async Task<Response> RequestBooking(BookingRequestModel model)
         {
             try
@@ -78,10 +66,6 @@ namespace TicketBooking.Service.Services.BookingService
                 if (flight != null)
                 {
 
-                    //for (int i = 0; i < booking.NumberPeople; i++)
-                    //{
-                    //    InsertPassenger(booking.NumberPeople, booking.Id);
-                    //}
                     if (booking.IsRoundFlight != true)
                     {
                         var bookingListVM = new BookingListViewModel
@@ -159,7 +143,7 @@ namespace TicketBooking.Service.Services.BookingService
             if (booking != null)
             {
                 booking.Status = "Cancel";
-                await bookingRepo.Update(booking);
+                bookingRepo.Update(booking);
                 await unitOfWork.CompletedAsync();
                 return new Response
                 {
@@ -196,8 +180,19 @@ namespace TicketBooking.Service.Services.BookingService
                         await bookingServiceRepo.Add(bookingService);
                     }
                     checkBooking.FlightPrice = sum;
-                    await bookingListRepo.Update(checkBooking);
-                    UpdateBooking(checkBooking.BookingId);
+                    bookingListRepo.Update(checkBooking);
+                    var booking = await bookingRepo.GetById(checkBooking.BookingId);
+                    if (booking != null)
+                    {
+                        booking.TotalPrice = 0;
+                        var list = bookingListRepo.GetBookingList(booking.Id);
+                        foreach (var item in list)
+                        {
+                            booking.TotalPrice += item.FlightPrice;
+                        }
+                        bookingRepo.Update(booking);
+                    }
+
                     await unitOfWork.CompletedAsync();
                 }
                 else
@@ -214,20 +209,6 @@ namespace TicketBooking.Service.Services.BookingService
                 Status = false,
                 Message = "Cancel failed!! Invalid booking"
             };
-        }
-        public async void UpdateBooking(Guid? bookingId)
-        {
-            var checkBooking = await bookingRepo.GetById(bookingId);
-            if (checkBooking != null)
-            {
-                checkBooking.TotalPrice = 0;
-                var list = bookingListRepo.GetBookingList(bookingId);
-                foreach (var item in list)
-                {
-                    checkBooking.TotalPrice = item.FlightPrice;
-                }
-                await bookingRepo.Update(checkBooking);
-            }
         }
 
     }
