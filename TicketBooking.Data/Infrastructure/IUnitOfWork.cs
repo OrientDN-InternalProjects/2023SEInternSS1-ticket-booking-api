@@ -10,6 +10,6 @@ namespace TicketBooking.Data.Infrastructure
     
     public interface IUnitOfWork : IDisposable
     {
-        Task<int> CompletedAsync();
+        Task CompletedAsync();
     }
 }

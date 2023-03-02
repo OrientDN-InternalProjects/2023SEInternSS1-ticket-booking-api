@@ -25,6 +25,9 @@ namespace TicketBooking.Data.DataModel
         public bool IsFlightActive { set; get; }
         [Required]
         public int? DefaultBaggage { set; get; }
+        public decimal? BusinessPrice { set; get; }
+        public decimal? EconomyPrice { set; get; }
+
         [Required]
         public Guid? ScheduleId { set; get; }
         public FlightSchedule? Schedule { set; get; }

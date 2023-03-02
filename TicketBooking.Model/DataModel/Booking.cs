@@ -31,7 +31,7 @@ namespace TicketBooking.Data.DataModel
         [Required]
         [Display(Name = "Total Price")]
         [Column(TypeName = "decimal(10, 2)")]
-        public decimal TotalPrice { get; set; }
+        public decimal? TotalPrice { get; set; }
 
         [Required]
         public bool IsPaid { get; set; }

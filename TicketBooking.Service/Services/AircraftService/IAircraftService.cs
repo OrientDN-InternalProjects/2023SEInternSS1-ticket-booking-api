@@ -14,8 +14,8 @@ namespace TicketBooking.Service.Services.AircraftService
     {
         Task<IEnumerable<AircraftViewModel>> GetAircraftAsync();
         Task<AircraftViewModel> GetAircraftAsync(Guid id);
-        Task<int> UpdateAircraftAsync(AircraftViewModel aircraftDto);
-        Task<int> InsertAsync(AircraftViewModel aircraftDto);
-        Task<int> RemoveAsync(Guid id);
+        Task UpdateAircraftAsync(AircraftViewModel aircraftDto);
+        Task<bool> InsertAsync(AircraftViewModel aircraftDto);
+        Task<bool> RemoveAsync(Guid id);
     }
 }

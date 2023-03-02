@@ -12,8 +12,8 @@ using TicketBooking.Data.DbContext;
 namespace TicketBooking.Data.Migrations
 {
     [DbContext(typeof(TicketBookingDbContext))]
-    [Migration("20230301094525_nullableForBookingList")]
-    partial class nullableForBookingList
+    [Migration("20230302065041_update_booking_table")]
+    partial class update_booking_table
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -293,7 +293,7 @@ namespace TicketBooking.Data.Migrations
 
             modelBuilder.Entity("TicketBooking.Data.DataModel.Booking", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -313,7 +313,8 @@ namespace TicketBooking.Data.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
-                    b.Property<int>("NumberPeople")
+                    b.Property<int?>("NumberPeople")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<string>("Reference")
@@ -324,7 +325,8 @@ namespace TicketBooking.Data.Migrations
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("TotalPrice")
+                    b.Property<decimal?>("TotalPrice")
+                        .IsRequired()
                         .HasColumnType("decimal(10,2)");
 
                     b.Property<string>("UserId")
@@ -343,21 +345,21 @@ namespace TicketBooking.Data.Migrations
 
             modelBuilder.Entity("TicketBooking.Data.DataModel.BookingList", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("BookingId")
+                    b.Property<Guid?>("BookingId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("FlightId")
-                        .IsRequired()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("FlightPrice")
                         .HasColumnType("decimal(10,2)");
 
-                    b.Property<int>("NumberSeat")
+                    b.Property<int?>("NumberSeat")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -440,9 +442,15 @@ namespace TicketBooking.Data.Migrations
                         .IsRequired()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<decimal?>("BusinessPrice")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int?>("DefaultBaggage")
                         .IsRequired()
                         .HasColumnType("int");
+
+                    b.Property<decimal?>("EconomyPrice")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<bool>("IsFlightActive")
                         .ValueGeneratedOnAdd()
@@ -633,9 +641,6 @@ namespace TicketBooking.Data.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(10,2)");
-
                     b.Property<string>("SeatName")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -809,13 +814,11 @@ namespace TicketBooking.Data.Migrations
                 {
                     b.HasOne("TicketBooking.Data.DataModel.Booking", "Booking")
                         .WithMany("BookingLists")
-                        .HasForeignKey("BookingId")
-                        .IsRequired();
+                        .HasForeignKey("BookingId");
 
                     b.HasOne("TicketBooking.Data.DataModel.Flight", "Flight")
                         .WithMany("BookingLists")
-                        .HasForeignKey("FlightId")
-                        .IsRequired();
+                        .HasForeignKey("FlightId");
 
                     b.Navigation("Booking");
 

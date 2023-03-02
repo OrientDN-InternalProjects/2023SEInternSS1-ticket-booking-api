@@ -9,9 +9,9 @@ namespace TicketBooking.Data.Infrastructure
         public UnitOfWork(TicketBookingDbContext context)
         { _context = context; }
 
-        public async Task<int> CompletedAsync()
+        public async Task CompletedAsync()
         {
-            return await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
 
         public void Dispose()

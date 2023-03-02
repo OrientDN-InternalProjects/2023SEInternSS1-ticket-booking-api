@@ -21,10 +21,11 @@ namespace TicketBooking.Service.Models
         public string? Reference { get; set; }
         [Required]
         public bool IsPaid { get; set; }
-        [Required]
-        public string? Status { get; set; }
+        public Guid? ContactId { get; set; }
         [Required]
         public bool IsRoundFlight { get; set; }
+        public bool IsBusiness { get; set; }
+        public Guid? UserId { get; set; }
         public Guid FlightId { get; set; }
         public Guid? RoundFlightId { get; set; }
         public List<ListRequest>? Requests { get; set; }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using TicketBooking.Common.Constant;
 using TicketBooking.Data.DataModel;
 using TicketBooking.Data.Infrastructure;
 using TicketBooking.Data.Repository;
@@ -48,92 +49,104 @@ namespace TicketBooking.Service.Services.BookingService
 
         public async Task<Response> RequestBooking(BookingRequestModel model)
         {
-            try
+            var booking = new Booking
             {
-                var booking = new Booking
+                NumberPeople = model.NumberPeople,
+                DateBooking = DateTime.Now,
+                Reference = model.Reference,
+                TotalPrice = 0,
+                IsPaid = model.IsPaid,
+                IsRoundFlight = model.IsRoundFlight,
+                Status = StatusConstant.Active,
+                ContactId = model.ContactId.Value,
+            };
+            if (model.UserId != null)
+            {
+                booking.UserId = model.UserId.ToString();
+            }
+            await bookingRepo.AddBooking(booking);
+            var flight = await flightRepo.GetFlight(model.FlightId);
+            if (flight != null)
+            {
+                if (booking.IsRoundFlight != true)
                 {
-                    NumberPeople = model.NumberPeople,
-                    DateBooking = DateTime.Now,
-                    Reference = model.Reference,
-                    TotalPrice = 0,
-                    IsPaid = model.IsPaid,
-                    IsRoundFlight = model.IsRoundFlight,
-                    Status = model.Status,
-
-                };
-                await bookingRepo.AddBooking(booking);
-                var flight = await flightRepo.GetFlight(model.FlightId);
-                if (flight != null)
-                {
-
-                    if (booking.IsRoundFlight != true)
+                    var bookingListVM = new BookingListViewModel
                     {
-                        var bookingListVM = new BookingListViewModel
-                        {
-                            NumberSeat = booking.NumberPeople,
-                            BookingId = booking.Id,
-                            FlightId = model.FlightId,
-                            FlightPrice = 0
-                        };
-                        var bookingList = mapper.Map<BookingList>(bookingListVM);
-                        await bookingListRepo.Add(bookingList);
+
+                        NumberSeat = booking.NumberPeople,
+                        BookingId = booking.Id,
+                        FlightId = model.FlightId,
+                        FlightPrice = 0
+                    };
+                    if (model.IsBusiness == true)
+                    {
+                        bookingListVM.FlightPrice = (decimal)(flight.BusinessPrice * bookingListVM.NumberSeat);
                     }
-                    else if (model.RoundFlightId != null)
+                    else
+                        bookingListVM.FlightPrice = (decimal)(flight.EconomyPrice * bookingListVM.NumberSeat);
+                    var bookingList = mapper.Map<BookingList>(bookingListVM);
+                    await bookingListRepo.Add(bookingList);
+                    booking.TotalPrice = bookingList.FlightPrice;
+                }
+                else if (model.RoundFlightId != null)
+                {
+                    var goFlight = new BookingListViewModel
                     {
-                        var goFlight = new BookingListViewModel
-                        {
-                            NumberSeat = booking.NumberPeople,
-                            BookingId = booking.Id,
-                            FlightId = model.FlightId,
-                            FlightPrice = 0
-                        };
-                        var roundFlight = new BookingListViewModel
-                        {
-                            NumberSeat = booking.NumberPeople,
-                            BookingId = booking.Id,
-                            FlightId = model.RoundFlightId,
-                            FlightPrice = 0
-                        };
-                        var bookingGoFlight = mapper.Map<BookingList>(goFlight);
-                        var bookingRoundFlight = mapper.Map<BookingList>(roundFlight);
-                        booking.BookingLists?.Add(bookingGoFlight);
-                        booking.BookingLists?.Add(bookingRoundFlight);
-                        await bookingListRepo.Add(bookingGoFlight);
-                        await bookingListRepo.Add(bookingRoundFlight);
+                        NumberSeat = booking.NumberPeople,
+                        BookingId = booking.Id,
+                        FlightId = model.FlightId,
+                        FlightPrice = 0
+                    };
+                    var roundFlight = new BookingListViewModel
+                    {
+                        NumberSeat = booking.NumberPeople,
+                        BookingId = booking.Id,
+                        FlightId = model.RoundFlightId,
+                        FlightPrice = 0
+                    };
+                    if (model.IsBusiness == true)
+                    {
+                        goFlight.FlightPrice = (decimal)(flight.BusinessPrice * goFlight.NumberSeat);
+                        roundFlight.FlightPrice = (decimal)(flight.BusinessPrice * roundFlight.NumberSeat);
                     }
                     else
                     {
-                        return new Response
-                        {
-                            Status = true,
-                            Message = "Booking failed, Invalid round trip flight",
-                            Data = booking
-                        };
+                        goFlight.FlightPrice = (decimal)(flight.EconomyPrice * goFlight.NumberSeat);
+                        roundFlight.FlightPrice = (decimal)(flight.EconomyPrice * roundFlight.NumberSeat);
                     }
-                    await bookingRepo.AddBooking(booking);
-                    await unitOfWork.CompletedAsync();
+                    booking.TotalPrice = 0 + (goFlight.FlightPrice + roundFlight.FlightPrice);
+                    var bookingGoFlight = mapper.Map<BookingList>(goFlight);
+                    var bookingRoundFlight = mapper.Map<BookingList>(roundFlight);
+                    booking.BookingLists?.Add(bookingGoFlight);
+                    booking.BookingLists?.Add(bookingRoundFlight);
+                    await bookingListRepo.Add(bookingGoFlight);
+                    await bookingListRepo.Add(bookingRoundFlight);
+                }
+                else
+                {
                     return new Response
                     {
                         Status = true,
-                        Message = "Booking success",
+                        Message = "Booking failed, Invalid round trip flight",
                         Data = booking
                     };
                 }
+                await bookingRepo.AddBooking(booking);
+                await unitOfWork.CompletedAsync();
                 return new Response
                 {
                     Status = true,
-                    Message = "Invalid flight ",
-                    Data = null
+                    Message = "Booking success",
+                    Data = booking
                 };
             }
-            catch (InvalidOperationException)
+            return new Response
             {
-                throw new InvalidOperationException("Some propaties is valid !");
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message);
-            }
+                Status = true,
+                Message = "Invalid flight ",
+                Data = null
+            };
+
 
         }
 
@@ -142,7 +155,7 @@ namespace TicketBooking.Service.Services.BookingService
             var booking = await bookingRepo.GetById(bookingId);
             if (booking != null)
             {
-                booking.Status = "Cancel";
+                booking.Status = StatusConstant.Cancel;
                 bookingRepo.Update(booking);
                 await unitOfWork.CompletedAsync();
                 return new Response
@@ -179,9 +192,9 @@ namespace TicketBooking.Service.Services.BookingService
                         };
                         await bookingServiceRepo.Add(bookingService);
                     }
-                    checkBooking.FlightPrice = sum;
+                    checkBooking.FlightPrice += sum;
                     bookingListRepo.Update(checkBooking);
-                    var booking = await bookingRepo.GetById(checkBooking.BookingId);
+                    var booking = await bookingRepo.GetById((Guid)checkBooking.BookingId);
                     if (booking != null)
                     {
                         booking.TotalPrice = 0;
@@ -200,14 +213,14 @@ namespace TicketBooking.Service.Services.BookingService
                 return new Response
                 {
                     Status = true,
-                    Message = "Cancel failed!! Invalid booking",
+                    Message = "Add extra successfull",
                     Data = checkBooking
                 };
             }
             return new Response
             {
                 Status = false,
-                Message = "Cancel failed!! Invalid booking"
+                Message = "Add service failed!! Invalid booking"
             };
         }
 

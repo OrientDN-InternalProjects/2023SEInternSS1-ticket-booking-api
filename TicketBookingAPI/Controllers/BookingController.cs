@@ -21,21 +21,16 @@ namespace TicketBookingAPI.Controllers
         }
 
         [HttpPost("request-booking")]
-        public async Task<IActionResult> RequestBooking(BookingRequestModel model)
+        public async Task<IActionResult> RequestBooking([FromBody] BookingRequestModel model)
         {
             if (ModelState.IsValid)
             {
-                try
-                {
-                    logger.LogInformation("Start Booking");
-                    var result = await bookingService.RequestBooking(model);
+                logger.LogInformation("Start Booking");
+                var result = await bookingService.RequestBooking(model);
+                if (result.Status !=null)
                     return StatusCode(StatusCodes.Status201Created, Ok(result));
-                }
-                catch (Exception e)
-                {
-                    logger.LogError("Booking failed");
-                    return BadRequest(e.Message);
-                }
+                logger.LogError("Booking failed");
+                return BadRequest(result);
             }
             return BadRequest(ModelState);
         }
@@ -44,17 +39,13 @@ namespace TicketBookingAPI.Controllers
         {
             if (ModelState.IsValid)
             {
-                try
-                {
-                    logger.LogInformation("Add more service");
-                    var result = await bookingService.AddBookingService(extraServices, bookingList);
+
+                logger.LogInformation("Add more service");
+                var result = await bookingService.AddBookingService(extraServices, bookingList);
+                if (result.Status == true)
                     return StatusCode(StatusCodes.Status201Created, Ok(result));
-                }
-                catch (Exception e)
-                {
-                    logger.LogError("Add service failed");
-                    return BadRequest(e.Message);
-                }
+                logger.LogError("Add service failed");
+                return BadRequest(result);
             }
             return BadRequest(ModelState);
         }
@@ -65,23 +56,18 @@ namespace TicketBookingAPI.Controllers
         {
             if (ModelState.IsValid)
             {
-                try
-                {
-                    logger.LogInformation("Add more service");
-                    var result = await bookingService.CancelBooking(bookingId);
+                logger.LogInformation("Cancel booking");
+                var result = await bookingService.CancelBooking(bookingId);
+                if (result.Status == true)
                     return StatusCode(StatusCodes.Status201Created, Ok(result));
-                }
-                catch (Exception e)
-                {
-                    logger.LogError("Add service failed");
-                    return BadRequest(e.Message);
-                }
+                logger.LogError("Cancel failed");
+                return BadRequest(result);
             }
             return BadRequest(ModelState);
         }
 
         [HttpPost("request-contact")]
-        public async Task<IActionResult> CreateContact(ContactViewModel contact)
+        public async Task<IActionResult> CreateContact([FromBody] ContactViewModel contact)
         {
             if (ModelState.IsValid)
             {
