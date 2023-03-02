@@ -14,10 +14,10 @@ namespace TicketBooking.Data.DataModel
         [Key]
         public Guid Id { get; set; }
         [Required]
-        public Guid? DepartureAirportId { get; set; }
+        public Guid DepartureAirportId { get; set; }
         public Airport? AirportDepart { get; set; }
         [Required]
-        public Guid? ArrivalAirportId { get; set; }
+        public Guid ArrivalAirportId { get; set; }
         public Airport? AirportArrival { get; set; }
         [Required]
         public DateTime DepartureTime { get; set; }

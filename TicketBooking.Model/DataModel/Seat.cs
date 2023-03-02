@@ -19,7 +19,7 @@ namespace TicketBooking.Data.DataModel
         public string SeatCode { get; set; }
 
         [Required]
-        public Guid? SeatClassId { get; set; }
+        public Guid SeatClassId { get; set; }
 
         [Required]
         public bool IsAvailable { get; set; }
@@ -29,7 +29,7 @@ namespace TicketBooking.Data.DataModel
 
         [Required]
         [MaxLength(1)]
-        public string? CoordinateX { get; set; }
+        public string CoordinateX { get; set; }
 
         [Required]
         public int CoordinateY { get; set; }

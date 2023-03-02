@@ -36,7 +36,7 @@ namespace TicketBooking.Data.DataModel
         [Required, MaxLength(50)]
         [Display(Name ="Provide Nation")]
         [Column(TypeName = "varchar")]
-        public string? ProvideNa { get; set; }
+        public string ProvideNa { get; set; }
 
         [DataType(DataType.Date)]
         [Display(Name = "Expire Nation")]

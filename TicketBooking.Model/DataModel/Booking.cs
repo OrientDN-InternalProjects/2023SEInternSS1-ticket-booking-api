@@ -13,7 +13,7 @@ namespace TicketBooking.Data.DataModel
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid? Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
         [Display(Name = "Number People")]
@@ -26,7 +26,7 @@ namespace TicketBooking.Data.DataModel
 
         [Required]
         [MaxLength(6)]
-        public string? Reference { get; set; }
+        public string Reference { get; set; }
 
         [Required]
         [Display(Name = "Total Price")]

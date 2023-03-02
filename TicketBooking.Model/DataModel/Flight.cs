@@ -15,12 +15,12 @@ namespace TicketBooking.Data.DataModel
         [Key]
         public Guid Id { set; get; }
         [Required]
-        public Guid? AircraftId { set; get; }
+        public Guid AircraftId { set; get; }
         public Aircraft? Aircraft { set; get;}
         [Required]
         public int TotalSeat { set; get; }
         [Required]
-        public int? RemainingSeat { set; get; }
+        public int RemainingSeat { set; get; }
         [Required]
         public bool IsFlightActive { set; get; }
         [Required]
@@ -29,7 +29,7 @@ namespace TicketBooking.Data.DataModel
         public decimal EconomyPrice { set; get; }
 
         [Required]
-        public Guid? ScheduleId { set; get; }
+        public Guid ScheduleId { set; get; }
         public FlightSchedule? Schedule { set; get; }
         public ICollection<BookingList> BookingLists { get; set; }
         public Flight()

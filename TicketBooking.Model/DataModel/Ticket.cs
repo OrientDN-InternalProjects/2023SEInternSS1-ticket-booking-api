@@ -16,20 +16,20 @@ namespace TicketBooking.Data.DataModel
         [Required]
         [Display(Name ="Passenger Name")]
         [Column(TypeName = "varchar")]
-        public string? PassengerName { get; set; }
+        public string PassengerName { get; set; }
 
         [MaxLength(50)]
         [Display(Name ="Location From")]
         [Column(TypeName = "varchar")]
-        public string? LocationFrom { get; set; }
+        public string LocationFrom { get; set; }
         [MaxLength(50)]
         [Display(Name = "Location To")]
         [Column(TypeName = "varchar")]
-        public string? LocationTo { get; set; }
+        public string LocationTo { get; set; }
 
         [MaxLength(20)]
         [Column(TypeName = "varchar")]
-        public string? SeatClass { get; set; }
+        public string SeatClass { get; set; }
   
         public DateTime DepartureTime { get; set; }
 

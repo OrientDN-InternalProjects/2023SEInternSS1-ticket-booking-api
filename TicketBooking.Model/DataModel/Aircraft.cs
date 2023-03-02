@@ -17,11 +17,11 @@ namespace TicketBooking.Data.DataModel
 
         [Required]
         [MaxLength(6)]
-        public string? Model { get; set; } = null!;
+        public string Model { get; set; } = null!;
 
         [Required]
         [MaxLength(6)]
-        public string? Manufacture { get; set; }
+        public string Manufacture { get; set; }
 
         [Required]
         public int NumRowSeat { get; set; }

@@ -14,7 +14,7 @@ namespace TicketBooking.Model.DataModel
         [Key]
         public Guid Id { get; set; }
         [Required]
-        public string? NameService { get; set; }
+        public string NameService { get; set; }
         [Required]
         [Column(TypeName = "decimal(10, 2)")]
         public decimal Price { get; set; }
