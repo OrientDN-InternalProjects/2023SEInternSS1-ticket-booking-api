@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using TicketBooking.Data;
 using TicketBooking.Data.Infrastructure;
 using TicketBooking.Data.Repository;
-using TicketBooking.Service.Model;
+using TicketBooking.Model.Models;
 
 namespace TicketBooking.Service.Services.AircraftService
 {

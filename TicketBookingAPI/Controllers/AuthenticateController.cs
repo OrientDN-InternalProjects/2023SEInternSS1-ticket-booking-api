@@ -2,7 +2,7 @@
 using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using TicketBooking.Service.Model;
+using TicketBooking.Model.Models;
 using TicketBooking.Service.Services.AuthenticateService;
 
 namespace TicketBookingAPI.Controllers
