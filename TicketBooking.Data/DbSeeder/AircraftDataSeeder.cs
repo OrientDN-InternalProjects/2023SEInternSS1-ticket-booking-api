@@ -26,7 +26,7 @@ namespace TicketBooking.Data.DbSeeder
 
 
 
-        public async Task InitDataBase()
+        public void InitDataBase()
         {
             if (!dbContext.Aircrafts.Any())
             {

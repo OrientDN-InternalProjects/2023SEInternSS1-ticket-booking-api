@@ -20,7 +20,7 @@ namespace TicketBooking.Data.DbSeeder
             dbContext = context;
         }
 
-        public async Task InitDataBase()
+        public void InitDataBase()
         {
             if (!dbContext.FlightSchedules.Any())
             {
@@ -51,7 +51,6 @@ namespace TicketBooking.Data.DbSeeder
                 };
 
                 dbContext.FlightSchedules.AddRange(flightSche);
-                dbContext.SaveChanges();
             }
         }
     }

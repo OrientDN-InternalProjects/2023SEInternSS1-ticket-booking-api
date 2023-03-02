@@ -19,9 +19,9 @@ namespace TicketBooking.Data.DbSeeder
             dbContext = context;
         }
 
-        public async Task InitDataBase()
+        public void InitDataBase()
         {
-            if (!dbContext.Aircrafts.Any())
+            if (!dbContext.Airports.Any())
             {
                 var airport = new List<Airport>()
                 {

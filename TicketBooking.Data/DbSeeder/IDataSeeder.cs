@@ -10,6 +10,6 @@ namespace TicketBooking.Data.DbSeeder
 {
     public interface IDataSeeder
     {
-        public Task InitDataBase();
+        public void InitDataBase();
     }
 }

@@ -43,10 +43,8 @@ builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<IAuthenticateService, AuthenticateService>();
 builder.Services.AddScoped<IAircraftDataSeeder, AircraftDataSeeder>();
 builder.Services.AddScoped<IAirportDataSeeder, AirportDataSeeder>();
-builder.Services.AddScoped<IFlightScheduleDataSeeder, FlightScheDataSeeder>();
+builder.Services.AddScoped<ISeatClassDataSeeder, SeatClassDataSeeder>();
 builder.Services.AddScoped<IDataSeeder, DataSeeder>();
-// builder.Services.AddTransient<AircraftDataSeeder>();
-// builder.Services.AddTransient<DataSeeder>();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -77,21 +75,8 @@ var config = new MapperConfiguration(cfg => { cfg.AddProfile(new AutoMapperProfi
 );
 IMapper mapper = config.CreateMapper();
 builder.Services.AddSingleton(mapper);
-var app = builder.Build();
 
-// SeedData(app);
-//
-// void SeedData(IHost app)
-// {
-//     var scopeFactory = app.Services.GetService<IServiceScopeFactory>();
-//     using (var scope = scopeFactory.CreateScope())
-//     {
-//         var Aircraftservices = scope.ServiceProvider.GetRequiredService<AircraftDataSeeder>();
-//         var services = scope.ServiceProvider.GetRequiredService<DataSeeder>();
-//         Aircraftservices.InitDataBase();
-//         services.InitDataBase();
-//     }
-// }
+var app = builder.Build();
 
 app.UseMiddleware<HandleExceptionMiddleware>();
 
@@ -108,5 +93,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.UseApiResponseAndExceptionWrapper();
+
+app.InitSeeder();
 
 app.Run();

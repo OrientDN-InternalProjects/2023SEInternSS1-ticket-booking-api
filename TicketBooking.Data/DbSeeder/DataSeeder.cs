@@ -21,27 +21,24 @@ namespace TicketBooking.Data.DbSeeder
                           TicketBookingDbContext dbContext,
                           IAircraftDataSeeder aircraftDataSeeder,
                           IAirportDataSeeder airportDataSeeder,
-                          //IFlightScheduleDataSeeder flightScheDataSeeder
-                          )
+                          ISeatClassDataSeeder seatClassDataSeeder)
         {
             this.logger = logger;
             this.dbContext = dbContext;
             this.aircraftDataSeeder = aircraftDataSeeder;
             this.airportDataSeeder = airportDataSeeder;
-            //this.flightScheDataSeeder = flightScheDataSeeder;
+            this.seatClassDataSeeder = seatClassDataSeeder;
         }
-        public async Task InitDataBase()
+        public void InitDataBase()
         {
              // seeding data for aircraft
-             await aircraftDataSeeder.InitDataBase();
+             aircraftDataSeeder.InitDataBase();
              
              // seeding data for airport
-             await airportDataSeeder.InitDataBase();
+             airportDataSeeder.InitDataBase();
              
              // Seeding data for seat class
-             await seatClassDataSeeder.InitDataBase();
-
-             //await flightScheDataSeeder.InitDataBase();
+             seatClassDataSeeder.InitDataBase();
 
              dbContext.SaveChanges();
 

@@ -14,9 +14,9 @@ public class SeatClassDataSeeder : ISeatClassDataSeeder
         this.dbContext = dbContext;
     }
 
-    public async Task InitDataBase()
+    public void InitDataBase()
     {
-        if (!dbContext.Aircrafts.Any())
+        if (!dbContext.SeatClasses.Any())
         {
             var seatclass = new List<SeatClass>()
             {

@@ -11,7 +11,6 @@ using TicketBooking.Data.DbContext;
 using TicketBooking.Data.DbSeeder;
 using TicketBooking.Model.Models;
 using TicketBooking.Service.Services.AircraftService;
-using TicketBooking.Data.DbSeeder;
 
 namespace TicketBookingAPI.Controllers
 {
@@ -65,7 +64,6 @@ namespace TicketBookingAPI.Controllers
         // public async Task<ActionResult> GetAircraft() => Ok(await Aircraftservice.GetAircraftAsync());        
         public async Task<ActionResult> GetAircraft()
         {
-            dataSeeder.InitDataBase();
             return Ok(await Aircraftservice.GetAircraftAsync());
         }
         
