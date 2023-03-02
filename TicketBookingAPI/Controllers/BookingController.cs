@@ -1,10 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using TicketBooking.Data.DataModel;
-using TicketBooking.Model.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 using TicketBooking.Service.Models;
-using TicketBooking.Service.Services.AuthenticateService;
-using TicketBooking.Service.Services.BookingListService;
 using TicketBooking.Service.Services.BookingService;
 using TicketBooking.Service.Services.ContactDetailService;
 
@@ -64,19 +59,40 @@ namespace TicketBookingAPI.Controllers
             return BadRequest(ModelState);
         }
 
+
+        [HttpPost("cancel-booking")]
+        public async Task<IActionResult> CancelBooking(Guid bookingId)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    logger.LogInformation("Add more service");
+                    var result = await bookingService.CancelBooking(bookingId);
+                    return StatusCode(StatusCodes.Status201Created, Ok(result));
+                }
+                catch (Exception e)
+                {
+                    logger.LogError("Add service failed");
+                    return BadRequest(e.Message);
+                }
+            }
+            return BadRequest(ModelState);
+        }
+
         [HttpPost("request-contact")]
         public async Task<IActionResult> CreateContact(ContactViewModel contact)
         {
             if (ModelState.IsValid)
             {
-                    var result = await contactService.CreateContactInfo(contact);
-                    if (result != null)
-                    {
-                        return Ok(result);
-                    }
-                
-                    return BadRequest("Create failed");
-                
+                var result = await contactService.CreateContactInfo(contact);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+
+                return BadRequest("Create failed");
+
             }
             return BadRequest(ModelState);
         }
