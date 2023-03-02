@@ -10,8 +10,8 @@ namespace TicketBooking.Model.Models
     public class TokenResponse
     {
         [Required]
-        public string? AccessToken { get; set; }
+        public string AccessToken { get; set; }
         [Required]
-        public string? RefreshToken { get; set; }
+        public string RefreshToken { get; set; }
     }
 }

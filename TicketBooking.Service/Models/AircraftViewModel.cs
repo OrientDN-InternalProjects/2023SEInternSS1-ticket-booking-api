@@ -14,11 +14,11 @@ namespace TicketBooking.Service.Models
 
         [Required]
         [MaxLength(6)]
-        public string? Model { get; set; }
+        public string Model { get; set; }
 
         [Required]
         [MaxLength(6)]
-        public string? Manufacture { get; set; }
+        public string Manufacture { get; set; }
 
         [Required]
         public int NumRowSeat { get; set; }

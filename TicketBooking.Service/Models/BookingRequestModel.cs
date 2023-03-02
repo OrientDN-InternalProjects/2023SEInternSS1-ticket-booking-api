@@ -18,7 +18,7 @@ namespace TicketBooking.Service.Models
         [Required]
         public DateTime DateBooking { get; set; }
         [Required]
-        public string? Reference { get; set; }
+        public string Reference { get; set; }
         [Required]
         public bool IsPaid { get; set; }
         public Guid? ContactId { get; set; }

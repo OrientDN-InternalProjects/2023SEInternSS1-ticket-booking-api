@@ -14,7 +14,7 @@ namespace TicketBooking.Service.Models
     {
         public Guid? BookingId { get; set; }
         public Guid? FlightId { get; set; }
-        public int? NumberSeat { get; set; }
+        public int NumberSeat { get; set; }
         public decimal FlightPrice { get; set; }
     }
 }
