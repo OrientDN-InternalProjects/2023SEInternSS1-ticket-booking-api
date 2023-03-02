@@ -39,7 +39,7 @@ namespace TicketBooking.Data.DataModel
         public decimal EconomyPrice { set; get; }
 
         [Required]
-        public Guid ScheduleId { set; get; }
+        public Guid? ScheduleId { set; get; }
 
         [Required]
         public FlightSchedule Schedule { set; get; }

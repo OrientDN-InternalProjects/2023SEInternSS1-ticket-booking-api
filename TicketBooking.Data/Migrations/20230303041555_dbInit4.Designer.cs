@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TicketBooking.Data.DbContext;
 
@@ -11,9 +12,10 @@ using TicketBooking.Data.DbContext;
 namespace TicketBooking.Data.Migrations
 {
     [DbContext(typeof(TicketBookingDbContext))]
-    partial class TicketBookingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230303041555_dbInit4")]
+    partial class dbInit4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -504,13 +506,13 @@ namespace TicketBooking.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ArrivalAirportId")
+                    b.Property<Guid?>("ArrivalAirportId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("ArrivalTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("DepartureAirportId")
+                    b.Property<Guid?>("DepartureAirportId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("DepartureTime")
@@ -865,13 +867,11 @@ namespace TicketBooking.Data.Migrations
                 {
                     b.HasOne("TicketBooking.Data.DataModel.Airport", "AirportArrival")
                         .WithMany("ArrivalAirports")
-                        .HasForeignKey("ArrivalAirportId")
-                        .IsRequired();
+                        .HasForeignKey("ArrivalAirportId");
 
                     b.HasOne("TicketBooking.Data.DataModel.Airport", "AirportDepart")
                         .WithMany("DepartureAirports")
-                        .HasForeignKey("DepartureAirportId")
-                        .IsRequired();
+                        .HasForeignKey("DepartureAirportId");
 
                     b.Navigation("AirportArrival");
 

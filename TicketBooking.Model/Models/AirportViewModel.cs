@@ -13,15 +13,23 @@ namespace TicketBooking.Model.Models
     {
         [Required]
         public Guid Id { get; set; }
+
         [Required]
         [MaxLength(50)]
         public string Name { get; set; }
+
         [Required]
         [MaxLength(50)]
         public string City { get; set; }
+
         [Required]
         [MaxLength(50)]
         public string Country { get; set; }
+
+        [Required]
+        [MaxLength(10)]
+        public string Code { get; set; }
+
         public ICollection<FlightSchedule> DepartureAirports { get; set; }
         public ICollection<FlightSchedule> ArrivalAirports { get; set; }
     }

@@ -17,9 +17,18 @@ namespace TicketBooking.Service
             .ForMember(dest => dest.Model, act => act.MapFrom(src => src.Model))
             .ForMember(dest => dest.Manufacture, act => act.MapFrom(src => src.Manufacture));
 
+            CreateMap<Airport, AirportViewModel>().ReverseMap()
+                .ForMember(dest => dest.Id, act => act.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Name, act => act.MapFrom(src => src.Name))
+                .ForMember(dest => dest.Code, act => act.MapFrom(src => src.Code))
+                .ForMember(dest => dest.Country, act => act.MapFrom(src => src.Country));
+
             CreateMap<FlightViewModel, Flight>().ReverseMap();
 
-            CreateMap<FlightScheViewModel, FlightSchedule>().ReverseMap();
+            CreateMap<FlightScheViewModel, FlightSchedule>()
+            .ForMember(dest => dest.Id, act => act.MapFrom(src => src.Id))
+            .ForMember(dest => dest.DepartureAirportId, act => act.MapFrom(src => src.DepartureAirpotId))
+            .ForMember(dest => dest.ArrivalAirportId, act => act.MapFrom(src => src.ArrivalAirportId));
 
             CreateMap<AirportViewModel, Airport>().ReverseMap();
         }

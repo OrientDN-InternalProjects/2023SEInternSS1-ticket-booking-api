@@ -8,6 +8,8 @@ using AutoMapper;
 using TicketBooking.Model.Models;
 using TicketBooking.Data.Repository;
 using TicketBooking.Data.DbContext;
+using TicketBooking.Service.Services.AirportService;
+using TicketBooking.Service.Services.FlightScheService;
 
 namespace TicketBooking.Service.Services.FlightService
 {
@@ -16,11 +18,21 @@ namespace TicketBooking.Service.Services.FlightService
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
         private readonly IFlightRepository flightRepo;
-        public FlightService(IUnitOfWork unitOfWork, IMapper mapper, IFlightRepository flightRepo)
+        private readonly IAircraftRepository aircraftRepo;
+        private readonly IFlightScheRepository flightScheRepo;
+        private readonly IAirportService airportService;
+        private readonly IFlightScheServices flightScheServices;
+        public FlightService(IUnitOfWork unitOfWork, IMapper mapper, 
+                             IFlightRepository flightRepo, IAircraftRepository aircraftRepo,
+                             IFlightScheRepository flightScheRepo, IAirportService airportService, IFlightScheServices flightScheServices)
         {
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
             this.flightRepo = flightRepo;
+            this.aircraftRepo = aircraftRepo;
+            this.flightScheRepo = flightScheRepo;
+            this.airportService = airportService;
+            this.flightScheServices = flightScheServices;
         }
 
         public async Task<IEnumerable<FlightViewModel>> GetFlightAsync()
@@ -50,9 +62,46 @@ namespace TicketBooking.Service.Services.FlightService
             return await unitOfWork.CompletedAsync();
         }
 
-        public async Task<int> InsertAsync(FlightViewModel flightViewModel)
+        public async Task<int> InsertAsync(FlightRequestModel flightRequestModel)
         {
-            var flight = mapper.Map<Flight>(flightViewModel);
+            var tempAircarftModel = await aircraftRepo.GetById(flightRequestModel.AircraftId);
+            var flight = new Flight()
+            {
+                Id = flightRequestModel.Id,
+                AircraftId = flightRequestModel.AircraftId,
+                TotalSeat = tempAircarftModel.NumColumnSeat * tempAircarftModel.NumRowSeat,
+                RemainingSeat = tempAircarftModel.NumColumnSeat * tempAircarftModel.NumColumnSeat,
+                ScheduleId = flightRequestModel.ScheduleId,
+                DefaultBaggage = flightRequestModel.DefaultBaggage,
+                IsFlightActive = flightRequestModel.IsFlightActive,
+                BusinessPrice = flightRequestModel.BusinessPrice,
+                EconomyPrice = flightRequestModel.EconomyPrice
+            };
+
+            if (flightRequestModel.DeparTime == null || flightRequestModel.ArrivalTime == null)
+            {
+                throw new Exception("Depart and Arrival Time cannot be null");
+            }
+            else
+            {
+                var departCode = await airportService.GetAirportAsync(flightRequestModel.DepartAirportCode);
+                var arrivalCode = await airportService.GetAirportAsync(flightRequestModel.ArrivalAirportCode);
+
+                var flightScheRequestModel = new FlightScheViewModel()
+                {
+                    Id = flightRequestModel.ScheduleId,
+                    DepartureAirpotId = departCode.Id,
+                    ArrivalAirportId = arrivalCode.Id,
+                    DepartureAirportCode = departCode.Code,
+                    ArrivalAirportCode = arrivalCode.Code,
+                    DepartureTime = flightRequestModel.DeparTime,
+                    ArrivalTime = flightRequestModel.ArrivalTime
+                };
+
+                await flightScheServices.InsertAsync(flightScheRequestModel);
+            }
+
+
             await flightRepo.Add(flight);
             return await unitOfWork.CompletedAsync();
         }

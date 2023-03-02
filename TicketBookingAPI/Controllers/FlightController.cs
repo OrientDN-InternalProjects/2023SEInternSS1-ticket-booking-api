@@ -27,7 +27,7 @@ namespace TicketBookingAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddFlight(FlightViewModel flightModel)
+        public async Task<ActionResult> AddFlight(FlightRequestModel flightModel)
         {
             if (flightModel == null)
             {

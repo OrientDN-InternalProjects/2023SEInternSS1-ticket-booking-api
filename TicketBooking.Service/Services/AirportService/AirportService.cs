@@ -43,6 +43,33 @@ namespace TicketBooking.Service.Services.AirportService
             return airport == null ? throw new Exception("ID cannot be found") : mapper.Map<AirportViewModel>(airport);
         }
 
+        public async Task<AirportViewModel> GetAirportAsync(string code)
+        {
+            var airports = await airportRepo.GetAll();
+            int index = 0;
+
+            //Go through all object list return from GetAll() to check the code
+            foreach (var airport in airports)
+            {
+                if (airport.Code == code)
+                {
+                    var result = new AirportViewModel()
+                    {
+                        Id = airport.Id,
+                        Name = airport.Name,
+                        City = airport.City,
+                        Country = airport.Country
+                    };
+
+                    return result;
+                }
+
+                index++;
+            }
+
+            throw new Exception("No airport exist");
+        }
+
         public async Task<int> UpdateAirportAsync(AirportViewModel airportViewModel)
         {
             var airport = mapper.Map<Airport>(airportViewModel);

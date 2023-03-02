@@ -15,7 +15,7 @@ namespace TicketBooking.Service.Services.FlightService
         Task<IEnumerable<FlightViewModel>> GetFlightAsync();
         Task<FlightViewModel> GetFlightAsync(Guid id);
         Task<int> UpdateFlightAsync(FlightViewModel flightViewModel);
-        Task<int> InsertAsync(FlightViewModel flightViewModel);
+        Task<int> InsertAsync(FlightRequestModel flightRequestModel);
         Task<int> RemoveAsync(Guid id);
     }
 }

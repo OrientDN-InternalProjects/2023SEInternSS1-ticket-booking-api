@@ -71,6 +71,7 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddDbContext<TicketBookingDbContext>(op =>
     op.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<TicketBookingDbContext>(ServiceLifetime.Transient);
 builder.Services.AddScoped<IAircraftRepository, AircraftRepository>();
 builder.Services.AddScoped<IFlightRepository, FlightRepository>();
 builder.Services.AddScoped<IFlightScheRepository, FlightScheRepository>();

@@ -14,6 +14,7 @@ namespace TicketBooking.Service.Services.AirportService
     {
         Task<IEnumerable<AirportViewModel>> GetAirportAsync();
         Task<AirportViewModel> GetAirportAsync(Guid id);
+        Task<AirportViewModel> GetAirportAsync(string code);
         Task<int> UpdateAirportAsync(AirportViewModel airportViewModel);
         Task<int> InsertAsync(AirportViewModel airportViewModel);
         Task<int> RemoveAsync(Guid id);

@@ -13,14 +13,24 @@ namespace TicketBooking.Model.Models
     {
         [Required]
         public Guid Id { get; set; }
-        public Guid DepartureAirportId { get; set; }
+
+        public Guid? DepartureAirpotId { get; set; }
+
+
+        public Guid? ArrivalAirportId { get; set; }
+
+        public string DepartureAirportCode { get; set; }
+
         public Airport AirportDepart { get; set; }
-        public Guid ArrivalAirportId { get; set; }
+
+        public string ArrivalAirportCode { get; set; }
+
         public Airport AirportArrival { get; set; }
+
         [Required]
         public DateTime DepartureTime { get; set; }
+
         [Required]
         public DateTime ArrivalTime { get; set; }
-        public ICollection<Flight> Flights { get; set; }
     }
 }
