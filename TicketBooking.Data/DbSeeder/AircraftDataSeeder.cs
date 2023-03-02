@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TicketBooking.Data.DbContext;
+using TicketBooking.Data.DataModel;
 
 namespace TicketBooking.Data.DbSeeder
 {

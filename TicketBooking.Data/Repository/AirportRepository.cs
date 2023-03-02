@@ -9,16 +9,16 @@ using TicketBooking.Data.DataModel;
 
 namespace TicketBooking.Data.Repository
 {
-    public interface IAircraftRepository : IRepository<Aircraft>
+    public interface IAirportRepository : IRepository<Airport>
     {
 
     }
 
-    public class AircraftRepository : GenericRepository<Aircraft>, IAircraftRepository
+    public class AirportRepository : GenericRepository<Airport>, IAirportRepository
     {
-        public AircraftRepository(TicketBookingDbContext context) : base(context)
+        public AirportRepository(TicketBookingDbContext context) : base(context)
         {
 
-        } 
+        }
     }
 }

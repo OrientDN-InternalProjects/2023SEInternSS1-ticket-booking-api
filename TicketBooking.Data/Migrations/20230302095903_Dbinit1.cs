@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TicketBooking.Data.Migrations
 {
-    public partial class DbInit : Migration
+    public partial class Dbinit1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -33,7 +33,8 @@ namespace TicketBooking.Data.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     City = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Country = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                    Country = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -356,6 +357,8 @@ namespace TicketBooking.Data.Migrations
                     RemainingSeat = table.Column<int>(type: "int", nullable: false),
                     IsFlightActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     DefaultBaggage = table.Column<int>(type: "int", nullable: false),
+                    BusinessPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    EconomyPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     ScheduleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>

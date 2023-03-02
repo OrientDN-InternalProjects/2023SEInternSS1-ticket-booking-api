@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using TicketBooking.Data.DataModel;
+using TicketBooking.Data;
 
-namespace TicketBooking.Data.DataModel
+namespace TicketBooking.Model.Models
 {
-    [Table("FlightSchedule")]
-    public class FlightSchedule
+    public class FlightScheViewModel
     {
-        [Key]
+        [Required]
         public Guid Id { get; set; }
         public Guid DepartureAirportId { get; set; }
         public Airport AirportDepart { get; set; }
@@ -22,9 +22,5 @@ namespace TicketBooking.Data.DataModel
         [Required]
         public DateTime ArrivalTime { get; set; }
         public ICollection<Flight> Flights { get; set; }
-        public FlightSchedule()
-        {
-            Flights = new List<Flight>();
-        }
     }
 }

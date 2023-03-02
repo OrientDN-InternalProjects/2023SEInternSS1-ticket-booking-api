@@ -19,14 +19,10 @@ namespace TicketBookingAPI.Controllers
     public class AircraftController : ControllerBase
     {
         private IAircraftSerivce AircraftService { get; }
-        private IDataSeeder dataSeeder { get; }
-        //private IDataSeeder dataSeeder { get; }
 
-        public AircraftController(IAircraftSerivce service, IDataSeeder dataSeeder)
+        public AircraftController(IAircraftSerivce AircraftService)
         {
-            AircraftService = service;
-            this.dataSeeder = dataSeeder;
-            //this.dataSeeder = dataSeeder;
+            this.AircraftService = AircraftService;
         }
 
         [HttpPost]
