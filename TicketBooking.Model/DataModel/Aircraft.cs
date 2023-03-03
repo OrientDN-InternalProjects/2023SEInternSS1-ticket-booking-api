@@ -39,8 +39,8 @@ namespace TicketBooking.Data.DataModel
         public ICollection<Flight>? Flights { get; set; }
         public Aircraft()
         {
-            Seats = new List<Seat>();
-            Flights = new List<Flight>();
+            Seats = new HashSet<Seat>();
+            Flights = new HashSet<Flight>();
         }
     }
 }

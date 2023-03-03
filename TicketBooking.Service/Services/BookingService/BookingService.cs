@@ -50,18 +50,15 @@ namespace TicketBooking.Service.Services.BookingService
             extraServiceRepo = extra;
         }
 
-        public async Task<Response> RequestBooking(BookingRequestModel model)
+        public async Task<string> RequestBooking(BookingRequestModel model)
         {
             var flight = await flightRepo.GetFlight(model.FlightId);
             var backFlight = await flightRepo.GetFlight(model.RoundFlightId.Value);
             var contact = await contactRepo.GetById(model.ContactId.Value);
             if (flight == null || contact==null)
             {
-                return new Response
-                {
-                    Status = false,
-                    Message = "Please check your data input "
-                };
+                return "Please check your data input ";
+
             }
 
             var booking = new Booking
@@ -80,19 +77,16 @@ namespace TicketBooking.Service.Services.BookingService
                 var user = await userManager.FindByIdAsync(model.UserId.ToString());
                 if (user == null)
                 {
-                    return new Response
-                    {
-                        Status = false,
-                        Message = "Invalid User "
-                    };
+                    return "Invalid User ";
                 }
                 booking.UserId = model.UserId.ToString();
             }
             await bookingRepo.AddBooking(booking);
+            await unitOfWork.CompletedAsync();
 
             if (booking.IsRoundFlight != true)
             {
-                var bookingListVM = new BookingListViewModel
+                var bookingList = new BookingList
                 {
                     NumberSeat = booking.NumberPeople,
                     BookingId = booking.Id,
@@ -101,25 +95,28 @@ namespace TicketBooking.Service.Services.BookingService
                 };
                 if (model.IsBusiness == true)
                 {
-                    bookingListVM.FlightPrice = flight.BusinessPrice * bookingListVM.NumberSeat;
+                    bookingList.FlightPrice = flight.BusinessPrice * bookingList.NumberSeat;
                 }
                 else
-                    bookingListVM.FlightPrice = flight.EconomyPrice * bookingListVM.NumberSeat;
-                var bookingList = mapper.Map<BookingList>(bookingListVM);
-                await ExtraService(bookingList, model.Services);
+                    bookingList.FlightPrice = flight.EconomyPrice * bookingList.NumberSeat;
                 await bookingListRepo.Add(bookingList);
-                booking.TotalPrice = bookingList.FlightPrice;
+                await unitOfWork.CompletedAsync();
+                var list = await ExtraService(bookingList, model.Services);
+                bookingListRepo.Update(list);
+                booking.TotalPrice += list.FlightPrice;
+                booking.BookingLists?.Add(list);
+                await unitOfWork.CompletedAsync();
             }
             else if (backFlight!=null)
             {
-                var goFlight = new BookingListViewModel
+                var goFlight = new BookingList
                 {
                     NumberSeat = booking.NumberPeople,
                     BookingId = booking.Id,
                     FlightId = model.FlightId,
                     FlightPrice = 0
                 };
-                var roundFlight = new BookingListViewModel
+                var roundFlight = new BookingList
                 {
                     NumberSeat = booking.NumberPeople,
                     BookingId = booking.Id,
@@ -136,70 +133,53 @@ namespace TicketBooking.Service.Services.BookingService
                     goFlight.FlightPrice = flight.EconomyPrice * goFlight.NumberSeat;
                     roundFlight.FlightPrice = flight.EconomyPrice * roundFlight.NumberSeat;
                 }
-                var bookingGoFlight = mapper.Map<BookingList>(goFlight);
-                var bookingRoundFlight = mapper.Map<BookingList>(roundFlight);
-                await ExtraService(bookingGoFlight, model.Services);
-                await ExtraService(bookingRoundFlight, model.Services);
-
-                booking.TotalPrice += bookingGoFlight.FlightPrice + bookingRoundFlight.FlightPrice;
+                var goBooking = await ExtraService(goFlight, model.Services);
+                var roundBooking = await ExtraService(roundFlight, model.Services);
+                booking.BookingLists?.Add(goBooking);
+                booking.BookingLists?.Add(roundBooking);
+                await bookingListRepo.Add(goBooking);
+                await bookingListRepo.Add(roundBooking);
                 
-                booking.BookingLists?.Add(bookingGoFlight);
-                booking.BookingLists?.Add(bookingRoundFlight);
-                await bookingListRepo.Add(bookingGoFlight);
-                await bookingListRepo.Add(bookingRoundFlight);
+                booking.TotalPrice = goBooking.FlightPrice + roundBooking.FlightPrice;
+
                 await unitOfWork.CompletedAsync();
             }
             else
             {
-                return new Response
-                {
-                    Status = true,
-                    Message = "Booking failed, Invalid round trip flight",
-                    Data = booking.Id
-                };
+                return "Booking failed, Invalid round trip flight";
             }
-            await bookingRepo.AddBooking(booking);
+            bookingRepo.Update(booking);
             await unitOfWork.CompletedAsync();
-            return new Response
-            {
-                Status = true,
-                Message = "Booking success",
-                Data = booking.Id
-            };
+            return booking.Id.ToString();
 
         }
 
-        public void AddTicket(ref Booking booking)
-        {
-
-        }
-
-        public async Task ExtraService(BookingList bookingList, List<Guid> extraServices) {
+        public async Task<BookingList> ExtraService( BookingList bookingList, List<Guid> extraServices) {
             decimal sum = 0;
             if (extraServices.Count > 0)
             {
-                for (int i = 0; i < extraServices.Count; i++)
+                foreach (var service in extraServices)
                 {
-                    var priceService =await extraServiceRepo.GetById(extraServices[i]);
+                    var priceService = await extraServiceRepo.GetById(service);
                     if (priceService != null)
                     {
                         sum += priceService.Price;
                         var bookingService = new BookingExtraService
                         {
-                            ExtraServiceId = extraServices[i],
+                            ExtraServiceId = service,
                             BookingListId = bookingList.Id.Value
                         };
                         await bookingServiceRepo.Add(bookingService);
+                        bookingList.BookingServices.Add(bookingService);
+                        
                     }
                 }
                 bookingList.FlightPrice += sum;
             }
             else
                 bookingList.FlightPrice += 0;
-            bookingListRepo.Update(bookingList);
-            await unitOfWork.CompletedAsync();
+            return bookingList;
         }
-
         public async Task<Response> CancelBooking(Guid bookingId)
         {
             var booking = await bookingRepo.GetById(bookingId);
@@ -220,57 +200,6 @@ namespace TicketBooking.Service.Services.BookingService
                 Status = true,
                 Message = "Cancel failed!! Invalid booking"
 
-            };
-        }
-
-        public async Task<Response> AddBookingService(List<Guid> extraServices, Guid bookingList)
-        {
-            var checkBooking = await bookingListRepo.GetById(bookingList);
-            decimal sum = 0;
-            if (checkBooking != null)
-            {
-                if (extraServices.Count > 0)
-                {
-                    for (int i = 0; i < extraServices.Count; i++)
-                    {
-                        ExtraService priceService = await extraServiceRepo.GetById(extraServices[i]);
-                        sum += priceService.Price;
-                        var bookingService = new BookingExtraService
-                        {
-                            ExtraServiceId = extraServices[i],
-                            BookingListId = bookingList
-                        };
-                        await bookingServiceRepo.Add(bookingService);
-                    }
-                    checkBooking.FlightPrice += sum;
-                    bookingListRepo.Update(checkBooking);
-                    var booking = await bookingRepo.GetById(checkBooking.BookingId.Value);
-                    if (booking != null)
-                    {
-                        booking.TotalPrice = 0;
-                        var list = bookingListRepo.GetBookingList(booking.Id);
-                        foreach (var item in list)
-                        {
-                            booking.TotalPrice += item.FlightPrice;
-                        }
-                        bookingRepo.Update(booking);
-                    }
-
-                    await unitOfWork.CompletedAsync();
-                }
-                else
-                    checkBooking.FlightPrice += 0;
-                return new Response
-                {
-                    Status = true,
-                    Message = "Add extra successfull",
-                    Data = checkBooking
-                };
-            }
-            return new Response
-            {
-                Status = false,
-                Message = "Add service failed!! Invalid booking"
             };
         }
 

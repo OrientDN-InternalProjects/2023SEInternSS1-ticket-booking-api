@@ -34,7 +34,7 @@ namespace TicketBooking.Data.DataModel
         public ICollection<BookingList> BookingLists { get; set; }
         public Flight()
         {
-            BookingLists= new List<BookingList>();
+            BookingLists= new HashSet<BookingList>();
         }
     }
 }

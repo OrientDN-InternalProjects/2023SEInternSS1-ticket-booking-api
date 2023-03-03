@@ -26,7 +26,7 @@ namespace TicketBooking.Data.DataModel
         public ICollection<Flight> Flights { get; set; }
         public FlightSchedule()
         {
-            Flights = new List<Flight>();
+            Flights = new HashSet<Flight>();
         }
     }
 }

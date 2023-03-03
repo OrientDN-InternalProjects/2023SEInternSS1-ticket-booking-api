@@ -21,16 +21,16 @@ namespace TicketBookingAPI.Controllers
         }
 
         [HttpPost("request-booking")]
-        public async Task<IActionResult> RequestBooking([FromBody] BookingRequestModel model)
+        public async Task<IActionResult> RequestBooking(BookingRequestModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             logger.LogInformation("Start Booking");
             var result = await bookingService.RequestBooking(model);
 
-            if (result.Status != null)
+            if (result != null)
                 return StatusCode(StatusCodes.Status201Created, Ok(result));
 
             logger.LogError("Booking failed");
@@ -58,7 +58,7 @@ namespace TicketBookingAPI.Controllers
         [HttpPost("cancel-booking")]
         public async Task<IActionResult> CancelBooking(Guid bookingId)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -76,7 +76,7 @@ namespace TicketBookingAPI.Controllers
         [HttpPost("request-contact")]
         public async Task<IActionResult> CreateContact([FromBody] ContactViewModel contact)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 var result = await contactService.CreateContactInfo(contact);
                 if (result != null)

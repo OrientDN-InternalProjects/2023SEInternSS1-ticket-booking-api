@@ -31,8 +31,8 @@ namespace TicketBooking.Data.DataModel
         public ICollection<BookingExtraService>? BookingServices { get; set; }
         public BookingList()
         {
-            ListSeats = new List<BookingSeat>();
-            BookingServices = new List<BookingExtraService>();
+            ListSeats = new HashSet<BookingSeat>();
+            BookingServices = new HashSet<BookingExtraService>();
         }
     }
 }

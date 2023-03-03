@@ -24,7 +24,7 @@ namespace TicketBooking.Data.DataModel
         public ICollection<Seat>? Seats { get; set; }
         public SeatClass()
         {
-            Seats = new List<Seat>();
+            Seats = new HashSet<Seat>();
         }
     }
 }

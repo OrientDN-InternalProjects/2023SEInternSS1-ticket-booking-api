@@ -26,8 +26,8 @@ namespace TicketBooking.Data.DataModel
         public ICollection<FlightSchedule> ArrivalAirports { get; set; }
         public Airport()
         {
-            DepartureAirports = new List<FlightSchedule>();
-            ArrivalAirports = new List<FlightSchedule>();
+            DepartureAirports = new HashSet<FlightSchedule>();
+            ArrivalAirports = new HashSet<FlightSchedule>();
         }
     }
 }
