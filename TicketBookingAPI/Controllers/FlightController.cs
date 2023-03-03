@@ -26,9 +26,13 @@ namespace TicketBookingAPI.Controllers
             this.FlightService = FlightService;
         }
 
-        [HttpPost]
+        [HttpPost("Add flight")]
         public async Task<ActionResult> AddFlight(FlightRequestModel flightModel)
         {
+            if ((flightModel.ArrivalTime.Hour - flightModel.DeparTime.Hour) <= 1 )
+            {
+                return BadRequest("Wrong in time schedule");
+            }
             if (flightModel == null)
             {
                 return NotFound();
