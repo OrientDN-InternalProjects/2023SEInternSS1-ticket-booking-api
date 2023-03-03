@@ -23,7 +23,6 @@ namespace TicketBooking.Data.DataModel
         public string LastName { get; set; }
 
         [Required]
-        [DataType(DataType.Date)]
         public DateTime DateOfBirth { get; set; }
 
         [Required, MaxLength(50)]

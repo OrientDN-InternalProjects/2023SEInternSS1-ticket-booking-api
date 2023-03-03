@@ -21,7 +21,7 @@ namespace TicketBookingAPI.Controllers
         }
 
         [HttpPost("request-booking")]
-        public async Task<IActionResult> RequestBooking(BookingRequestModel model)
+        public async Task<IActionResult> RequestBooking([FromBody]BookingRequestModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -31,27 +31,10 @@ namespace TicketBookingAPI.Controllers
             var result = await bookingService.RequestBooking(model);
 
             if (result != null)
-                return StatusCode(StatusCodes.Status201Created, Ok(result));
+                return StatusCode(StatusCodes.Status201Created, result);
 
             logger.LogError("Booking failed");
             return BadRequest(result);
-        }
-        [HttpPost("request-service")]
-        public async Task<IActionResult> RequestService(List<Guid> extraServices, Guid bookingList)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            logger.LogInformation("Add more service");
-            var result = await bookingService.AddBookingService(extraServices, bookingList);
-
-            if (result.Status == true)
-                return StatusCode(StatusCodes.Status201Created, Ok(result));
-
-            logger.LogError("Add service failed");
-            return BadRequest(result);
-
         }
 
 
@@ -67,7 +50,7 @@ namespace TicketBookingAPI.Controllers
             var result = await bookingService.CancelBooking(bookingId);
 
             if (result.Status == true)
-                return StatusCode(StatusCodes.Status201Created, Ok(result));
+                return StatusCode(StatusCodes.Status200OK, result);
 
             logger.LogError("Cancel failed");
             return BadRequest(result);
@@ -76,7 +59,7 @@ namespace TicketBookingAPI.Controllers
         [HttpPost("request-contact")]
         public async Task<IActionResult> CreateContact([FromBody] ContactViewModel contact)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 var result = await contactService.CreateContactInfo(contact);
                 if (result != null)

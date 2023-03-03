@@ -14,8 +14,6 @@ namespace TicketBooking.Service.Models
     public class BookingRequestModel
     {
         [Required]
-        public int NumberPeople { get; set; }
-        [Required]
         public DateTime DateBooking { get; set; }
         [Required]
         public string Reference { get; set; }
@@ -28,6 +26,7 @@ namespace TicketBooking.Service.Models
         public Guid? UserId { get; set; }
         public Guid FlightId { get; set; }
         public Guid? RoundFlightId { get; set; }
+        public List<PassengerViewModel> Passes { get; set; }
         public List<Guid> Services { get; set; }
     }
 }

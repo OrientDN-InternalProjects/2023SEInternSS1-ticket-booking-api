@@ -23,7 +23,7 @@ namespace TicketBooking.Service.Helper
 
             CreateMap<ContactViewModel, ContactDetail>().ReverseMap();
             CreateMap<BookingListViewModel, BookingList>().ReverseMap();
-
+            CreateMap<PassengerViewModel, Passenger>().ReverseMap();
         }
 
     }

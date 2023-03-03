@@ -35,7 +35,8 @@ namespace TicketBooking.Service.Services.BookingService
             , IContactDetailRepository contactRepo
             , IFlightRepository flightRepo
             , IBookingServiceRepository serviceRepository
-            , IExtraServiceRepository extra)
+            , IExtraServiceRepository extra
+            , UserManager<ApplicationUser> userManager)
         {
             bookingRepo = booking;
             this.unitOfWork = unitOfWork;
@@ -48,6 +49,7 @@ namespace TicketBooking.Service.Services.BookingService
             this.flightRepo = flightRepo;
             bookingServiceRepo = serviceRepository;
             extraServiceRepo = extra;
+            this.userManager = userManager;
         }
 
         public async Task<string> RequestBooking(BookingRequestModel model)
@@ -63,7 +65,7 @@ namespace TicketBooking.Service.Services.BookingService
 
             var booking = new Booking
             {
-                NumberPeople = model.NumberPeople,
+                NumberPeople = model.Passes.Count,
                 DateBooking = DateTime.Now,
                 Reference = model.Reference,
                 TotalPrice = 0,
@@ -81,8 +83,15 @@ namespace TicketBooking.Service.Services.BookingService
                 }
                 booking.UserId = model.UserId.ToString();
             }
+
             await bookingRepo.AddBooking(booking);
             await unitOfWork.CompletedAsync();
+            if (model.Passes.Count > 0)
+            {
+                booking =await AddPassenger(booking, model.Passes);
+                bookingRepo.Update(booking);
+                await unitOfWork.CompletedAsync();
+            }
 
             if (booking.IsRoundFlight != true)
             {
@@ -148,10 +157,24 @@ namespace TicketBooking.Service.Services.BookingService
             {
                 return "Booking failed, Invalid round trip flight";
             }
+
             bookingRepo.Update(booking);
             await unitOfWork.CompletedAsync();
             return booking.Id.ToString();
 
+        }
+
+        public async Task<Booking> AddPassenger(Booking booking,List<PassengerViewModel> passes)
+        {
+            foreach(var passenger in passes)
+            {
+                var newPassenger = mapper.Map<Passenger>(passenger);
+                newPassenger.BookingId = booking.Id;
+                booking.Passengers.Add(newPassenger);
+                await passengerRepo.AddPassenger(newPassenger);
+            }
+            await unitOfWork.CompletedAsync();
+            return booking;
         }
 
         public async Task<BookingList> ExtraService( BookingList bookingList, List<Guid> extraServices) {
@@ -180,6 +203,7 @@ namespace TicketBooking.Service.Services.BookingService
                 bookingList.FlightPrice += 0;
             return bookingList;
         }
+
         public async Task<Response> CancelBooking(Guid bookingId)
         {
             var booking = await bookingRepo.GetById(bookingId);
