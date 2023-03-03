@@ -11,6 +11,5 @@ namespace TicketBooking.Service.Services.BookingService
     {
         Task<string> RequestBooking(BookingRequestModel model);
         Task<Response> CancelBooking(Guid bookingId);
-        Task<Response> AddBookingService(List<Guid> services, Guid bookingList);
     }
 }
