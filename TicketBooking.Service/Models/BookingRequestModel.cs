@@ -14,11 +14,6 @@ namespace TicketBooking.Service.Models
     public class BookingRequestModel
     {
         [Required]
-        public DateTime DateBooking { get; set; }
-        [Required]
-        public string Reference { get; set; }
-        [Required]
-        public bool IsPaid { get; set; }
         public Guid? ContactId { get; set; }
         [Required]
         public bool IsRoundFlight { get; set; }

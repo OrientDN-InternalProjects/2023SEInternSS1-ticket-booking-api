@@ -19,7 +19,7 @@ namespace TicketBooking.Service.Models
         public string LastName { get; set; }
 
         [Required]
-        public DateTime DateOfBirth { get; set; }
+        public string DateOfBirth { get; set; }
 
         [Required]
         public string Nation { get; set; } = "Viet Nam";
@@ -29,6 +29,6 @@ namespace TicketBooking.Service.Models
 
         [Required]
         public string ProvideNa { get; set; }
-        public DateTime ExpDate { get; set; }
+        public string ExpDate { get; set; }
     }
 }

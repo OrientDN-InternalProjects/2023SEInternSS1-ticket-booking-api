@@ -97,10 +97,6 @@ namespace TicketBooking.Data.DbContext
             modelBuilder.Entity<ContactDetail>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
-                entity.HasOne(e => e.Booking)
-                .WithOne(e => e.ContactDetail)
-                .HasForeignKey<Booking>(e => e.ContactId);
             });
 
             modelBuilder.Entity<ExtraService>(entity =>
@@ -116,6 +112,10 @@ namespace TicketBooking.Data.DbContext
 
                 entity.Property(e => e.IsRoundFlight).HasDefaultValue("false");
 
+
+                entity.HasOne(e => e.ContactDetail)
+                .WithMany(e => e.Bookings)
+                .HasForeignKey(e => e.ContactId);
 
                 entity.HasOne(e => e.User)
                .WithMany(e => e.Bookings)

@@ -23,7 +23,7 @@ namespace TicketBooking.Data.DataModel
         public string LastName { get; set; }
 
         [Required]
-        public DateTime DateOfBirth { get; set; }
+        public string DateOfBirth { get; set; }
 
         [Required, MaxLength(50)]
         [Column(TypeName = "varchar")]
@@ -37,9 +37,8 @@ namespace TicketBooking.Data.DataModel
         [Column(TypeName = "varchar")]
         public string ProvideNa { get; set; }
 
-        [DataType(DataType.Date)]
         [Display(Name = "Expire Nation")]
-        public DateTime ExpDate { get; set; }
+        public string ExpDate { get; set; }
 
         public Guid? BookingId { get; set; }
 

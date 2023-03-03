@@ -109,7 +109,7 @@ namespace TicketBooking.Service.Services.AuthenticateService
         }
 
         //Sign up for nomal user
-        public async Task<Response> SignUp(SignUp model, bool IsAdmin)
+        public async Task<Response> SignUp(SignUp model)
         {
             var userExists = await userManager.FindByNameAsync(model.Email);
             //Check sign up information
@@ -128,7 +128,7 @@ namespace TicketBooking.Service.Services.AuthenticateService
 
             await CreateRoleAsync();
             var result = await userManager.CreateAsync(user, model.Password);
-            if (IsAdmin == true)
+            if (model.IsAdmin == true)
             {
                 await userManager.AddToRoleAsync(user, UserRoles.Admin);
             }

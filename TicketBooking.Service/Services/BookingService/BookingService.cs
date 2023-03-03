@@ -67,9 +67,9 @@ namespace TicketBooking.Service.Services.BookingService
             {
                 NumberPeople = model.Passes.Count,
                 DateBooking = DateTime.Now,
-                Reference = model.Reference,
+                Reference = $"BK{contact.Id.ToString().Substring(0,4)}",
                 TotalPrice = 0,
-                IsPaid = model.IsPaid,
+                IsPaid = false,
                 IsRoundFlight = model.IsRoundFlight,
                 Status = StatusConstant.Active,
                 ContactId = contact.Id,
@@ -85,14 +85,15 @@ namespace TicketBooking.Service.Services.BookingService
             }
 
             await bookingRepo.AddBooking(booking);
-            await unitOfWork.CompletedAsync();
             if (model.Passes.Count > 0)
             {
                 booking =await AddPassenger(booking, model.Passes);
                 bookingRepo.Update(booking);
-                await unitOfWork.CompletedAsync();
             }
-
+            else
+            {
+                return "Invalid Passenger";
+            }
             if (booking.IsRoundFlight != true)
             {
                 var bookingList = new BookingList
@@ -114,7 +115,6 @@ namespace TicketBooking.Service.Services.BookingService
                 bookingListRepo.Update(list);
                 booking.TotalPrice += list.FlightPrice;
                 booking.BookingLists?.Add(list);
-                await unitOfWork.CompletedAsync();
             }
             else if (backFlight!=null)
             {
@@ -148,10 +148,9 @@ namespace TicketBooking.Service.Services.BookingService
                 booking.BookingLists?.Add(roundBooking);
                 await bookingListRepo.Add(goBooking);
                 await bookingListRepo.Add(roundBooking);
-                
+               
                 booking.TotalPrice = goBooking.FlightPrice + roundBooking.FlightPrice;
 
-                await unitOfWork.CompletedAsync();
             }
             else
             {
@@ -194,7 +193,6 @@ namespace TicketBooking.Service.Services.BookingService
                         };
                         await bookingServiceRepo.Add(bookingService);
                         bookingList.BookingServices.Add(bookingService);
-                        
                     }
                 }
                 bookingList.FlightPrice += sum;

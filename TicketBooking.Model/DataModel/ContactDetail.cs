@@ -35,6 +35,11 @@ namespace TicketBooking.Data.DataModel
         public string PhoneNumber { get; set; }
 
         //One to one relationship 
-        public Booking? Booking { get; set; }
+        public ICollection<Booking>? Bookings { get; set; }
+        public ContactDetail()
+        {
+            Bookings = new HashSet<Booking>();
+        }
+
     }
 }

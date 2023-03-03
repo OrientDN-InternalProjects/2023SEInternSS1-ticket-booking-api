@@ -24,7 +24,7 @@ namespace TicketBookingAPI.Controllers
             Aircraftservice = service;
         }
 
-        [HttpPost]
+        [HttpPost("create-aircraft")]
         public async Task<ActionResult> AddAircraft(AircraftViewModel aircraftModel)
         {
             if (aircraftModel == null)
@@ -41,24 +41,24 @@ namespace TicketBookingAPI.Controllers
             return Accepted(aircraftModel.Id);
         }
 
-        [HttpDelete]
+        [HttpDelete("delete-aircraft")]
         public async Task<ActionResult> RemoveAircraft(Guid id)
         {
             await Aircraftservice.RemoveAsync(id);
             return Accepted();
         }
 
-        [HttpPut]
+        [HttpPut("update-aircraft")]
         public async Task<ActionResult> UpdateAircraft(AircraftViewModel aircraftModel)
         {
             await Aircraftservice.UpdateAircraftAsync(aircraftModel);
             return Accepted();
         }
 
-        [HttpGet]
+        [HttpGet("get-aircrafts")]
         public async Task<ActionResult> GetAircraft() => Ok(await Aircraftservice.GetAircraftAsync());
 
-        [HttpGet("{id}")]
+        [HttpGet("get-aircraft/{id}")]
         public async Task<ActionResult> GetAircraftbyId(Guid id) => Ok(await Aircraftservice.GetAircraftAsync(id));
     }
 }
