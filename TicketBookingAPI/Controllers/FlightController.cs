@@ -26,18 +26,21 @@ namespace TicketBookingAPI.Controllers
             this.FlightService = FlightService;
         }
 
-        [HttpPost("Add flight")]
+        [HttpPost("Add_flight")]
         public async Task<ActionResult> AddFlight(FlightRequestModel flightModel)
         {
-            if ((flightModel.ArrivalTime.Hour - flightModel.DeparTime.Hour) <= 1 )
+            if (flightModel == null)
+            {
+                return BadRequest("No model to enter");
+            }
+            
+            if ((flightModel.ArrivalTime.Hour - flightModel.DepartTime.Hour) <= 1 )
             {
                 return BadRequest("Wrong in time schedule");
             }
-            if (flightModel == null)
-            {
-                return NotFound();
-            }
-
+            
+            
+            
             await FlightService.InsertAsync(flightModel);
             return Accepted(flightModel.Id);
         }
@@ -59,8 +62,10 @@ namespace TicketBookingAPI.Controllers
         [HttpGet]
         public async Task<ActionResult> GetFlight() => Ok(await FlightService.GetFlightAsync());
 
+        [HttpGet("{date}/GetFlightbyDate")]
+        public async Task<ActionResult> GetFlightByDate(DateTime date) => Ok(await FlightService.GetFlightAsync(date));
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult> GetFlightbyId(Guid id) => Ok(await FlightService.GetFlightAsync(id));
+        // [HttpGet("{id}/Getflight")]
+        // public async Task<ActionResult> GetFlightById(Guid id) => Ok(await FlightService.GetFlightAsync(id));
     }
 }

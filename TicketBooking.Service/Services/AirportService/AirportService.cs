@@ -46,7 +46,6 @@ namespace TicketBooking.Service.Services.AirportService
         public async Task<AirportViewModel> GetAirportAsync(string code)
         {
             var airports = await airportRepo.GetAll();
-            int index = 0;
 
             //Go through all object list return from GetAll() to check the code
             foreach (var airport in airports)
@@ -63,8 +62,6 @@ namespace TicketBooking.Service.Services.AirportService
 
                     return result;
                 }
-
-                index++;
             }
 
             throw new Exception("No airport exist");

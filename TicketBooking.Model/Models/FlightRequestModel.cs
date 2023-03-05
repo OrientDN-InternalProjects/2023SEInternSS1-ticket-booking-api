@@ -27,13 +27,10 @@ namespace TicketBooking.Model.Models
         public decimal EconomyPrice { set; get; }
 
         [Required]
-        public Guid ScheduleId { set; get; }
-
-        [Required]
         public string DepartAirportCode { get; set; }
 
         [Required]
-        public DateTime DeparTime { get; set; }
+        public DateTime DepartTime { get; set; }
 
         [Required]
         public string ArrivalAirportCode { get; set; }

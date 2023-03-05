@@ -19,18 +19,16 @@ namespace TicketBooking.Service.Services.FlightService
         private readonly IMapper mapper;
         private readonly IFlightRepository flightRepo;
         private readonly IAircraftRepository aircraftRepo;
-        private readonly IFlightScheRepository flightScheRepo;
         private readonly IAirportService airportService;
         private readonly IFlightScheServices flightScheServices;
         public FlightService(IUnitOfWork unitOfWork, IMapper mapper, 
                              IFlightRepository flightRepo, IAircraftRepository aircraftRepo,
-                             IFlightScheRepository flightScheRepo, IAirportService airportService, IFlightScheServices flightScheServices)
+                             IAirportService airportService, IFlightScheServices flightScheServices)
         {
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
             this.flightRepo = flightRepo;
             this.aircraftRepo = aircraftRepo;
-            this.flightScheRepo = flightScheRepo;
             this.airportService = airportService;
             this.flightScheServices = flightScheServices;
         }
@@ -54,7 +52,15 @@ namespace TicketBooking.Service.Services.FlightService
             var flight = await flightRepo.GetById(id);
             return flight == null ? throw new Exception("ID does not exist") : mapper.Map<FlightViewModel>(flight);
         }
-
+        
+        public async Task<IEnumerable<FlightViewModel>> GetFlightAsync(DateTime date)
+        {
+            var flight = await flightRepo.GetFlightByDate(date);
+            return flight == null
+                ? throw new Exception("None flight on that day")
+                : mapper.Map<IEnumerable<FlightViewModel>>(flight);
+        }
+        
         public async Task<int> UpdateFlightAsync(FlightViewModel flightViewModel)
         {
             var flight = mapper.Map<Flight>(flightViewModel);
@@ -65,20 +71,24 @@ namespace TicketBooking.Service.Services.FlightService
         public async Task<int> InsertAsync(FlightRequestModel flightRequestModel)
         {
             var tempAircarftModel = await aircraftRepo.GetById(flightRequestModel.AircraftId);
+            if (tempAircarftModel == null)
+            {
+                throw new Exception("The Aircraft ID" + flightRequestModel.AircraftId  + "does not exist");
+            }
             var flight = new Flight()
             {
-                Id = flightRequestModel.Id,
+                Id = Guid.NewGuid(),
                 AircraftId = flightRequestModel.AircraftId,
                 TotalSeat = tempAircarftModel.NumColumnSeat * tempAircarftModel.NumRowSeat,
-                RemainingSeat = tempAircarftModel.NumColumnSeat * tempAircarftModel.NumColumnSeat,
-                ScheduleId = flightRequestModel.ScheduleId,
+                RemainingSeat = tempAircarftModel.NumColumnSeat * tempAircarftModel.NumRowSeat,
+                ScheduleId = Guid.NewGuid(),
                 DefaultBaggage = flightRequestModel.DefaultBaggage,
                 IsFlightActive = flightRequestModel.IsFlightActive,
                 BusinessPrice = flightRequestModel.BusinessPrice,
                 EconomyPrice = flightRequestModel.EconomyPrice
             };
 
-            if (flightRequestModel.DeparTime == null || flightRequestModel.ArrivalTime == null)
+            if (flightRequestModel.DepartTime == null || flightRequestModel.ArrivalTime == null)
             {
                 throw new Exception("Depart and Arrival Time cannot be null");
             }
@@ -89,12 +99,12 @@ namespace TicketBooking.Service.Services.FlightService
 
                 var flightScheRequestModel = new FlightScheViewModel()
                 {
-                    Id = flightRequestModel.ScheduleId,
+                    Id = flight.ScheduleId,
                     DepartureAirpotId = departCode.Id,
                     ArrivalAirportId = arrivalCode.Id,
                     DepartureAirportCode = departCode.Code,
                     ArrivalAirportCode = arrivalCode.Code,
-                    DepartureTime = flightRequestModel.DeparTime,
+                    DepartureTime = flightRequestModel.DepartTime,
                     ArrivalTime = flightRequestModel.ArrivalTime
                 };
 
