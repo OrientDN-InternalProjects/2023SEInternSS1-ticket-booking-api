@@ -30,12 +30,16 @@ namespace TicketBooking.Model.Models
         public string DepartAirportCode { get; set; }
 
         [Required]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime DepartTime { get; set; }
 
         [Required]
         public string ArrivalAirportCode { get; set; }
 
         [Required]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime ArrivalTime { get; set; }
     }
 }

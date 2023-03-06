@@ -34,10 +34,10 @@ namespace TicketBookingAPI.Controllers
                 return BadRequest("No model to enter");
             }
             
-            if ((flightModel.ArrivalTime.Hour - flightModel.DepartTime.Hour) <= 1 )
-            {
-                return BadRequest("Wrong in time schedule");
-            }
+            // if ((flightModel.ArrivalTime.Hour - flightModel.DepartTime.Hour) <= 1 )
+            // {
+            //     return BadRequest("Wrong in time schedule");
+            // }
             
             
             
@@ -62,10 +62,10 @@ namespace TicketBookingAPI.Controllers
         [HttpGet]
         public async Task<ActionResult> GetFlight() => Ok(await FlightService.GetFlightAsync());
 
-        [HttpGet("{date}/GetFlightbyDate")]
-        public async Task<ActionResult> GetFlightByDate(DateTime date) => Ok(await FlightService.GetFlightAsync(date));
+        [HttpGet("GetFlightbyDate")]
+        public async Task<ActionResult> GetFlightByDate( DateTime dateRequest) => Ok(await FlightService.GetFlightAsync(dateRequest));
 
-        // [HttpGet("{id}/Getflight")]
-        // public async Task<ActionResult> GetFlightById(Guid id) => Ok(await FlightService.GetFlightAsync(id));
+        [HttpGet("GetflightByID")]
+        public async Task<ActionResult> GetFlightById(Guid id) => Ok(await FlightService.GetFlightAsync(id));
     }
 }

@@ -24,13 +24,15 @@ namespace TicketBooking.Data.Repository
         
         public async Task<IEnumerable<Flight>> GetFlightByDate(DateTime date)
         {
-            var query = from f in _context.Flights
+            var convertedDate = date.Date;
+            var query = await (from f in _context.Flights
                 join fs in _context.FlightSchedules
                     on f.ScheduleId equals fs.Id
-                where fs.DepartureTime == date
-                select f;
+                where fs.DepartureTime.Date == date
+                select f).ToListAsync();
+            
 
-            return await query.ToListAsync();
+            return  query;
         }
     }
 }
