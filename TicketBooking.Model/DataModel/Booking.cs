@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TicketBooking.Model;
 
 namespace TicketBooking.Data.DataModel
 {
@@ -43,6 +44,7 @@ namespace TicketBooking.Data.DataModel
         public ContactDetail? ContactDetail { get; set; }
         public string? UserId { get; set; }
         public ApplicationUser? User { get; set; }
+        public Payment? Payment { get; set; }
 
         public ICollection<BookingList>? BookingLists { get; set; }
         public ICollection<Passenger>? Passengers { get; set; }

@@ -7,6 +7,7 @@ using TicketBooking.Data.Infrastructure;
 using TicketBooking.Data.Repository;
 using TicketBooking.Model.DataModel;
 using TicketBooking.Service.Models;
+using TicketBooking.Service.Services.SendMailService;
 
 namespace TicketBooking.Service.Services.BookingService
 {
@@ -24,6 +25,7 @@ namespace TicketBooking.Service.Services.BookingService
         private readonly IExtraServiceRepository extraServiceRepo;
         private readonly IMapper mapper;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly ISendMailService sendMailService;
 
         public BookingService(IBookingRepository booking
             , IUnitOfWork unitOfWork
@@ -36,7 +38,8 @@ namespace TicketBooking.Service.Services.BookingService
             , IFlightRepository flightRepo
             , IBookingServiceRepository serviceRepository
             , IExtraServiceRepository extra
-            , UserManager<ApplicationUser> userManager)
+            , UserManager<ApplicationUser> userManager
+            , ISendMailService sendMailService)
         {
             bookingRepo = booking;
             this.unitOfWork = unitOfWork;
@@ -50,6 +53,7 @@ namespace TicketBooking.Service.Services.BookingService
             bookingServiceRepo = serviceRepository;
             extraServiceRepo = extra;
             this.userManager = userManager;
+            this.sendMailService = sendMailService;
         }
 
         public async Task<string> RequestBooking(BookingRequestModel model)
@@ -176,6 +180,8 @@ namespace TicketBooking.Service.Services.BookingService
             return booking;
         }
 
+
+
         public async Task<BookingList> ExtraService( BookingList bookingList, List<Guid> extraServices) {
             decimal sum = 0;
             if (extraServices.Count > 0)
@@ -202,6 +208,7 @@ namespace TicketBooking.Service.Services.BookingService
             return bookingList;
         }
 
+
         public async Task<Response> CancelBooking(Guid bookingId)
         {
             var booking = await bookingRepo.GetById(bookingId);
@@ -225,5 +232,9 @@ namespace TicketBooking.Service.Services.BookingService
             };
         }
 
+        public Task<Response> ConfirmMailBooking(Guid bookingId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

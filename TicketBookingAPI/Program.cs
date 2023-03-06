@@ -22,6 +22,11 @@ using TicketBooking.Service.Helper;
 using TicketBooking.Service.Services.ContactDetailService;
 using TicketBooking.Service.Services.BookingService;
 using TicketBooking.Service.Services.BookingListService;
+using Microsoft.Extensions.Configuration;
+using MailKit;
+using TicketBooking.Service.Services.SendMailService;
+using TicketBooking.Common.EnvironmentSetting;
+using TicketBooking.Service.Services.Payment;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -37,11 +42,16 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
 
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+builder.Services.Configure<VnpaySettings>(builder.Configuration.GetSection("VnpaySettings"));
+
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<TicketBookingDbContext>().AddDefaultTokenProviders();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
-
 builder.Services.AddScoped<IAuthenticateService, AuthenticateService>();
+builder.Services.AddScoped<ISendMailService, SendMailService>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
+
 
 builder.Services.AddAuthentication(options => {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

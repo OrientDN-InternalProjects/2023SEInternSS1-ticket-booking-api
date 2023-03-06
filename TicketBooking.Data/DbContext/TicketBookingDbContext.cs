@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using TicketBooking.Data.DataModel;
+using TicketBooking.Model;
 using TicketBooking.Model.DataModel;
 
 namespace TicketBooking.Data.DbContext
@@ -25,6 +26,7 @@ namespace TicketBooking.Data.DbContext
         public DbSet<BookingSeat> ListSeats { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<BookingExtraService> BookingServices { get; set; }
+        public DbSet<Payment> Payments { get; set; }
         #endregion
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -193,6 +195,10 @@ namespace TicketBooking.Data.DbContext
                .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
+            modelBuilder.Entity<Payment>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+            });
         }
     }
 }

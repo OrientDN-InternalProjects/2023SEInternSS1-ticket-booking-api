@@ -8,8 +8,10 @@
 		<NoWarn>8601,1998,42017, 8618</NoWarn>
 	</PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="MailKit" Version="3.6.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.14" />
+    <PackageReference Include="MimeKit" Version="3.6.0" />
   </ItemGroup>
 
   <ItemGroup>
