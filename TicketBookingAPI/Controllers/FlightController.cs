@@ -33,14 +33,14 @@ namespace TicketBookingAPI.Controllers
             {
                 return BadRequest("No model to enter");
             }
-            
-            // if ((flightModel.ArrivalTime.Hour - flightModel.DepartTime.Hour) <= 1 )
-            // {
-            //     return BadRequest("Wrong in time schedule");
-            // }
-            
-            
-            
+
+            if (flightModel.ArrivalTime.Date < flightModel.DepartTime.Date
+                || ((flightModel.ArrivalTime.Date == flightModel.DepartTime.Date)
+                    && (flightModel.ArrivalTime.Hour - flightModel.DepartTime.Hour) < 1) )
+            {
+                return BadRequest("Wrong in time schedule");
+            }
+
             await FlightService.InsertAsync(flightModel);
             return Accepted(flightModel.Id);
         }

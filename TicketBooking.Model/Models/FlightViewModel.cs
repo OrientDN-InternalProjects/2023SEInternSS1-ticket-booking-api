@@ -22,6 +22,12 @@ namespace TicketBooking.Model.Models
 
         [Required]
         public int DefaultBaggage { set; get; }
+        
+        [Required]
+        public int remainBusinessSeat { set; get; }
+        
+        [Required]
+        public int remainEconomySeat { set; get; }
 
         public decimal BusinessPrice { set; get; }
 
