@@ -12,8 +12,8 @@ using TicketBooking.Data.DbContext;
 namespace TicketBooking.Data.Migrations
 {
     [DbContext(typeof(TicketBookingDbContext))]
-    [Migration("20230302095903_Dbinit1")]
-    partial class Dbinit1
+    [Migration("20230307101048_addAirportCode")]
+    partial class addAirportCode
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

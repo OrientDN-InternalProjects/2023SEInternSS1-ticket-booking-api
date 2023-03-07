@@ -482,8 +482,7 @@ namespace TicketBooking.Data.Migrations
                     b.Property<int>("RemainingSeat")
                         .HasColumnType("int");
 
-                    b.Property<Guid?>("ScheduleId")
-                        .IsRequired()
+                    b.Property<Guid>("ScheduleId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("TotalSeat")

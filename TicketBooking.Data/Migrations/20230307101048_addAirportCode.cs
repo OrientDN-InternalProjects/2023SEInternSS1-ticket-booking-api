@@ -4,7 +4,7 @@
 
 namespace TicketBooking.Data.Migrations
 {
-    public partial class dbInit2 : Migration
+    public partial class addAirportCode : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

@@ -13,6 +13,7 @@ namespace TicketBooking.Data.Repository
     public interface IFlightRepository : IRepository<Flight>
     {
         public Task<IEnumerable<Flight>> GetFlightByDate(DateTime date);
+        public Task<IEnumerable<Flight>> GetFlightByAirport(string departairport, string arrivalairport);
     }
 
     public class FlightRepository : GenericRepository<Flight>, IFlightRepository
@@ -26,12 +27,34 @@ namespace TicketBooking.Data.Repository
         {
             var convertedDate = date.Date;
             var query = from f in _context.Flights
-                join fs in _context.FlightSchedules
-                    on f.ScheduleId equals fs.Id
-                where (DateTime.Compare(fs.DepartureTime.Date, convertedDate) == 0)
-                select f;
+                        join fs in _context.FlightSchedules 
+                        on f.ScheduleId equals fs.Id
+                        where (DateTime.Compare(fs.DepartureTime.Date, convertedDate) == 0)
+                        select f;
             
             return await query.ToListAsync();
+        }
+
+        public async Task<IEnumerable<Flight>> GetFlightByAirport(string departairport, string arrivalairport)
+        {
+            var departGUID = await (from a in _context.Airports
+                            where a.Code == departairport
+                            select a.Id).ToListAsync();
+            
+            var arrivalGUID = await (from a in _context.Airports
+                            where a.Code == arrivalairport
+                            select a.Id).ToListAsync();
+
+            var query = from f in _context.Flights
+                        join fs in _context.FlightSchedules
+                        on f.ScheduleId equals fs.Id
+                        where (departGUID.Contains(fs.DepartureAirportId)
+                               && arrivalGUID.Contains(fs.ArrivalAirportId))
+                        select f;
+
+            return await query.ToListAsync();
+
+
         }
     }
 }

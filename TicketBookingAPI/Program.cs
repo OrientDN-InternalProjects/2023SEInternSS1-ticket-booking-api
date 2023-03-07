@@ -19,6 +19,7 @@ using TicketBooking.Service.Services.AircraftService;
 using TicketBooking.Service.Services.AuthenticateService;
 using TicketBooking.Data.DbSeeder;
 using System.Data;
+using TicketBooking.Common.AppExceptions;
 using TicketBooking.Service.Services.AirportService;
 using TicketBooking.Service.Services.FlightScheService;
 using TicketBooking.Service.Services.FlightService;
@@ -48,6 +49,7 @@ builder.Services.AddScoped<IAircraftDataSeeder, AircraftDataSeeder>();
 builder.Services.AddScoped<IAirportDataSeeder, AirportDataSeeder>();
 builder.Services.AddScoped<ISeatClassDataSeeder, SeatClassDataSeeder>();
 builder.Services.AddScoped<IDataSeeder, DataSeeder>();
+builder.Services.AddScoped<IFlightValidation, FlightValidation>();
 
 builder.Services.AddAuthentication(options =>
 {

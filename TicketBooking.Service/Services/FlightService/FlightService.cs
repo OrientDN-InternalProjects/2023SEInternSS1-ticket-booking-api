@@ -60,6 +60,14 @@ namespace TicketBooking.Service.Services.FlightService
                 ? throw new Exception("None flight on that day")
                 : mapper.Map<IEnumerable<FlightViewModel>>(flight);
         }
+
+        public async Task<IEnumerable<FlightViewModel>> GetFlightAsync(string departairport, string arrivalairport)
+        {
+            var flight = await flightRepo.GetFlightByAirport(departairport, arrivalairport);
+            return flight == null
+                ? throw new Exception("The airport holds no flight")
+                : mapper.Map<IEnumerable<FlightViewModel>>(flight);
+        }
         
         public async Task<int> UpdateFlightAsync(FlightViewModel flightViewModel)
         {

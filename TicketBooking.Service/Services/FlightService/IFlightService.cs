@@ -18,5 +18,6 @@ namespace TicketBooking.Service.Services.FlightService
         Task<int> InsertAsync(FlightRequestModel flightRequestModel);
         Task<int> RemoveAsync(Guid id);
         Task<IEnumerable<FlightViewModel>> GetFlightAsync(DateTime date);
+        Task<IEnumerable<FlightViewModel>> GetFlightAsync(string departairport, string arrivalairport);
     }
 }
