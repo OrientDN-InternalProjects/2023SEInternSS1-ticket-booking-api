@@ -43,13 +43,14 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
 
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
-builder.Services.Configure<VnpaySettings>(builder.Configuration.GetSection("VnpaySettings"));
+builder.Services.Configure<VnpaySettings>(builder.Configuration.GetSection("Vnpay"));
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<TicketBookingDbContext>().AddDefaultTokenProviders();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<IAuthenticateService, AuthenticateService>();
 builder.Services.AddScoped<ISendMailService, SendMailService>();
+builder.Services.AddScoped<IBillRepository, BillRepository>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 
 

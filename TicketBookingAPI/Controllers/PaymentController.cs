@@ -19,14 +19,14 @@ namespace TicketBookingAPI.Controllers
         }
 
         [HttpPost("request-payment")]
-        public IActionResult CreatePaymentUrl(PaymentInformationModel model)
+        public async Task<IActionResult> CreatePaymentUrl(PaymentInformationModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             logger.LogInformation("Start Payment");
-            var url = paymentService.CreatePaymentUrl(model, HttpContext);
+            var url = await paymentService.CreatePaymentUrl(model, HttpContext);
             if (url != null)
                 return StatusCode(StatusCodes.Status201Created, url);
 
@@ -35,9 +35,10 @@ namespace TicketBookingAPI.Controllers
         }
 
         [HttpGet("callback-payment")]
-        public IActionResult PaymentCallback()
+        public async Task<IActionResult> PaymentCallback()
         {
-            var response = paymentService.PaymentExecute(Request.Query);
+            logger.LogInformation("Start save bill");
+            var response = await paymentService.PaymentExecute(Request.Query);
 
             return Ok(response);
         }

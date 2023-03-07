@@ -49,6 +49,7 @@ namespace TicketBookingAPI.Controllers
         }
 
         [HttpPut("update-aircraft")]
+
         public async Task<ActionResult> UpdateAircraft(AircraftViewModel aircraftModel)
         {
             await Aircraftservice.UpdateAircraftAsync(aircraftModel);

@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
+using TicketBooking.Common.Constant;
 using TicketBooking.Service.Models;
 
 namespace TicketBooking.Service.Services.Payment
@@ -14,7 +15,7 @@ namespace TicketBooking.Service.Services.Payment
         private readonly SortedList<string, string> _requestData = new SortedList<string, string>(new VnPayCompare());
         private readonly SortedList<string, string> _responseData = new SortedList<string, string>(new VnPayCompare());
 
-        public PaymentResponseModel GetFullResponseData(IQueryCollection collection, string hashSecret)
+        public async Task<PaymentResponseModel> GetFullResponseData(IQueryCollection collection, string hashSecret)
         {
             var vnPay = new VnPayLibrary();
 
@@ -25,16 +26,21 @@ namespace TicketBooking.Service.Services.Payment
                     vnPay.AddResponseData(key, value);
                 }
             }
-
+            string message = string.Empty;
             var orderId = Convert.ToInt64(vnPay.GetResponseData("vnp_TxnRef"));
             var vnPayTranId = Convert.ToInt64(vnPay.GetResponseData("vnp_TransactionNo"));
-            var vnpResponseCode = vnPay.GetResponseData("vnp_ResponseCode");
-            var vnpSecureHash =
-                collection.FirstOrDefault(k => k.Key == "vnp_SecureHash").Value; //hash của dữ liệu trả về
+            var vnpResponseCode =  vnPay.GetResponseData("vnp_ResponseCode");   
+            var vnpSecureHash = 
+                collection.FirstOrDefault(k => k.Key == "vnp_SecureHash").Value; 
             var orderInfo = vnPay.GetResponseData("vnp_OrderInfo");
+            var amount = Convert.ToInt64(vnPay.GetResponseData("vnp_Amount"));
+            var bankCode = vnPay.GetResponseData("vnp_BankCode");
+            var payDate = vnPay.GetResponseData("vnp_PayDate");
+            var checkSignature = 
+                vnPay.ValidateSignature(vnpSecureHash, hashSecret);
 
-            var checkSignature =
-                vnPay.ValidateSignature(vnpSecureHash, hashSecret); //check Signature
+            if (vnpResponseCode.Contains(StatusVnPay.Success))
+                message = StatusVnPay.GetName(vnpResponseCode);
 
             if (!checkSignature)
                 return new PaymentResponseModel()
@@ -46,12 +52,15 @@ namespace TicketBooking.Service.Services.Payment
             {
                 Success = true,
                 PaymentMethod = "VnPay",
-                OrderDescription = orderInfo,
                 OrderId = orderId.ToString(),
-                PaymentId = vnPayTranId.ToString(),
-                TransactionId = vnPayTranId.ToString(),
+                OrderDescription = orderInfo,
+                PaymentId = vnPayTranId,
+                Amount = amount,
+                BankCode = bankCode,
+                PayDate = payDate.ToString(),
+                VnPayResponseCode = vnpResponseCode,
                 Token = vnpSecureHash,
-                VnPayResponseCode = vnpResponseCode
+                PaymentStatus = message,
             };
         }
         public string GetIpAddress(HttpContext context)

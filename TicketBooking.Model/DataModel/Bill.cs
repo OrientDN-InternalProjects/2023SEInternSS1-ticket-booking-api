@@ -7,17 +7,17 @@ using System.Text;
 using System.Threading.Tasks;
 using TicketBooking.Data.DataModel;
 
-namespace TicketBooking.Model
+namespace TicketBooking.Model.DataModel
 {
-    [Table("Payment")]
-    public class Payment
+    [Table("Bill")]
+    public class Bill
     {
         [Key]
         public Guid Id { get; set; }
         public long Amount { get; set; }
-
-        public DateTime CreatedDate { get; set; }
-        public string Status { get; set; }
+        public string OrderId { get; set; }
+        public string Description { get; set; } 
+        public string CreatedDate { get; set; }
 
         public long PaymentTranId { get; set; }
         public string BankCode { get; set; }

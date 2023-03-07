@@ -39,6 +39,7 @@ namespace TicketBooking.Data.DataModel
 
         [MaxLength(6)]
         public string? AircraftModel { get; set; }
+        public string BookingCode { get; set; }
         public Guid? BookingId { get; set; }
         public Booking? Booking { get; set; }
         public Guid? PassengerId { get; set; }

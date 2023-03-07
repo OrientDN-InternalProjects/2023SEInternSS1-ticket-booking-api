@@ -10,7 +10,8 @@ namespace TicketBooking.Service.Services.Payment
 {
     public interface IPaymentService
     {
-        string CreatePaymentUrl(PaymentInformationModel model, HttpContext context);
-        PaymentResponseModel PaymentExecute(IQueryCollection collections);
+        Task<string> CreatePaymentUrl(PaymentInformationModel model, HttpContext context);
+        Task<PaymentResponseModel> PaymentExecute(IQueryCollection collections);
+        Task SavePayment(PaymentResponseModel response);
     }
 }
