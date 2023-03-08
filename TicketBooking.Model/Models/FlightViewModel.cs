@@ -37,5 +37,11 @@ namespace TicketBooking.Model.Models
         public string ArrivalAirport { set; get; }
         
         public string ArrivalTime { set; get; }
+
+        // public FlightViewModel(FlightSchedule sche)
+        // {
+        //     this.DepartAirport = sche.AirportDepart.Code;
+        //     
+        // }
     }
 }

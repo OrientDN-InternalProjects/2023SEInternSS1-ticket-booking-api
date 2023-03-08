@@ -35,7 +35,7 @@ namespace TicketBooking.Service.Services.FlightService
 
         public async Task<IEnumerable<FlightViewModel>> GetFlightAsync()
         {
-            var flight = await flightRepo.GetAll();
+            var flight = await flightRepo.GetAllFlight();
             
             if (flight == null)
             {
