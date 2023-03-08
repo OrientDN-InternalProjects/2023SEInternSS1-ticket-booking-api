@@ -36,7 +36,7 @@ namespace TicketBooking.Service.Services.FlightService
         public async Task<IEnumerable<FlightViewModel>> GetFlightAsync()
         {
             var flight = await flightRepo.GetAll();
-
+            
             if (flight == null)
             {
                 throw new Exception("No flight available now");

@@ -25,6 +25,10 @@ namespace TicketBooking.Service
 
             CreateMap<FlightViewModel, Flight>().ReverseMap();
 
+            CreateMap<Flight, FlightViewModel>()
+                .ForMember(dest => dest.DepartTime, act => act.MapFrom(src => src.Schedule.DepartureTime.ToString("yyyy-MM-dd HH:mm")))
+                .ForMember(dest => dest.ArrivalTime, act => act.MapFrom(src => src.Schedule.ArrivalTime.ToString("yyyy-MM-dd HH:mm")));
+
             CreateMap<FlightScheViewModel, FlightSchedule>()
             .ForMember(dest => dest.Id, act => act.MapFrom(src => src.Id))
             .ForMember(dest => dest.DepartureAirportId, act => act.MapFrom(src => src.DepartureAirpotId))

@@ -30,8 +30,12 @@ namespace TicketBooking.Model.Models
 
         public decimal EconomyPrice { set; get; }
 
-        public DateTime DepartTime { set; get; }
+        public string DepartAirport { set; get; }
         
-        public DateTime arrivalTime { set; get; }
+        public string DepartTime { set; get; }
+        
+        public string ArrivalAirport { set; get; }
+        
+        public string ArrivalTime { set; get; }
     }
 }

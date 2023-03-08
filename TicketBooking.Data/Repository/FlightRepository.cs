@@ -31,7 +31,7 @@ namespace TicketBooking.Data.Repository
                         on f.ScheduleId equals fs.Id
                         where (DateTime.Compare(fs.DepartureTime.Date, convertedDate) == 0)
                         select f;
-            
+
             return await query.ToListAsync();
         }
 
@@ -46,11 +46,24 @@ namespace TicketBooking.Data.Repository
                             select a.Id).ToListAsync();
 
             var query = from f in _context.Flights
-                        join fs in _context.FlightSchedules
-                        on f.ScheduleId equals fs.Id
+                        join fs in _context.FlightSchedules on f.ScheduleId equals fs.Id
+                        join ar in _context.Aircrafts on f.AircraftId equals ar.Id
                         where (departGUID.Contains(fs.DepartureAirportId)
                                && arrivalGUID.Contains(fs.ArrivalAirportId))
-                        select f;
+                        select new Flight
+                        {
+                            Id = f.Id,
+                            AircraftId = f.AircraftId,
+                            Aircraft = f.Aircraft,
+                            TotalSeat = f.TotalSeat,
+                            RemainingSeat = f.RemainingSeat,
+                            IsFlightActive = f.IsFlightActive,
+                            DefaultBaggage = f.DefaultBaggage,
+                            BusinessPrice = f.BusinessPrice,
+                            EconomyPrice = f.EconomyPrice,
+                            ScheduleId = f.ScheduleId,
+                            Schedule = f.Schedule
+                        };
 
             return await query.ToListAsync();
 
