@@ -64,7 +64,7 @@ namespace TicketBooking.Service.Services.FlightService
         public async Task<IEnumerable<FlightViewModel>> GetFlightAsync(string departairport, string arrivalairport)
         {
             var flight = await flightRepo.GetFlightByAirport(departairport, arrivalairport);
-            return flight == null
+            return !flight.Any()
                 ? throw new Exception("The airport holds no flight")
                 : mapper.Map<IEnumerable<FlightViewModel>>(flight);
         }
@@ -76,13 +76,14 @@ namespace TicketBooking.Service.Services.FlightService
             return await unitOfWork.CompletedAsync();
         }
 
-        public async Task<int> InsertAsync(FlightRequestModel flightRequestModel)
+        public async Task<Guid> InsertAsync(FlightRequestModel flightRequestModel)
         {
             var tempAircarftModel = await aircraftRepo.GetById(flightRequestModel.AircraftId);
             if (tempAircarftModel == null)
             {
                 throw new Exception("The Aircraft ID" + flightRequestModel.AircraftId  + "does not exist");
             }
+            
             var flight = new Flight()
             {
                 Id = Guid.NewGuid(),
@@ -118,10 +119,10 @@ namespace TicketBooking.Service.Services.FlightService
 
                 await flightScheServices.InsertAsync(flightScheRequestModel);
             }
-
-
+            
             await flightRepo.Add(flight);
-            return await unitOfWork.CompletedAsync();
+            await unitOfWork.CompletedAsync();
+            return flight.Id;
         }
 
         public async Task<int> RemoveAsync(Guid id)

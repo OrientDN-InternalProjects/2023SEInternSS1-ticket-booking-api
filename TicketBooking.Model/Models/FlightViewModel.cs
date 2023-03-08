@@ -9,13 +9,10 @@ using TicketBooking.Data.DataModel;
 namespace TicketBooking.Model.Models
 {
     public class FlightViewModel
-    { 
-        [Required]
-        public Guid Id { set; get; }
-        
-        public string? AircraftModel { set; get; }
+    {
+        public string AircraftModel { set; get; }
 
-        public string? AircraftManufacture { get; set; }
+        public string AircraftManufacture { get; set; }
         
         [Required]
         public bool IsFlightActive { set; get; }
@@ -34,5 +31,7 @@ namespace TicketBooking.Model.Models
         public decimal EconomyPrice { set; get; }
 
         public DateTime DepartTime { set; get; }
+        
+        public DateTime arrivalTime { set; get; }
     }
 }

@@ -11,9 +11,6 @@ namespace TicketBooking.Model.Models
     public class FlightRequestModel
     {
         [Required]
-        public Guid Id { set; get; }
-
-        [Required]
         public Guid AircraftId { set; get; }
 
         [Required]

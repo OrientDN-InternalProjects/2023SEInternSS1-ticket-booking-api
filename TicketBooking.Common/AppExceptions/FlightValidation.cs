@@ -40,7 +40,7 @@ namespace TicketBooking.Common.AppExceptions
                 return false;
             }
 
-            if (regexItem.IsMatch(airportname))
+            if (!regexItem.IsMatch(airportname))
             {
                 return false;
             }

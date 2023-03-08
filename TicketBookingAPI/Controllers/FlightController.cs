@@ -22,25 +22,25 @@ namespace TicketBookingAPI.Controllers
     public class FlightControllers : ControllerBase
     {
         private IFlightService flightservice { get; }
-        private IFlightValidation flightvalidate { get;  } 
-        
-        public FlightControllers(IFlightService flightservice, 
-                                 IFlightValidation flightvalidate )
+        private IFlightValidation flightvalidate { get; }
+
+        public FlightControllers(IFlightService flightservice,
+            IFlightValidation flightvalidate)
         {
             this.flightservice = flightservice;
             this.flightvalidate = flightvalidate;
         }
-        
-        
+
+
         [HttpPost("add_flight")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<ActionResult> AddFlight(FlightRequestModel flightModel)
         {
             if (flightModel == null)
             {
                 return BadRequest("No model to enter");
             }
-            
+
             if (!flightvalidate.FlightDateValid(flightModel.DepartTime, flightModel.ArrivalTime))
             {
                 return BadRequest("Wrong in time schedule");
@@ -52,13 +52,11 @@ namespace TicketBookingAPI.Controllers
                 return BadRequest("Wrong airport name");
             }
 
-            //flightvalidate.airportNameProcess(flightModel.DepartAirportCode);
-
-            await flightservice.InsertAsync(flightModel);
-            return Accepted(flightModel.Id);
+            return Accepted(await flightservice.InsertAsync(flightModel));
         }
 
         [HttpDelete]
+        //[Authorize(Roles = "Admin")]
         public async Task<ActionResult> RemoveFlight(Guid id)
         {
             await flightservice.RemoveAsync(id);
@@ -66,6 +64,7 @@ namespace TicketBookingAPI.Controllers
         }
 
         [HttpPut]
+        //[Authorize(Roles = "Admin")]
         public async Task<ActionResult> UpdateFlight(FlightViewModel flightModel)
         {
             await flightservice.UpdateFlightAsync(flightModel);
@@ -73,18 +72,44 @@ namespace TicketBookingAPI.Controllers
         }
 
         [HttpGet]
+        //[Authorize(Roles = "Admin, User")]
         public async Task<ActionResult> GetFlight() => Ok(await flightservice.GetFlightAsync());
-
+        
         [HttpGet("GetFlightbyDate")]
-        public async Task<ActionResult> GetFlightByDate( DateTime dateRequest) => Ok(await flightservice.GetFlightAsync(dateRequest));
+        //[Authorize(Roles = "Admin, User")]
+        public async Task<ActionResult> GetFlightByDate(DateTime dateRequest)
+        {
+            if (!(await flightservice.GetFlightAsync(dateRequest)).Any())
+            {
+                return BadRequest("There is no flight on that day");
+            }
+
+            return Ok(await flightservice.GetFlightAsync(dateRequest));
+        }
+
 
         [HttpGet("GetFlightbyAirport")]
+        //[Authorize(Roles = "Admin, User")]
         public async Task<ActionResult> GetFlightByAirport(string departairport, string arrivalairport)
         {
+            if (!(await flightservice.GetFlightAsync(departairport, arrivalairport)).Any())
+            {
+                return BadRequest("No flight is hosted");
+            }
+
             return Ok(await flightservice.GetFlightAsync(departairport, arrivalairport));
         }
-        
+
         [HttpGet("GetflightByID")]
-        public async Task<ActionResult> GetFlightById(Guid id) => Ok(await flightservice.GetFlightAsync(id));
-    }
+        //[Authorize(Roles = "Admin")]
+        public async Task<ActionResult> GetFlightById(Guid id)
+        {
+            if ((await flightservice.GetFlightAsync(id)) == null)
+            {
+                return BadRequest("No flight matches with the ID");
+            }
+            
+            return Ok(await flightservice.GetFlightAsync(id));
+        }
+}
 }

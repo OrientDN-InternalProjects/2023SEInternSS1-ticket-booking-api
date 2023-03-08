@@ -45,26 +45,8 @@ namespace TicketBooking.Service.Services.AirportService
 
         public async Task<AirportViewModel> GetAirportAsync(string code)
         {
-            var airports = await airportRepo.GetAll();
-
-            //Go through all object list return from GetAll() to check the code
-            foreach (var airport in airports)
-            {
-                if (airport.Code == code)
-                {
-                    var result = new AirportViewModel()
-                    {
-                        Id = airport.Id,
-                        Name = airport.Name,
-                        City = airport.City,
-                        Country = airport.Country
-                    };
-
-                    return result;
-                }
-            }
-
-            throw new Exception("No airport exist");
+            var airport = await airportRepo.GetByAirportCode(code);
+            return airport == null ? throw new Exception("ID cannot be found") : mapper.Map<AirportViewModel>(airport);
         }
 
         public async Task<int> UpdateAirportAsync(AirportViewModel airportViewModel)

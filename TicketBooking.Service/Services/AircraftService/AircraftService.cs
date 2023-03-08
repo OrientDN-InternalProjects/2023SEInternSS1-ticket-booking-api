@@ -52,7 +52,6 @@ namespace TicketBooking.Service.Services.AircraftService
 
         public async Task<int> InsertAsync(AircraftViewModel aircraftDto)
         {
-
             var aircraft = mapper.Map<Aircraft>(aircraftDto);
             await aircraftRepo.Add(aircraft);
             return await unitOfWork.CompletedAsync();
