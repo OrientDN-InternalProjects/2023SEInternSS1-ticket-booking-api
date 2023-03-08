@@ -11,5 +11,7 @@ namespace TicketBooking.Service.Models
         public bool? Status { get; set; }
         public string? Message { get; set; }
         public object? Data { get; set; }
+        public IEnumerable<object>? List { get; set; } 
     }
+        
 }

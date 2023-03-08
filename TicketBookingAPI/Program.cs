@@ -27,6 +27,7 @@ using MailKit;
 using TicketBooking.Service.Services.SendMailService;
 using TicketBooking.Common.EnvironmentSetting;
 using TicketBooking.Service.Services.Payment;
+using TicketBooking.Service.Services.TicketService;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -52,6 +53,7 @@ builder.Services.AddScoped<IAuthenticateService, AuthenticateService>();
 builder.Services.AddScoped<ISendMailService, SendMailService>();
 builder.Services.AddScoped<IBillRepository, BillRepository>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<IExportTicket, ExportTicketService>();
 
 
 builder.Services.AddAuthentication(options => {
@@ -93,6 +95,8 @@ builder.Services.AddScoped<IBookingSeatRepository, BookingSeatRepository>();
 builder.Services.AddScoped<IFlightRepository, FlightRepository>();
 builder.Services.AddScoped<IPassengerRepository, PassengerRepository>();
 builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+builder.Services.AddScoped<IFlightScheduleRepository, FlightScheduleRepository>();
+builder.Services.AddScoped<IAirportRepository, AirportRepository>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 var app = builder.Build();

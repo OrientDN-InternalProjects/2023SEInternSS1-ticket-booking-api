@@ -43,26 +43,19 @@ namespace TicketBooking.Service.Services.Payment
             var pay = new VnPayLibrary();
             var urlCallBack = configuration["PaymentCallBack:ReturnUrl"];
 
-            //pay.AddRequestData("vnp_Version", configuration["Vnpay:Version"]);
-            //pay.AddRequestData("vnp_Command", configuration["Vnpay:Command"]);
-            //pay.AddRequestData("vnp_TmnCode", configuration["Vnpay:TmnCode"]);
             pay.AddRequestData("vnp_Version", vnpaySettings.Version);
             pay.AddRequestData("vnp_Command", vnpaySettings.Command);
             pay.AddRequestData("vnp_TmnCode", vnpaySettings.TmnCode);
             pay.AddRequestData("vnp_Amount", ((int)booking.TotalPrice * 100).ToString());
             pay.AddRequestData("vnp_CreateDate", timeNow.ToString("yyyyMMddHHmmss"));
-            //pay.AddRequestData("vnp_CurrCode", configuration["Vnpay:CurrCode"]);
             pay.AddRequestData("vnp_CurrCode", vnpaySettings.CurrCode);
             pay.AddRequestData("vnp_IpAddr", pay.GetIpAddress(context));
-            //pay.AddRequestData("vnp_Locale", configuration["Vnpay:Locale"]);
             pay.AddRequestData("vnp_Locale", vnpaySettings.Locale);
             pay.AddRequestData("vnp_OrderInfo", $"{model.BookingId}");
             pay.AddRequestData("vnp_OrderType", model.OrderType);
             pay.AddRequestData("vnp_ReturnUrl", urlCallBack);
             pay.AddRequestData("vnp_TxnRef", tick);
 
-            //var paymentUrl =
-            //    pay.CreateRequestUrl(configuration["Vnpay:BaseUrl"], configuration["Vnpay:HashSecret"]);
             var paymentUrl =
                 pay.CreateRequestUrl(vnpaySettings.BaseUrl, vnpaySettings.HashSecret);
 

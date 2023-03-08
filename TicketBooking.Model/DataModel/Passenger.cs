@@ -44,6 +44,10 @@ namespace TicketBooking.Data.DataModel
 
         public Booking? Booking { get; set; }
 
-        public Ticket? Ticket { get; set; }
+        public ICollection<Ticket>? Tickets { get; set; }
+        public Passenger()
+        {
+            Tickets = new HashSet<Ticket>();
+        }
     }
 }

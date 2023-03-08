@@ -9,7 +9,7 @@ using TicketBooking.Data.Infrastructure;
 
 namespace TicketBooking.Data.Repository
 {
-    public interface IFlightRepository
+    public interface IFlightRepository: IRepository<Flight>
     {
         Task<Flight> GetFlight (Guid id);
     }

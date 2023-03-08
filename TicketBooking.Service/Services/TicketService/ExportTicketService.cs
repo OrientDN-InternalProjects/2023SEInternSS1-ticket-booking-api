@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using TicketBooking.Data.DataModel;
 using TicketBooking.Data.Infrastructure;
 using TicketBooking.Data.Repository;
 using TicketBooking.Service.Models;
@@ -11,14 +7,27 @@ namespace TicketBooking.Service.Services.TicketService
 {
     public class ExportTicketService : IExportTicket
     {
+        
+        private readonly ITicketRepository ticketRepo;
+        private readonly IFlightRepository flightRepo;
+        private readonly IPassengerRepository passengerRepo;
+        private readonly IBookingRepository bookingRepo;
+        private readonly IBookingListRepository bookingListRepo;
         private IUnitOfWork unitOfWork;
-        private readonly TicketRepository ticketRepo;
-        private readonly FlightRepository flightRepo;
-        private readonly PassengerRepository passengerRepo;
-        private readonly BookingRepository bookingRepo;
-        public Task<List<TicketViewModel>> ExportTicket(Guid bookingId)
+        public ExportTicketService(IUnitOfWork unitOfWork, 
+            ITicketRepository ticketRepo, 
+            IFlightRepository flightRepo, 
+            IPassengerRepository passengerRepo, 
+            IBookingRepository bookingRepo, 
+            IBookingListRepository bookingListRepo)
         {
-            throw new NotImplementedException();
+            this.unitOfWork = unitOfWork;
+            this.ticketRepo = ticketRepo;
+            this.flightRepo = flightRepo;
+            this.passengerRepo = passengerRepo;
+            this.bookingRepo = bookingRepo;
+            this.bookingListRepo = bookingListRepo;
         }
+
     }
 }

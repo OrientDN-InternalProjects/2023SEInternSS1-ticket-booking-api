@@ -9,6 +9,5 @@ namespace TicketBooking.Service.Services.TicketService
 {
     public interface IExportTicket
     {
-        Task<List<TicketViewModel>> ExportTicket(Guid bookingId);
     }
 }

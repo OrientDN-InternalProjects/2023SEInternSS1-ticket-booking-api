@@ -9,7 +9,7 @@ using TicketBooking.Data.Infrastructure;
 
 namespace TicketBooking.Data.Repository
 {
-    public interface ITicketRepository
+    public interface ITicketRepository: IRepository<Ticket>
     {
         Task<bool> AddTicket(Ticket ticket);
     }

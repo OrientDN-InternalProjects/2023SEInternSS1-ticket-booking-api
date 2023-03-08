@@ -155,10 +155,6 @@ namespace TicketBooking.Data.DbContext
                 entity.HasOne(e => e.Booking)
                .WithMany(e => e.Passengers)
                .HasForeignKey(e => e.BookingId);
-
-                entity.HasOne(e => e.Ticket)
-                .WithOne(e => e.Passenger)
-                .HasForeignKey<Ticket>(e => e.PassengerId);
             });
 
             modelBuilder.Entity<Ticket>(entity =>
@@ -169,6 +165,11 @@ namespace TicketBooking.Data.DbContext
                .WithMany(e => e.Tickets)
                .HasForeignKey(e => e.BookingId)
                .OnDelete(DeleteBehavior.ClientSetNull);
+                
+                entity.HasOne(e => e.Passenger)
+                .WithMany(e => e.Tickets)
+                .HasForeignKey(e => e.PassengerId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
             });
             modelBuilder.Entity<Ticket>(entity =>
             {
