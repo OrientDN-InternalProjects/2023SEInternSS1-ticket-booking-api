@@ -25,6 +25,12 @@ namespace TicketBooking.Data.DataModel
 
         [Required]
         public int RemainingSeat { set; get; }
+        
+        [Required]
+        public int RemainEconomySeat { set; get; }
+        
+        [Required]
+        public int RemainBusinessSeat { set; get; }
 
         [Required]
         public bool IsFlightActive { set; get; }

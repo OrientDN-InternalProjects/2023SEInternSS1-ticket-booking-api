@@ -20,11 +20,7 @@ namespace TicketBooking.Model.Models
         [Required]
         public int DefaultBaggage { set; get; }
         
-        [Required]
-        public int remainBusinessSeat { set; get; }
         
-        [Required]
-        public int remainEconomySeat { set; get; }
 
         public decimal BusinessPrice { set; get; }
 
@@ -38,10 +34,10 @@ namespace TicketBooking.Model.Models
         
         public string ArrivalTime { set; get; }
 
-        // public FlightViewModel(FlightSchedule sche)
-        // {
-        //     this.DepartAirport = sche.AirportDepart.Code;
-        //     
-        // }
+        [Required]
+        public int remainBusinessSeat { set; get; }
+        
+        [Required]
+        public int remainEconomySeat { set; get; }
     }
 }

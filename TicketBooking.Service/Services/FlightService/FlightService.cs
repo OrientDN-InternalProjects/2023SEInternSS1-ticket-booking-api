@@ -90,6 +90,8 @@ namespace TicketBooking.Service.Services.FlightService
                 AircraftId = flightRequestModel.AircraftId,
                 TotalSeat = tempAircarftModel.NumColumnSeat * tempAircarftModel.NumRowSeat,
                 RemainingSeat = tempAircarftModel.NumColumnSeat * tempAircarftModel.NumRowSeat,
+                RemainEconomySeat = tempAircarftModel.NumColumnSeat * tempAircarftModel.NumRowEconomy,
+                RemainBusinessSeat = tempAircarftModel.NumColumnSeat * tempAircarftModel.NumRowBusiness,
                 ScheduleId = Guid.NewGuid(),
                 DefaultBaggage = flightRequestModel.DefaultBaggage,
                 IsFlightActive = flightRequestModel.IsFlightActive,
