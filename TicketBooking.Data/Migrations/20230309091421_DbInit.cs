@@ -59,8 +59,8 @@ namespace TicketBooking.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -117,8 +117,7 @@ namespace TicketBooking.Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     SeatName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(10,2)", nullable: false)
+                    Description = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -266,8 +265,8 @@ namespace TicketBooking.Data.Migrations
                     JwtId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsUsed = table.Column<bool>(type: "bit", nullable: false),
                     IsReVoke = table.Column<bool>(type: "bit", nullable: false),
-                    IssuedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ExpiredAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    IssuedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ExpiredAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -289,8 +288,8 @@ namespace TicketBooking.Data.Migrations
                     Reference = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: false),
                     TotalPrice = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     IsPaid = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsRoundFlight = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    ExtraBaggageId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ContactId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
@@ -306,11 +305,6 @@ namespace TicketBooking.Data.Migrations
                         name: "FK_Booking_ContactDetail_ContactId",
                         column: x => x.ContactId,
                         principalTable: "ContactDetail",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Booking_ExtraService_ExtraBaggageId",
-                        column: x => x.ExtraBaggageId,
-                        principalTable: "ExtraService",
                         principalColumn: "Id");
                 });
 
@@ -334,14 +328,12 @@ namespace TicketBooking.Data.Migrations
                         name: "FK_Seat_Aircraft_AirCraftId",
                         column: x => x.AirCraftId,
                         principalTable: "Aircraft",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Seat_SeatClass_SeatClassId",
                         column: x => x.SeatClassId,
                         principalTable: "SeatClass",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -354,6 +346,8 @@ namespace TicketBooking.Data.Migrations
                     RemainingSeat = table.Column<int>(type: "int", nullable: false),
                     IsFlightActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     DefaultBaggage = table.Column<int>(type: "int", nullable: false),
+                    BusinessPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    EconomyPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     ScheduleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
@@ -374,18 +368,42 @@ namespace TicketBooking.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Bill",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Amount = table.Column<long>(type: "bigint", nullable: false),
+                    OrderId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedDate = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PaymentTranId = table.Column<long>(type: "bigint", nullable: false),
+                    BankCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PayStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BookingId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Bill", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Bill_Booking_BookingId",
+                        column: x => x.BookingId,
+                        principalTable: "Booking",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Passenger",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FirstName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
                     LastName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
-                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateOfBirth = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Nation = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
                     IdentityCard = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     ProvideNa = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
-                    ExpDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    BookingId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    ExpDate = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BookingId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -394,8 +412,7 @@ namespace TicketBooking.Data.Migrations
                         name: "FK_Passenger_Booking_BookingId",
                         column: x => x.BookingId,
                         principalTable: "Booking",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -403,11 +420,10 @@ namespace TicketBooking.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    BookingId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ExtraServiceId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    FlightId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     NumberSeat = table.Column<int>(type: "int", nullable: false),
-                    FlightPrice = table.Column<decimal>(type: "decimal(10,2)", nullable: false)
+                    FlightPrice = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    BookingId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    FlightId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -416,11 +432,6 @@ namespace TicketBooking.Data.Migrations
                         name: "FK_BookingList_Booking_BookingId",
                         column: x => x.BookingId,
                         principalTable: "Booking",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_BookingList_ExtraService_ExtraServiceId",
-                        column: x => x.ExtraServiceId,
-                        principalTable: "ExtraService",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_BookingList_Flight_FlightId",
@@ -434,15 +445,16 @@ namespace TicketBooking.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PassengerName = table.Column<string>(type: "varchar", nullable: false),
-                    LocationFrom = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
-                    LocationTo = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
-                    SeatClass = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false),
+                    PassengerName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LocationFrom = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    LocationTo = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    SeatClass = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     DepartureTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    AirlineName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
-                    AircraftModel = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: false),
-                    BookingId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PassengerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    AirlineName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    AircraftModel = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: true),
+                    BookingCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BookingId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    PassengerId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -456,8 +468,7 @@ namespace TicketBooking.Data.Migrations
                         name: "FK_Ticket_Passenger_PassengerId",
                         column: x => x.PassengerId,
                         principalTable: "Passenger",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -465,7 +476,6 @@ namespace TicketBooking.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PriceSeat = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     SeatId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     BookingListId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
@@ -481,8 +491,30 @@ namespace TicketBooking.Data.Migrations
                         name: "FK_BookingSeat_Seat_SeatId",
                         column: x => x.SeatId,
                         principalTable: "Seat",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BookingService",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    BookingListId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ExtraServiceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BookingService", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BookingService_BookingList_BookingListId",
+                        column: x => x.BookingListId,
+                        principalTable: "BookingList",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_BookingService_ExtraService_ExtraServiceId",
+                        column: x => x.ExtraServiceId,
+                        principalTable: "ExtraService",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -525,16 +557,14 @@ namespace TicketBooking.Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Booking_ContactId",
-                table: "Booking",
-                column: "ContactId",
-                unique: true,
-                filter: "[ContactId] IS NOT NULL");
+                name: "IX_Bill_BookingId",
+                table: "Bill",
+                column: "BookingId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Booking_ExtraBaggageId",
+                name: "IX_Booking_ContactId",
                 table: "Booking",
-                column: "ExtraBaggageId");
+                column: "ContactId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Booking_UserId",
@@ -545,11 +575,6 @@ namespace TicketBooking.Data.Migrations
                 name: "IX_BookingList_BookingId",
                 table: "BookingList",
                 column: "BookingId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BookingList_ExtraServiceId",
-                table: "BookingList",
-                column: "ExtraServiceId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BookingList_FlightId",
@@ -566,6 +591,16 @@ namespace TicketBooking.Data.Migrations
                 table: "BookingSeat",
                 column: "SeatId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BookingService_BookingListId",
+                table: "BookingService",
+                column: "BookingListId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BookingService_ExtraServiceId",
+                table: "BookingService",
+                column: "ExtraServiceId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Flight_AircraftId",
@@ -615,8 +650,7 @@ namespace TicketBooking.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Ticket_PassengerId",
                 table: "Ticket",
-                column: "PassengerId",
-                unique: true);
+                column: "PassengerId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -637,7 +671,13 @@ namespace TicketBooking.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Bill");
+
+            migrationBuilder.DropTable(
                 name: "BookingSeat");
+
+            migrationBuilder.DropTable(
+                name: "BookingService");
 
             migrationBuilder.DropTable(
                 name: "RefreshToken");
@@ -649,19 +689,22 @@ namespace TicketBooking.Data.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "Seat");
+
+            migrationBuilder.DropTable(
                 name: "BookingList");
 
             migrationBuilder.DropTable(
-                name: "Seat");
+                name: "ExtraService");
 
             migrationBuilder.DropTable(
                 name: "Passenger");
 
             migrationBuilder.DropTable(
-                name: "Flight");
+                name: "SeatClass");
 
             migrationBuilder.DropTable(
-                name: "SeatClass");
+                name: "Flight");
 
             migrationBuilder.DropTable(
                 name: "Booking");
@@ -677,9 +720,6 @@ namespace TicketBooking.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "ContactDetail");
-
-            migrationBuilder.DropTable(
-                name: "ExtraService");
 
             migrationBuilder.DropTable(
                 name: "Airport");

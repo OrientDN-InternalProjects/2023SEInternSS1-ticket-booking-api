@@ -371,9 +371,6 @@ namespace TicketBooking.Data.Migrations
                     b.Property<Guid>("BookingListId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal>("PriceSeat")
-                        .HasColumnType("decimal(10,2)");
-
                     b.Property<Guid>("SeatId")
                         .HasColumnType("uniqueidentifier");
 

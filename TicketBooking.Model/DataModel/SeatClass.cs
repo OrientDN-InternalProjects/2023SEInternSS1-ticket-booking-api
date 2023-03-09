@@ -19,8 +19,6 @@ namespace TicketBooking.Data.DataModel
         [Required]
         [MaxLength(100)]
         public string Description { get; set; }
-        [Required]
-        [Column(TypeName = "decimal(10, 2)")]
         public ICollection<Seat>? Seats { get; set; }
         public SeatClass()
         {

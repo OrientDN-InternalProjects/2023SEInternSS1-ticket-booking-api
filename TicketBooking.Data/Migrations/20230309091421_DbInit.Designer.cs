@@ -12,8 +12,8 @@ using TicketBooking.Data.DbContext;
 namespace TicketBooking.Data.Migrations
 {
     [DbContext(typeof(TicketBookingDbContext))]
-    [Migration("20230302065041_update_booking_table")]
-    partial class update_booking_table
+    [Migration("20230309091421_DbInit")]
+    partial class DbInit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -173,20 +173,16 @@ namespace TicketBooking.Data.Migrations
                         .HasMaxLength(6)
                         .HasColumnType("nvarchar(6)");
 
-                    b.Property<int?>("NumColumnSeat")
-                        .IsRequired()
+                    b.Property<int>("NumColumnSeat")
                         .HasColumnType("int");
 
-                    b.Property<int?>("NumRowBusiness")
-                        .IsRequired()
+                    b.Property<int>("NumRowBusiness")
                         .HasColumnType("int");
 
-                    b.Property<int?>("NumRowEconomy")
-                        .IsRequired()
+                    b.Property<int>("NumRowEconomy")
                         .HasColumnType("int");
 
-                    b.Property<int?>("NumRowSeat")
-                        .IsRequired()
+                    b.Property<int>("NumRowSeat")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -240,9 +236,11 @@ namespace TicketBooking.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("FirstName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
@@ -293,7 +291,7 @@ namespace TicketBooking.Data.Migrations
 
             modelBuilder.Entity("TicketBooking.Data.DataModel.Booking", b =>
                 {
-                    b.Property<Guid?>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -313,8 +311,7 @@ namespace TicketBooking.Data.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
-                    b.Property<int?>("NumberPeople")
-                        .IsRequired()
+                    b.Property<int>("NumberPeople")
                         .HasColumnType("int");
 
                     b.Property<string>("Reference")
@@ -325,8 +322,7 @@ namespace TicketBooking.Data.Migrations
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal?>("TotalPrice")
-                        .IsRequired()
+                    b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(10,2)");
 
                     b.Property<string>("UserId")
@@ -334,9 +330,7 @@ namespace TicketBooking.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ContactId")
-                        .IsUnique()
-                        .HasFilter("[ContactId] IS NOT NULL");
+                    b.HasIndex("ContactId");
 
                     b.HasIndex("UserId");
 
@@ -358,8 +352,7 @@ namespace TicketBooking.Data.Migrations
                     b.Property<decimal>("FlightPrice")
                         .HasColumnType("decimal(10,2)");
 
-                    b.Property<int?>("NumberSeat")
-                        .IsRequired()
+                    b.Property<int>("NumberSeat")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -379,9 +372,6 @@ namespace TicketBooking.Data.Migrations
 
                     b.Property<Guid>("BookingListId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("PriceSeat")
-                        .HasColumnType("decimal(10,2)");
 
                     b.Property<Guid>("SeatId")
                         .HasColumnType("uniqueidentifier");
@@ -438,18 +428,16 @@ namespace TicketBooking.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("AircraftId")
-                        .IsRequired()
+                    b.Property<Guid>("AircraftId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal?>("BusinessPrice")
+                    b.Property<decimal>("BusinessPrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("DefaultBaggage")
-                        .IsRequired()
+                    b.Property<int>("DefaultBaggage")
                         .HasColumnType("int");
 
-                    b.Property<decimal?>("EconomyPrice")
+                    b.Property<decimal>("EconomyPrice")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<bool>("IsFlightActive")
@@ -457,16 +445,13 @@ namespace TicketBooking.Data.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
-                    b.Property<int?>("RemainingSeat")
-                        .IsRequired()
+                    b.Property<int>("RemainingSeat")
                         .HasColumnType("int");
 
-                    b.Property<Guid?>("ScheduleId")
-                        .IsRequired()
+                    b.Property<Guid>("ScheduleId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int?>("TotalSeat")
-                        .IsRequired()
+                    b.Property<int>("TotalSeat")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -484,20 +469,16 @@ namespace TicketBooking.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("ArrivalAirportId")
-                        .IsRequired()
+                    b.Property<Guid>("ArrivalAirportId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("ArrivalTime")
-                        .IsRequired()
+                    b.Property<DateTime>("ArrivalTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("DepartureAirportId")
-                        .IsRequired()
+                    b.Property<Guid>("DepartureAirportId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("DepartureTime")
-                        .IsRequired()
+                    b.Property<DateTime>("DepartureTime")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
@@ -518,11 +499,13 @@ namespace TicketBooking.Data.Migrations
                     b.Property<Guid?>("BookingId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("DateOfBirth")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("ExpDate")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("ExpDate")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -663,7 +646,11 @@ namespace TicketBooking.Data.Migrations
 
                     b.Property<string>("AirlineName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("BookingCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("BookingId")
                         .HasColumnType("uniqueidentifier");
@@ -672,33 +659,76 @@ namespace TicketBooking.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("LocationFrom")
+                        .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("LocationTo")
+                        .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<Guid?>("PassengerId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("PassengerName")
                         .IsRequired()
-                        .HasColumnType("varchar");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SeatClass")
+                        .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
+                        .HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("BookingId");
 
-                    b.HasIndex("PassengerId")
-                        .IsUnique()
-                        .HasFilter("[PassengerId] IS NOT NULL");
+                    b.HasIndex("PassengerId");
 
                     b.ToTable("Ticket");
+                });
+
+            modelBuilder.Entity("TicketBooking.Model.DataModel.Bill", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<long>("Amount")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("BankCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("BookingId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CreatedDate")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OrderId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PayStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("PaymentTranId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookingId");
+
+                    b.ToTable("Bill");
                 });
 
             modelBuilder.Entity("TicketBooking.Model.DataModel.BookingExtraService", b =>
@@ -798,8 +828,8 @@ namespace TicketBooking.Data.Migrations
             modelBuilder.Entity("TicketBooking.Data.DataModel.Booking", b =>
                 {
                     b.HasOne("TicketBooking.Data.DataModel.ContactDetail", "ContactDetail")
-                        .WithOne("Booking")
-                        .HasForeignKey("TicketBooking.Data.DataModel.Booking", "ContactId");
+                        .WithMany("Bookings")
+                        .HasForeignKey("ContactId");
 
                     b.HasOne("TicketBooking.Data.DataModel.ApplicationUser", "User")
                         .WithMany("Bookings")
@@ -920,12 +950,22 @@ namespace TicketBooking.Data.Migrations
                         .HasForeignKey("BookingId");
 
                     b.HasOne("TicketBooking.Data.DataModel.Passenger", "Passenger")
-                        .WithOne("Ticket")
-                        .HasForeignKey("TicketBooking.Data.DataModel.Ticket", "PassengerId");
+                        .WithMany("Tickets")
+                        .HasForeignKey("PassengerId");
 
                     b.Navigation("Booking");
 
                     b.Navigation("Passenger");
+                });
+
+            modelBuilder.Entity("TicketBooking.Model.DataModel.Bill", b =>
+                {
+                    b.HasOne("TicketBooking.Data.DataModel.Booking", "Booking")
+                        .WithMany("Bills")
+                        .HasForeignKey("BookingId")
+                        .IsRequired();
+
+                    b.Navigation("Booking");
                 });
 
             modelBuilder.Entity("TicketBooking.Model.DataModel.BookingExtraService", b =>
@@ -966,6 +1006,8 @@ namespace TicketBooking.Data.Migrations
 
             modelBuilder.Entity("TicketBooking.Data.DataModel.Booking", b =>
                 {
+                    b.Navigation("Bills");
+
                     b.Navigation("BookingLists");
 
                     b.Navigation("Passengers");
@@ -982,7 +1024,7 @@ namespace TicketBooking.Data.Migrations
 
             modelBuilder.Entity("TicketBooking.Data.DataModel.ContactDetail", b =>
                 {
-                    b.Navigation("Booking");
+                    b.Navigation("Bookings");
                 });
 
             modelBuilder.Entity("TicketBooking.Data.DataModel.Flight", b =>
@@ -997,7 +1039,7 @@ namespace TicketBooking.Data.Migrations
 
             modelBuilder.Entity("TicketBooking.Data.DataModel.Passenger", b =>
                 {
-                    b.Navigation("Ticket");
+                    b.Navigation("Tickets");
                 });
 
             modelBuilder.Entity("TicketBooking.Data.DataModel.Seat", b =>
