@@ -19,6 +19,10 @@ using TicketBooking.Service.Services.AircraftService;
 using TicketBooking.Service.Services.AuthenticateService;
 using TicketBooking.Data.DbSeeder;
 using System.Data;
+using TicketBooking.Common.AppExceptions;
+using TicketBooking.Service.Services.AirportService;
+using TicketBooking.Service.Services.FlightScheService;
+using TicketBooking.Service.Services.FlightService;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -45,6 +49,7 @@ builder.Services.AddScoped<IAircraftDataSeeder, AircraftDataSeeder>();
 builder.Services.AddScoped<IAirportDataSeeder, AirportDataSeeder>();
 builder.Services.AddScoped<ISeatClassDataSeeder, SeatClassDataSeeder>();
 builder.Services.AddScoped<IDataSeeder, DataSeeder>();
+builder.Services.AddScoped<IFlightValidation, FlightValidation>();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -68,8 +73,15 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddDbContext<TicketBookingDbContext>(op =>
     op.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<TicketBookingDbContext>(ServiceLifetime.Transient);
 builder.Services.AddScoped<IAircraftRepository, AircraftRepository>();
+builder.Services.AddScoped<IFlightRepository, FlightRepository>();
+builder.Services.AddScoped<IFlightScheRepository, FlightScheRepository>();
+builder.Services.AddScoped<IAirportRepository, AirportRepository>();
 builder.Services.AddScoped<IAircraftSerivce, AircraftService>();
+builder.Services.AddScoped<IFlightService, FlightService>();
+builder.Services.AddScoped<IFlightScheServices, FlightScheServices>();
+builder.Services.AddScoped<IAirportService, AirportService>();
 
 var config = new MapperConfiguration(cfg => { cfg.AddProfile(new AutoMapperProfile()); }
 );

@@ -16,7 +16,7 @@ namespace TicketBooking.Data.DbSeeder
         private readonly IAircraftDataSeeder aircraftDataSeeder;
         private readonly IAirportDataSeeder airportDataSeeder;
         private readonly ISeatClassDataSeeder seatClassDataSeeder;
-        //private readonly IFlightScheduleDataSeeder flightScheDataSeeder;
+
         public DataSeeder(ILogger<DataSeeder> logger,
                           TicketBookingDbContext dbContext,
                           IAircraftDataSeeder aircraftDataSeeder,

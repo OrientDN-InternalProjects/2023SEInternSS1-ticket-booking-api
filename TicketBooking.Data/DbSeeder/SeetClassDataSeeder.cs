@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using TicketBooking.Data.DbContext;
+using TicketBooking.Data.DataModel;
 
 namespace TicketBooking.Data.DbSeeder;
 
@@ -24,16 +25,14 @@ public class SeatClassDataSeeder : ISeatClassDataSeeder
                 {
                     Id = Guid.NewGuid(),
                     SeatName = "Business",
-                    Description = "Come with extra services",
-                    Price = 1450000,
+                    Description = "Come with extra services"
                 },
 
                 new SeatClass()
                 {
                     Id = Guid.NewGuid(),
                     SeatName = "Economy",
-                    Description = "Good for basic needs",
-                    Price = 1050000,
+                    Description = "Good for basic needs"
                 }
             };
             dbContext.SeatClasses.AddRange(seatclass);

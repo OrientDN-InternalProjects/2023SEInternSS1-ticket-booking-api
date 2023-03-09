@@ -5,20 +5,23 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using TicketBooking.Data.DataModel;
 
-namespace TicketBooking.Data.DataModel
+namespace TicketBooking.Model.Models
 {
-    [Table("Airport")]
-    public class Airport
+    public class AirportViewModel
     {
-        [Key]
+        [Required]
         public Guid Id { get; set; }
+
         [Required]
         [MaxLength(50)]
         public string Name { get; set; }
+
         [Required]
         [MaxLength(50)]
         public string City { get; set; }
+
         [Required]
         [MaxLength(50)]
         public string Country { get; set; }
@@ -28,13 +31,6 @@ namespace TicketBooking.Data.DataModel
         public string Code { get; set; }
 
         public ICollection<FlightSchedule> DepartureAirports { get; set; }
-
         public ICollection<FlightSchedule> ArrivalAirports { get; set; }
-
-        public Airport()
-        {
-            DepartureAirports = new List<FlightSchedule>();
-            ArrivalAirports = new List<FlightSchedule>();
-        }
     }
 }

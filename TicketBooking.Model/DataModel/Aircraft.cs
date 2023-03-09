@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Numerics;
 
-namespace TicketBooking.Data
+namespace TicketBooking.Data.DataModel
 {
     [Table("Aircraft")]
     public class Aircraft

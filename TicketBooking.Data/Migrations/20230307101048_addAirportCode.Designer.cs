@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TicketBooking.Data.DbContext;
 
@@ -11,9 +12,10 @@ using TicketBooking.Data.DbContext;
 namespace TicketBooking.Data.Migrations
 {
     [DbContext(typeof(TicketBookingDbContext))]
-    partial class TicketBookingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230307101048_addAirportCode")]
+    partial class addAirportCode
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -478,12 +480,6 @@ namespace TicketBooking.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
-
-                    b.Property<int>("RemainBusinessSeat")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RemainEconomySeat")
-                        .HasColumnType("int");
 
                     b.Property<int>("RemainingSeat")
                         .HasColumnType("int");

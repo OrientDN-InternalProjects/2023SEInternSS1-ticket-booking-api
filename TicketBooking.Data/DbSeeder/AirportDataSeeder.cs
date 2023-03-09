@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using TicketBooking.Data.DataModel;
 using TicketBooking.Data.DbContext;
 
 namespace TicketBooking.Data.DbSeeder
@@ -30,7 +31,8 @@ namespace TicketBooking.Data.DbSeeder
                         Id = Guid.Parse("8e204406-9d1b-45da-a643-2ba07ff9fca5"),
                         Name = "Tan Son Nhat",
                         City = "Ho Chi Minh",
-                        Country = "Viet Nam"
+                        Country = "Viet Nam",
+                        Code = "VVTS/SGN"
                     },
 
                     new Airport()
@@ -38,7 +40,8 @@ namespace TicketBooking.Data.DbSeeder
                         Id = Guid.Parse("7fc1f3c4-1244-4f70-b663-cf0e322a523e"),
                         Name = "Noi Bai",
                         City = "Ha Noi",
-                        Country = "Viet Nam"
+                        Country = "Viet Nam",
+                        Code = "VVNB/HAN"
                     },
 
                     new Airport()
@@ -46,7 +49,8 @@ namespace TicketBooking.Data.DbSeeder
                         Id = Guid.Parse("35520915-26eb-4dd0-acad-6deb323c2c5f"),
                         Name = "Phu Cat",
                         City = "Binh Dinh",
-                        Country = "Viet Nam"
+                        Country = "Viet Nam",
+                        Code = "VVPC/UIH"
                     }
                 };
                 dbContext.Airports.AddRange(airport);

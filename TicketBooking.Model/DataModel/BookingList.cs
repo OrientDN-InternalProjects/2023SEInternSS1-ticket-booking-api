@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using TicketBooking.Data.DataModel;
 
-namespace TicketBooking.Data
+namespace TicketBooking.Data.DataModel
 {
     [Table("BookingList")]
     public class BookingList

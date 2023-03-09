@@ -7,31 +7,55 @@ using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace TicketBooking.Data
+namespace TicketBooking.Data.DataModel
 {
     [Table("Flight")]
     public class Flight
     {
         [Key]
         public Guid Id { set; get; }
+
         [Required]
         public Guid AircraftId { set; get; }
-        public Aircraft Aircraft { set; get;}
+
+        public Aircraft? Aircraft { set; get; }
+
         [Required]
         public int TotalSeat { set; get; }
+
         [Required]
         public int RemainingSeat { set; get; }
+        
+        [Required]
+        public int RemainEconomySeat { set; get; }
+        
+        [Required]
+        public int RemainBusinessSeat { set; get; }
+
         [Required]
         public bool IsFlightActive { set; get; }
+
         [Required]
         public int DefaultBaggage { set; get; }
+
+        [Required]
+        public decimal BusinessPrice { set; get; }
+
+        [Required]
+        public decimal EconomyPrice { set; get; }
+
         [Required]
         public Guid ScheduleId { set; get; }
+
+        [Required]
         public FlightSchedule Schedule { set; get; }
+
+
         public ICollection<BookingList> BookingLists { get; set; }
+
         public Flight()
         {
-            BookingLists= new List<BookingList>();
+            BookingLists = new List<BookingList>();
         }
     }
 }
