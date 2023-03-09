@@ -248,7 +248,7 @@ namespace TicketBooking.Service.Services.BookingService
             };
         }
 
-        public async Task<Booking> ExportTicket(Booking booking, string seatType)
+        private async Task<Booking> ExportTicket(Booking booking, string seatType)
         {
             var bookingList = bookingListRepo.Find(x => x.BookingId == booking.Id);
             var flights = new List<Flight>();
@@ -268,7 +268,6 @@ namespace TicketBooking.Service.Services.BookingService
                 var aircraft = await aircraftRepo.GetById(flight.AircraftId);
                 aircrafts.Add(aircraft);
             }
-            
             foreach (var passenger in booking.Passengers)
             {
                 if (flights.Count > 1)
@@ -299,9 +298,12 @@ namespace TicketBooking.Service.Services.BookingService
                         BookingCode = booking.Reference,
                         PassengerId = passenger.Id,
                     };
+                    ticketGo.Booking = booking;
+                    ticketGo.Passenger= passenger;
+                    ticketRound.Passenger = passenger;
+                    ticketRound.Booking = booking;
                     await ticketRepo.AddTicket(ticketRound);
                     await ticketRepo.AddTicket(ticketGo);
-                    await unitOfWork.CompletedAsync();
                     tickets.Add(ticketRound);
                     tickets.Add(ticketGo);
                     passenger.Tickets.Add(ticketGo);
@@ -309,7 +311,6 @@ namespace TicketBooking.Service.Services.BookingService
                     passengerRepo.Update(passenger);
                     booking.Tickets.Add(ticketGo);
                     booking.Tickets.Add(ticketRound);
-                    
                 }
                 else
                 {
@@ -326,15 +327,15 @@ namespace TicketBooking.Service.Services.BookingService
                         BookingCode = booking.Reference,
                         PassengerId = passenger.Id,
                     };
+                    ticketGo.Booking = booking;
+                    ticketGo.Passenger = passenger;
                     await ticketRepo.AddTicket(ticketGo);
-                    await unitOfWork.CompletedAsync();
                     passenger.Tickets.Add(ticketGo);
                     tickets.Add(ticketGo);
                     passengerRepo.Update(passenger);
                     booking.Tickets.Add(ticketGo);
                 }
             }
-            await unitOfWork.CompletedAsync();
             return booking;
         }
 
