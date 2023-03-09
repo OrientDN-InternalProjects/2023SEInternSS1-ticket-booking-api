@@ -31,6 +31,19 @@ namespace TicketBooking.Service
                 .ForMember(dest => dest.DepartAirport, act => act.MapFrom(src => src.Schedule.AirportDepart.Code))
                 .ForMember(dest => dest.ArrivalAirport, act => act.MapFrom(src => src.Schedule.AirportArrival.Code));
 
+            CreateMap<FlightUpdateModel, Flight>()
+                .ForMember(dest => dest.Id, act => act.MapFrom(src => src.Id))
+                .ForMember(dest => dest.AircraftId, act => act.MapFrom(src => src.AircraftId))
+                .ForMember(dest => dest.DefaultBaggage, act => act.MapFrom(src => src.DefaultBaggage))
+                .ForMember(dest => dest.EconomyPrice, act => act.MapFrom(src => src.EconomyPrice))
+                .ForMember(dest => dest.BusinessPrice, act => act.MapFrom(src => src.BusinessPrice))
+                .ForPath(dest => dest.Schedule.DepartureTime, act => act.MapFrom(src => src.FlightSche.DepartureTime))
+                .ForPath(dest => dest.Schedule.ArrivalTime, act => act.MapFrom(src => src.FlightSche.ArrivalTime))
+                .ForPath(dest => dest.Schedule.DepartureTime, act => act.MapFrom(src => src.FlightSche.DepartureTime))
+                .ForPath(dest => dest.Schedule.ArrivalTime, act => act.MapFrom(src => src.FlightSche.ArrivalTime));
+            
+
+
             CreateMap<FlightScheViewModel, FlightSchedule>()
             .ForMember(dest => dest.Id, act => act.MapFrom(src => src.Id))
             .ForMember(dest => dest.DepartureAirportId, act => act.MapFrom(src => src.DepartureAirpotId))

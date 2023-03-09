@@ -33,7 +33,7 @@ namespace TicketBookingAPI.Controllers
 
 
         [HttpPost("add_flight")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<ActionResult> AddFlight(FlightRequestModel flightModel)
         {
             if (flightModel == null)
@@ -52,11 +52,14 @@ namespace TicketBookingAPI.Controllers
                 return BadRequest("Wrong airport name");
             }
 
+            flightModel.ArrivalAirportCode = flightvalidate.AirportNameProcess(flightModel.ArrivalAirportCode);
+            flightModel.DepartAirportCode = flightvalidate.AirportNameProcess(flightModel.DepartAirportCode);
+            
             return Accepted(await flightservice.InsertAsync(flightModel));
         }
 
         [HttpDelete]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<ActionResult> RemoveFlight(Guid id)
         {
             await flightservice.RemoveAsync(id);
@@ -64,7 +67,7 @@ namespace TicketBookingAPI.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<ActionResult> UpdateFlight(FlightUpdateModel flightUpdateModel)
         {
             var result = await flightservice.UpdateFlightAsync(flightUpdateModel);
@@ -77,29 +80,6 @@ namespace TicketBookingAPI.Controllers
 
         [HttpGet]
         public async Task<ActionResult> GetFlight() => Ok(await flightservice.GetFlightAsync());
-        
-        [HttpGet("GetFlightbyDate")]
-        public async Task<ActionResult> GetFlightByDate(DateTime dateRequest)
-        {
-            if (!(await flightservice.GetFlightAsync(dateRequest)).Any())
-            {
-                return BadRequest("There is no flight on that day");
-            }
-
-            return Ok(await flightservice.GetFlightAsync(dateRequest));
-        }
-
-
-        [HttpGet("GetFlightbyAirport")]
-        public async Task<ActionResult> GetFlightByAirport(string departairport, string arrivalairport)
-        {
-            if (!(await flightservice.GetFlightAsync(departairport, arrivalairport)).Any())
-            {
-                return BadRequest("No flight is hosted");
-            }
-
-            return Ok(await flightservice.GetFlightAsync(departairport, arrivalairport));
-        }
 
         [HttpGet("GetflightByID")]
         public async Task<ActionResult> GetFlightById(Guid id)
@@ -111,11 +91,22 @@ namespace TicketBookingAPI.Controllers
             
             return Ok(await flightservice.GetFlightAsync(id));
         }
+        
+        [HttpGet("GetflightByRequest")]
+        public async Task<ActionResult> GetFlightByRequest([FromQuery] FlightRequest flightrequest)
+        {
+            if ((await flightservice.GetFlightAsync(flightrequest)) == null)
+            {
+                return BadRequest("No flight matches with the ID");
+            }
+            
+            return Ok(await flightservice.GetFlightAsync(flightrequest));
+        }
 
         // This controller is for logic demo purpose.
         // It will be removed after being integrated into booking service
         [HttpPut("UpdateRemainSeat")]
-        public async Task<ActionResult> GetFlightById(Guid id, SeatClassType type, int number)
+        public async Task<ActionResult> UpdateRemainingSeat(Guid id, SeatClassType type, int number)
         {
             if((await flightservice.UpdateFlightSeat(id, type, number)))
             {

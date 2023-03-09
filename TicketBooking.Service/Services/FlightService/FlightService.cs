@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TicketBooking.Common.AppExceptions;
 using TicketBooking.Data.DataModel;
 using TicketBooking.Data.Infrastructure;
 using AutoMapper;
+using Microsoft.Extensions.Logging;
 using TicketBooking.Model.Models;
 using TicketBooking.Data.Repository;
 using TicketBooking.Data.DbContext;
@@ -21,9 +23,12 @@ namespace TicketBooking.Service.Services.FlightService
         private readonly IAircraftRepository aircraftRepo;
         private readonly IAirportService airportService;
         private readonly IFlightScheServices flightScheServices;
+        private readonly IFlightScheRepository flightScheRepo;
+        private readonly ILogger<Flight> logger;
         public FlightService(IUnitOfWork unitOfWork, IMapper mapper, 
                              IFlightRepository flightRepo, IAircraftRepository aircraftRepo,
-                             IAirportService airportService, IFlightScheServices flightScheServices)
+                             IAirportService airportService, IFlightScheServices flightScheServices,
+                             IFlightScheRepository flightScheRepo, ILogger<Flight> logger)
         {
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
@@ -31,7 +36,10 @@ namespace TicketBooking.Service.Services.FlightService
             this.aircraftRepo = aircraftRepo;
             this.airportService = airportService;
             this.flightScheServices = flightScheServices;
+            this.flightScheRepo = flightScheRepo;
+            this.logger = logger;
         }
+        
 
         public async Task<IEnumerable<FlightViewModel>> GetFlightAsync()
         {
@@ -47,32 +55,40 @@ namespace TicketBooking.Service.Services.FlightService
             }
         }
 
-        public async Task<FlightViewModel> GetFlightAsync(Guid id)
+        public async Task<IEnumerable<FlightViewModel>> GetFlightAsync(Guid id)
         {
-            var flight = await flightRepo.GetById(id);
-            return flight == null ? throw new Exception("ID does not exist") : mapper.Map<FlightViewModel>(flight);
+            var flight = await flightRepo.GetFlightById(id);
+            return flight == null ? throw new Exception("ID does not exist") : mapper.Map<IEnumerable<FlightViewModel>>(flight);
         }
-        
-        public async Task<IEnumerable<FlightViewModel>> GetFlightAsync(DateTime date)
+
+        public async Task<IEnumerable<FlightViewModel>> GetFlightAsync(FlightRequest flightModel)
         {
-            var flight = await flightRepo.GetFlightByDate(date);
+            var flight = await flightRepo.GetFlightByRequest(flightModel);
             return flight == null
-                ? throw new Exception("None flight on that day")
+                ? throw new Exception("None flight match request")
                 : mapper.Map<IEnumerable<FlightViewModel>>(flight);
         }
 
-        public async Task<IEnumerable<FlightViewModel>> GetFlightAsync(string departairport, string arrivalairport)
+        public async Task<int> UpdateFlightAsync(FlightUpdateModel flightUpdateModel)
         {
-            var flight = await flightRepo.GetFlightByAirport(departairport, arrivalairport);
-            return !flight.Any()
-                ? throw new Exception("The airport holds no flight")
-                : mapper.Map<IEnumerable<FlightViewModel>>(flight);
-        }
-        
-        public async Task<int> UpdateFlightAsync(FlightViewModel flightViewModel)
-        {
-            var flight = mapper.Map<Flight>(flightViewModel);
+            var flight = await flightRepo.GetById(flightUpdateModel.Id);
+            var sche = await flightScheRepo.GetById(flightUpdateModel.FlightSche.Id);
+            if (flight.IsFlightActive == false)
+            {
+                return 0;
+            }
+
+            flight.Id = flightUpdateModel.Id;
+            flight.AircraftId = flightUpdateModel.AircraftId;
+            flight.DefaultBaggage = flightUpdateModel.DefaultBaggage;
+            flight.BusinessPrice = flightUpdateModel.BusinessPrice;
+            flight.EconomyPrice = flightUpdateModel.EconomyPrice;
+            sche.Id = flightUpdateModel.FlightSche.Id;
+            sche.DepartureTime = flightUpdateModel.FlightSche.DepartureTime;
+            sche.ArrivalTime = flightUpdateModel.FlightSche.ArrivalTime;
+            
             await flightRepo.Update(flight);
+            await flightScheRepo.Update(sche);
             return await unitOfWork.CompletedAsync();
         }
 
@@ -140,6 +156,44 @@ namespace TicketBooking.Service.Services.FlightService
                 await flightRepo.Remove(flight.Id);
                 return await unitOfWork.CompletedAsync();
             }    
+        }
+
+        public async Task<bool> UpdateFlightSeat(Guid flightId, SeatClassType type, int number)
+        {
+            var flight = await flightRepo.GetById(flightId);
+            if (type == SeatClassType.Business)
+            {
+                flight.RemainBusinessSeat = flight.RemainBusinessSeat - number;
+                
+                if (flight.RemainBusinessSeat < 0)
+                { 
+                    return false;
+                }
+            }
+            
+            if (type == SeatClassType.Economy)
+            {
+                flight.RemainEconomySeat = flight.RemainEconomySeat - number;
+                
+                if (flight.RemainEconomySeat < 0)
+                {
+                    return false;
+                }
+            }
+
+            flight.RemainingSeat = flight.RemainingSeat - number;
+            
+            if (flight.RemainingSeat < 0)
+            { 
+                return false;
+            }
+            
+            
+            var modifieldflight = flight; 
+            
+            var result = await flightRepo.Update(modifieldflight);
+            
+            return await unitOfWork.CompletedAsync() == 1;
         }
     }
 }
