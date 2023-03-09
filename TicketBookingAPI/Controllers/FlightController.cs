@@ -33,7 +33,7 @@ namespace TicketBookingAPI.Controllers
 
 
         [HttpPost("add_flight")]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> AddFlight(FlightRequestModel flightModel)
         {
             if (flightModel == null)
@@ -56,7 +56,7 @@ namespace TicketBookingAPI.Controllers
         }
 
         [HttpDelete]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> RemoveFlight(Guid id)
         {
             await flightservice.RemoveAsync(id);
@@ -64,19 +64,21 @@ namespace TicketBookingAPI.Controllers
         }
 
         [HttpPut]
-        //[Authorize(Roles = "Admin")]
-        public async Task<ActionResult> UpdateFlight(FlightViewModel flightModel)
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> UpdateFlight(FlightUpdateModel flightUpdateModel)
         {
-            await flightservice.UpdateFlightAsync(flightModel);
+            var result = await flightservice.UpdateFlightAsync(flightUpdateModel);
+            if (result == 0)
+            {
+                return BadRequest("Cannot update flight. Flight already ended or not exist");
+            }
             return Accepted();
         }
 
         [HttpGet]
-        //[Authorize(Roles = "Admin, User")]
         public async Task<ActionResult> GetFlight() => Ok(await flightservice.GetFlightAsync());
         
         [HttpGet("GetFlightbyDate")]
-        //[Authorize(Roles = "Admin, User")]
         public async Task<ActionResult> GetFlightByDate(DateTime dateRequest)
         {
             if (!(await flightservice.GetFlightAsync(dateRequest)).Any())
@@ -89,7 +91,6 @@ namespace TicketBookingAPI.Controllers
 
 
         [HttpGet("GetFlightbyAirport")]
-        //[Authorize(Roles = "Admin, User")]
         public async Task<ActionResult> GetFlightByAirport(string departairport, string arrivalairport)
         {
             if (!(await flightservice.GetFlightAsync(departairport, arrivalairport)).Any())
@@ -101,7 +102,6 @@ namespace TicketBookingAPI.Controllers
         }
 
         [HttpGet("GetflightByID")]
-        //[Authorize(Roles = "Admin")]
         public async Task<ActionResult> GetFlightById(Guid id)
         {
             if ((await flightservice.GetFlightAsync(id)) == null)
@@ -111,5 +111,21 @@ namespace TicketBookingAPI.Controllers
             
             return Ok(await flightservice.GetFlightAsync(id));
         }
+
+        // This controller is for logic demo purpose.
+        // It will be removed after being integrated into booking service
+        [HttpPut("UpdateRemainSeat")]
+        public async Task<ActionResult> GetFlightById(Guid id, SeatClassType type, int number)
+        {
+            if((await flightservice.UpdateFlightSeat(id, type, number)))
+            {
+                return Ok("Update remaining seat successfully");
+            }
+            else
+            {
+                return BadRequest("Update remaining seat failed");
+            }
+        }
+        
 }
 }
