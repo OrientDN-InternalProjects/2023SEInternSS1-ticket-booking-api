@@ -5,10 +5,9 @@ using System.Threading.Tasks;
 using TicketBooking.Data.DataModel;
 using TicketBooking.Data.Infrastructure;
 using AutoMapper;
-using TicketBooking.Model.Models;
 using TicketBooking.Data.Repository;
 using TicketBooking.Data.DbContext;
-
+using TicketBooking.Service.Models;
 
 namespace TicketBooking.Service.Services.FlightScheService
 {
@@ -44,21 +43,23 @@ namespace TicketBooking.Service.Services.FlightScheService
             return flightsche == null ? throw new Exception("ID cannot be found") : mapper.Map<FlightScheViewModel>(flightsche);
         }
 
-        public async Task<int> UpdateFlightScheAsync(FlightScheViewModel flightScheViewModel)
+        public async Task<string> UpdateFlightScheAsync(FlightScheViewModel flightScheViewModel)
         {
             var flightsche = mapper.Map<FlightSchedule>(flightScheViewModel);
-            await flightScheRepo.Update(flightsche);
-            return await unitOfWork.CompletedAsync();
+            flightScheRepo.Update(flightsche);
+            await unitOfWork.CompletedAsync();
+            return "Update sucess";
         }
 
-        public async Task<int> InsertAsync(FlightScheViewModel flightScheViewModel)
+        public async Task<string> InsertAsync(FlightScheViewModel flightScheViewModel)
         {
             var flightsche = mapper.Map<FlightSchedule>(flightScheViewModel);
             await flightScheRepo.Add(flightsche);
-            return await unitOfWork.CompletedAsync();
+            await unitOfWork.CompletedAsync();
+            return "Insert sucess";
         }
 
-        public async Task<int> RemoveAsync(Guid id)
+        public async Task<string> RemoveAsync(Guid id)
         {
             var flightsche = flightScheRepo.Find(c => c.Id == id).FirstOrDefault();
             if (flightsche == null)
@@ -69,7 +70,8 @@ namespace TicketBooking.Service.Services.FlightScheService
             else
             {
                 await flightScheRepo.Remove(flightsche.Id);
-                return await unitOfWork.CompletedAsync();
+                await unitOfWork.CompletedAsync();
+                return "Remove sucess";
             }
         }
 

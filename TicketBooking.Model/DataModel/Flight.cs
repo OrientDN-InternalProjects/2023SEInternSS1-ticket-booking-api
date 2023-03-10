@@ -17,9 +17,7 @@ namespace TicketBooking.Data.DataModel
 
         [Required]
         public Guid AircraftId { set; get; }
-
-        public Aircraft? Aircraft { set; get; }
-
+        public Aircraft? Aircraft { set; get;}
         [Required]
         public int TotalSeat { set; get; }
 
@@ -37,25 +35,19 @@ namespace TicketBooking.Data.DataModel
 
         [Required]
         public int DefaultBaggage { set; get; }
-
-        [Required]
         public decimal BusinessPrice { set; get; }
-
-        [Required]
         public decimal EconomyPrice { set; get; }
 
         [Required]
         public Guid ScheduleId { set; get; }
-
-        [Required]
-        public FlightSchedule Schedule { set; get; }
+        public FlightSchedule? Schedule { set; get; }
 
 
         public ICollection<BookingList> BookingLists { get; set; }
 
         public Flight()
         {
-            BookingLists = new List<BookingList>();
+            BookingLists= new HashSet<BookingList>();
         }
     }
 }

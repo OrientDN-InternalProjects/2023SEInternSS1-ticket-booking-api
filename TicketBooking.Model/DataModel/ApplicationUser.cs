@@ -11,6 +11,6 @@ namespace TicketBooking.Data.DataModel
     {
         public string FirstName { get; set; } = null!;
         public string LastName { get; set; } = null!;
-        public ICollection<Booking> Bookings { get; set; }
+        public ICollection<Booking>? Bookings { get; set; }
     }
 }

@@ -32,7 +32,7 @@ namespace TicketBooking.Data.DbSeeder
                         Name = "Tan Son Nhat",
                         City = "Ho Chi Minh",
                         Country = "Viet Nam",
-                        Code = "VVTS/SGN"
+                        Code = "SGN"
                     },
 
                     new Airport()
@@ -41,7 +41,7 @@ namespace TicketBooking.Data.DbSeeder
                         Name = "Noi Bai",
                         City = "Ha Noi",
                         Country = "Viet Nam",
-                        Code = "VVNB/HAN"
+                        Code = "HAN"
                     },
 
                     new Airport()
@@ -50,7 +50,7 @@ namespace TicketBooking.Data.DbSeeder
                         Name = "Phu Cat",
                         City = "Binh Dinh",
                         Country = "Viet Nam",
-                        Code = "VVPC/UIH"
+                        Code = "UIH"
                     }
                 };
                 dbContext.Airports.AddRange(airport);

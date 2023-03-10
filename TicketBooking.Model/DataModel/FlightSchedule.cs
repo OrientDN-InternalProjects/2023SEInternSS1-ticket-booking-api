@@ -16,14 +16,10 @@ namespace TicketBooking.Data.DataModel
 
         [Required]
         public Guid DepartureAirportId { get; set; }
-
         public Airport? AirportDepart { get; set; }
-
         [Required]
         public Guid ArrivalAirportId { get; set; }
-
         public Airport? AirportArrival { get; set; }
-
         [Required]
         public DateTime DepartureTime { get; set; }
 
@@ -33,7 +29,7 @@ namespace TicketBooking.Data.DataModel
         public ICollection<Flight> Flights { get; set; }
         public FlightSchedule()
         {
-            Flights = new List<Flight>();
+            Flights = new HashSet<Flight>();
         }
     }
 }

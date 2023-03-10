@@ -7,11 +7,12 @@ using TicketBooking.Data.DataModel;
 using TicketBooking.Data.Infrastructure;
 using AutoMapper;
 using Microsoft.Extensions.Logging;
-using TicketBooking.Model.Models;
 using TicketBooking.Data.Repository;
 using TicketBooking.Data.DbContext;
 using TicketBooking.Service.Services.AirportService;
 using TicketBooking.Service.Services.FlightScheService;
+using TicketBooking.Service.Models;
+using TicketBooking.Model.DataModel;
 
 namespace TicketBooking.Service.Services.FlightService
 {
@@ -55,10 +56,10 @@ namespace TicketBooking.Service.Services.FlightService
             }
         }
 
-        public async Task<IEnumerable<FlightViewModel>> GetFlightAsync(Guid id)
+        public async Task<FlightViewModel> GetFlightAsync(Guid id)
         {
             var flight = await flightRepo.GetFlightById(id);
-            return flight == null ? throw new Exception("ID does not exist") : mapper.Map<IEnumerable<FlightViewModel>>(flight);
+            return flight == null ? throw new Exception("ID does not exist") : mapper.Map<FlightViewModel>(flight);
         }
 
         public async Task<IEnumerable<FlightViewModel>> GetFlightAsync(FlightRequest flightModel)
@@ -72,24 +73,25 @@ namespace TicketBooking.Service.Services.FlightService
         public async Task<int> UpdateFlightAsync(FlightUpdateModel flightUpdateModel)
         {
             var flight = await flightRepo.GetById(flightUpdateModel.Id);
-            var sche = await flightScheRepo.GetById(flightUpdateModel.FlightSche.Id);
+           
+            
             if (flight.IsFlightActive == false)
             {
                 return 0;
             }
 
+            // Update flight information
             flight.Id = flightUpdateModel.Id;
-            flight.AircraftId = flightUpdateModel.AircraftId;
-            flight.DefaultBaggage = flightUpdateModel.DefaultBaggage;
-            flight.BusinessPrice = flightUpdateModel.BusinessPrice;
-            flight.EconomyPrice = flightUpdateModel.EconomyPrice;
-            sche.Id = flightUpdateModel.FlightSche.Id;
-            sche.DepartureTime = flightUpdateModel.FlightSche.DepartureTime;
-            sche.ArrivalTime = flightUpdateModel.FlightSche.ArrivalTime;
+            flight.AircraftId = (flightUpdateModel.AircraftId != null) ? flightUpdateModel.AircraftId : flight.AircraftId;
+            flight.DefaultBaggage = (flightUpdateModel.DefaultBaggage != null) ? flightUpdateModel.DefaultBaggage : flight.DefaultBaggage;
+            flight.BusinessPrice = (flightUpdateModel.BusinessPrice != null) ? flightUpdateModel.BusinessPrice : flight.BusinessPrice;
+            flight.EconomyPrice = (flightUpdateModel.EconomyPrice != null) ? flightUpdateModel.EconomyPrice : flight.EconomyPrice;
             
-            await flightRepo.Update(flight);
-            await flightScheRepo.Update(sche);
-            return await unitOfWork.CompletedAsync();
+            
+            flightRepo.Update(flight);
+
+            await unitOfWork.CompletedAsync();
+            return 1;
         }
 
         public async Task<Guid> InsertAsync(FlightRequestModel flightRequestModel)
@@ -143,7 +145,7 @@ namespace TicketBooking.Service.Services.FlightService
             return flight.Id;
         }
 
-        public async Task<int> RemoveAsync(Guid id)
+        public async Task<string> RemoveAsync(Guid id)
         {
             var flight = flightRepo.Find(c => c.Id == id).FirstOrDefault();
             if(flight == null)
@@ -154,7 +156,8 @@ namespace TicketBooking.Service.Services.FlightService
             else
             {
                 await flightRepo.Remove(flight.Id);
-                return await unitOfWork.CompletedAsync();
+                await unitOfWork.CompletedAsync();
+                return "Remove sucess";
             }    
         }
 
@@ -191,9 +194,10 @@ namespace TicketBooking.Service.Services.FlightService
             
             var modifieldflight = flight; 
             
-            var result = await flightRepo.Update(modifieldflight);
+            flightRepo.Update(modifieldflight);
             
-            return await unitOfWork.CompletedAsync() == 1;
+            await unitOfWork.CompletedAsync();
+            return true;
         }
     }
 }

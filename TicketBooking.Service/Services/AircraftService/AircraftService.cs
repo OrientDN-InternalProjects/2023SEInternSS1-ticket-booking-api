@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using TicketBooking.Data.DataModel;
 using TicketBooking.Data.Infrastructure;
 using AutoMapper;
-using TicketBooking.Model.Models;
 using TicketBooking.Data.Repository;
-using TicketBooking.Data.DbContext;
+using TicketBooking.Data.DataModel;
+using TicketBooking.Service.Models;
 
 namespace TicketBooking.Service.Services.AircraftService
 {
@@ -43,21 +43,22 @@ namespace TicketBooking.Service.Services.AircraftService
             return aircraft == null ? throw new Exception("ID cannot be found") : mapper.Map<AircraftViewModel>(aircraft);
         }
 
-        public async Task<int> UpdateAircraftAsync(AircraftViewModel aircraftDto)
+        public async Task UpdateAircraftAsync(AircraftViewModel aircraftDto)
         {
             var aircraft = mapper.Map<Aircraft>(aircraftDto);
-            await aircraftRepo.Update(aircraft);
-            return await unitOfWork.CompletedAsync();
+            aircraftRepo.Update(aircraft);
+            await unitOfWork.CompletedAsync();
         }
 
-        public async Task<int> InsertAsync(AircraftViewModel aircraftDto)
+        public async Task<string> InsertAsync(AircraftViewModel aircraftDto)
         {
             var aircraft = mapper.Map<Aircraft>(aircraftDto);
             await aircraftRepo.Add(aircraft);
-            return await unitOfWork.CompletedAsync();
+            await unitOfWork.CompletedAsync();
+            return "Add succesfully";
         }
 
-        public async Task<int> RemoveAsync(Guid id)
+        public async Task<bool> RemoveAsync(Guid id)
         {
             var aircraft = aircraftRepo.Find(c => c.Id == id).FirstOrDefault();
             if (aircraft == null)
@@ -68,7 +69,8 @@ namespace TicketBooking.Service.Services.AircraftService
             else
             {
                 await aircraftRepo.Remove(aircraft.Id);
-                return await unitOfWork.CompletedAsync();
+                await unitOfWork.CompletedAsync();
+                return true;
             }
         }
     }

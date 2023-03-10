@@ -33,8 +33,8 @@ namespace TicketBooking.Data.DataModel
 
         public Airport()
         {
-            DepartureAirports = new List<FlightSchedule>();
-            ArrivalAirports = new List<FlightSchedule>();
+            DepartureAirports = new HashSet<FlightSchedule>();
+            ArrivalAirports = new HashSet<FlightSchedule>();
         }
     }
 }

@@ -35,12 +35,12 @@ namespace TicketBooking.Data.DataModel
         [Required]
         public int NumRowEconomy { get; set; }
 
-        public ICollection<Seat> Seats { get; set; }
-        public ICollection<Flight> Flights { get; set; }
+        public ICollection<Seat>? Seats { get; set; }
+        public ICollection<Flight>? Flights { get; set; }
         public Aircraft()
         {
-            Seats = new List<Seat>();
-            Flights = new List<Flight>();
+            Seats = new HashSet<Seat>();
+            Flights = new HashSet<Flight>();
         }
     }
 }

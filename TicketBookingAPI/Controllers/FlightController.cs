@@ -7,13 +7,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using TicketBooking.Data;
-using TicketBooking.Data.DbContext;
-using TicketBooking.Data.DbSeeder;
-using TicketBooking.Model.Models;
-using TicketBooking.Service.Services.AirportService;
-using TicketBooking.Service.Services.FlightService;
 using TicketBooking.Common.AppExceptions;
+using TicketBooking.Service.Services.FlightService;
+using TicketBooking.Model.DataModel;
+using TicketBooking.Service.Models;
 
 namespace TicketBookingAPI.Controllers
 {
@@ -34,7 +31,7 @@ namespace TicketBookingAPI.Controllers
 
         [HttpPost("add_flight")]
         //[Authorize(Roles = "Admin")]
-        public async Task<ActionResult> AddFlight(FlightRequestModel flightModel)
+        public async Task<IActionResult> AddFlight(FlightRequestModel flightModel)
         {
             if (flightModel == null)
             {
@@ -60,7 +57,7 @@ namespace TicketBookingAPI.Controllers
 
         [HttpDelete]
         //[Authorize(Roles = "Admin")]
-        public async Task<ActionResult> RemoveFlight(Guid id)
+        public async Task<IActionResult> RemoveFlight(Guid id)
         {
             await flightservice.RemoveAsync(id);
             return Accepted();
@@ -68,7 +65,7 @@ namespace TicketBookingAPI.Controllers
 
         [HttpPut]
         //[Authorize(Roles = "Admin")]
-        public async Task<ActionResult> UpdateFlight(FlightUpdateModel flightUpdateModel)
+        public async Task<IActionResult> UpdateFlight(FlightUpdateModel flightUpdateModel)
         {
             var result = await flightservice.UpdateFlightAsync(flightUpdateModel);
             if (result == 0)
@@ -79,7 +76,7 @@ namespace TicketBookingAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetFlight() => Ok(await flightservice.GetFlightAsync());
+        public async Task<IActionResult> GetFlight() => Ok(await flightservice.GetFlightAsync());
 
         [HttpGet("GetflightByID")]
         public async Task<ActionResult> GetFlightById(Guid id)
@@ -93,7 +90,7 @@ namespace TicketBookingAPI.Controllers
         }
         
         [HttpGet("GetflightByRequest")]
-        public async Task<ActionResult> GetFlightByRequest([FromQuery] FlightRequest flightrequest)
+        public async Task<IActionResult> GetFlightByRequest([FromQuery] FlightRequest flightrequest)
         {
             if ((await flightservice.GetFlightAsync(flightrequest)) == null)
             {
@@ -106,7 +103,7 @@ namespace TicketBookingAPI.Controllers
         // This controller is for logic demo purpose.
         // It will be removed after being integrated into booking service
         [HttpPut("UpdateRemainSeat")]
-        public async Task<ActionResult> UpdateRemainingSeat(Guid id, SeatClassType type, int number)
+        public async Task<IActionResult> UpdateRemainingSeat(Guid id, SeatClassType type, int number)
         {
             if((await flightservice.UpdateFlightSeat(id, type, number)))
             {

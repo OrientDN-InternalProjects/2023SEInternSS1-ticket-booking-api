@@ -34,13 +34,13 @@ namespace TicketBooking.Data.DataModel
         [Required]
         public int CoordinateY { get; set; }
 
-        public SeatClass SeatClass { get; set; }
+        public SeatClass? SeatClass { get; set; }
 
         [Required]
         public Guid AirCraftId { get; set; }
 
         //One to one relationship with ListSeat
-        public Aircraft Aircraft { get; set; }
-        public BookingSeat ListSeat { get; set; }
+        public Aircraft? Aircraft { get; set; }
+        public BookingSeat? ListSeat { get; set; }
     }
 }

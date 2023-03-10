@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using TicketBooking.Data;
 using TicketBooking.Data.Infrastructure;
 using TicketBooking.Data.Repository;
-using TicketBooking.Model.Models;
+using TicketBooking.Service.Models;
 
 namespace TicketBooking.Service.Services.AirportService
 {
@@ -15,8 +15,8 @@ namespace TicketBooking.Service.Services.AirportService
         Task<IEnumerable<AirportViewModel>> GetAirportAsync();
         Task<AirportViewModel> GetAirportAsync(Guid id);
         Task<AirportViewModel> GetAirportAsync(string code);
-        Task<int> UpdateAirportAsync(AirportViewModel airportViewModel);
-        Task<int> InsertAsync(AirportViewModel airportViewModel);
-        Task<int> RemoveAsync(Guid id);
+        Task<string> UpdateAirportAsync(AirportViewModel airportViewModel);
+        Task<string> InsertAsync(AirportViewModel airportViewModel);
+        Task<string> RemoveAsync(Guid id);
     }
 }

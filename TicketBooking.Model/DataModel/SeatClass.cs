@@ -19,13 +19,10 @@ namespace TicketBooking.Data.DataModel
         [Required]
         [MaxLength(100)]
         public string Description { get; set; }
-        [Required]
-        [Column(TypeName = "decimal(10, 2)")]
-        public decimal Price { get; set; }
-        public ICollection<Seat> Seats { get; set; }
+        public ICollection<Seat>? Seats { get; set; }
         public SeatClass()
         {
-            Seats = new List<Seat>();
+            Seats = new HashSet<Seat>();
         }
     }
 }
