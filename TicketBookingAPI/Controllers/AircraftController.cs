@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using TicketBooking.Data;
 using TicketBooking.Data.DbContext;
+
 using TicketBooking.Service.Services.AircraftService;
 using TicketBooking.Model.Models;
 using TicketBooking.Service.Models;
@@ -18,13 +19,14 @@ namespace TicketBookingAPI.Controllers
     [ApiController]
     public class AircraftController : ControllerBase
     {
-        private IAircraftSerivce Aircraftservice { get; }
-        public AircraftController(IAircraftSerivce service)
+        private IAircraftSerivce AircraftService { get; }
+
+        public AircraftController(IAircraftSerivce AircraftService)
         {
-            Aircraftservice = service;
+            this.AircraftService = AircraftService;
         }
 
-        [HttpPost("create-aircraft")]
+        [HttpPost]
         public async Task<ActionResult> AddAircraft(AircraftViewModel aircraftModel)
         {
             if (aircraftModel == null)
@@ -37,29 +39,29 @@ namespace TicketBookingAPI.Controllers
                 return NotFound();
             }
 
-            await Aircraftservice.InsertAsync(aircraftModel);
+            await AircraftService.InsertAsync(aircraftModel);
             return Accepted(aircraftModel.Id);
         }
 
-        [HttpDelete("delete-aircraft")]
+        [HttpDelete]
         public async Task<ActionResult> RemoveAircraft(Guid id)
         {
-            await Aircraftservice.RemoveAsync(id);
+            await AircraftService.RemoveAsync(id);
             return Accepted();
         }
 
-        [HttpPut("update-aircraft")]
+        [HttpPut]
 
         public async Task<ActionResult> UpdateAircraft(AircraftViewModel aircraftModel)
         {
-            await Aircraftservice.UpdateAircraftAsync(aircraftModel);
+            await AircraftService.UpdateAircraftAsync(aircraftModel);
             return Accepted();
         }
 
-        [HttpGet("get-aircrafts")]
+        [HttpGet("aircrafts")]
         public async Task<ActionResult> GetAircraft() => Ok(await Aircraftservice.GetAircraftAsync());
 
-        [HttpGet("get-aircraft/{id}")]
+        [HttpGet("aircraft/{id}")]
         public async Task<ActionResult> GetAircraftbyId(Guid id) => Ok(await Aircraftservice.GetAircraftAsync(id));
     }
 }

@@ -38,6 +38,11 @@ namespace TicketBooking.Data.DbContext
             modelBuilder.Entity<Airport>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.HasMany(a => a.DepartureAirports).WithOne(fs => fs.AirportDepart)
+                    .HasForeignKey(fs => fs.DepartureAirportId);
+                entity.HasMany(a => a.ArrivalAirports).WithOne(fs => fs.AirportArrival)
+                    .HasForeignKey(fs => fs.ArrivalAirportId);
             });
             modelBuilder.Entity<ContactDetail>(entity =>
             {
@@ -54,9 +59,9 @@ namespace TicketBooking.Data.DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
                 entity.HasOne(e => e.AirportArrival)
-                .WithMany(e => e.ArrivalAirports)
-                .HasForeignKey(e => e.ArrivalAirportId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                    .WithMany(e => e.ArrivalAirports)
+                    .HasForeignKey(e => e.ArrivalAirportId)
+                 .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
             modelBuilder.Entity<Flight>(entity =>

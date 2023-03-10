@@ -13,7 +13,6 @@ using TicketBooking.Data.DataModel;
 using TicketBooking.Data.DbContext;
 using TicketBooking.Data.Infrastructure;
 using TicketBooking.Data.Repository;
-
 using TicketBooking.Service;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 using TicketBooking.Service.Services.AircraftService;
@@ -46,7 +45,8 @@ builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.Al
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 builder.Services.Configure<VnpaySettings>(builder.Configuration.GetSection("Vnpay"));
 
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<TicketBookingDbContext>().AddDefaultTokenProviders();
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<TicketBookingDbContext>()
+    .AddDefaultTokenProviders();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<IAuthenticateService, AuthenticateService>();
@@ -54,13 +54,19 @@ builder.Services.AddScoped<ISendMailService, SendMailService>();
 builder.Services.AddScoped<IBillRepository, BillRepository>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IExportTicket, ExportTicketService>();
+builder.Services.AddScoped<IAircraftDataSeeder, AircraftDataSeeder>();
+builder.Services.AddScoped<IAirportDataSeeder, AirportDataSeeder>();
+builder.Services.AddScoped<ISeatClassDataSeeder, SeatClassDataSeeder>();
+builder.Services.AddScoped<IDataSeeder, DataSeeder>();
+builder.Services.AddScoped<IFlightValidation, FlightValidation>();
 
 
 builder.Services.AddAuthentication(options => {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options => {
+}).AddJwtBearer(options =>
+{
     options.SaveToken = true;
     options.RequireHttpsMetadata = false;
     options.TokenValidationParameters = new TokenValidationParameters
@@ -75,8 +81,15 @@ builder.Services.AddAuthentication(options => {
 });
 builder.Services.AddDbContext<TicketBookingDbContext>(op =>
     op.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<TicketBookingDbContext>(ServiceLifetime.Transient);
 builder.Services.AddScoped<IAircraftRepository, AircraftRepository>();
+builder.Services.AddScoped<IFlightRepository, FlightRepository>();
+builder.Services.AddScoped<IFlightScheRepository, FlightScheRepository>();
+builder.Services.AddScoped<IAirportRepository, AirportRepository>();
 builder.Services.AddScoped<IAircraftSerivce, AircraftService>();
+builder.Services.AddScoped<IFlightService, FlightService>();
+builder.Services.AddScoped<IFlightScheServices, FlightScheServices>();
+builder.Services.AddScoped<IAirportService, AirportService>();
 
 builder.Services.AddScoped<IContactDetailRepository, ContactDetailRepository>();
 builder.Services.AddScoped<IContactDetailServcie, ContactDetailservice>();
@@ -114,5 +127,7 @@ app.UseMiddleware<HandleExceptionMiddleware>();
 
 app.MapControllers();
 app.UseApiResponseAndExceptionWrapper();
+
+app.InitSeeder();
 
 app.Run();

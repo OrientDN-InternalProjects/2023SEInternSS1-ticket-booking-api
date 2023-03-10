@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using TicketBooking.Data.DataModel;
 using TicketBooking.Data.DbContext;
 using TicketBooking.Data.Infrastructure;
+using TicketBooking.Data.DataModel;
 
 namespace TicketBooking.Data.Repository
 {

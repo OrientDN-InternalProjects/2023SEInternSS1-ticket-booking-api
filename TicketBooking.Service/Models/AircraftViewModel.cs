@@ -5,7 +5,11 @@ using System.Threading.Tasks;
 using TicketBooking.Data;
 using System.ComponentModel.DataAnnotations;
 
+<<<<<<<< HEAD:TicketBooking.Service/Models/AircraftViewModel.cs
 namespace TicketBooking.Service.Models
+========
+namespace TicketBooking.Model.Models
+>>>>>>>> 4c77dd3c2a05ba0a4b64f6ae8e7252d4e9e88921:TicketBooking.Model/Models/AircraftViewModel.cs
 {
     public class AircraftViewModel
     {

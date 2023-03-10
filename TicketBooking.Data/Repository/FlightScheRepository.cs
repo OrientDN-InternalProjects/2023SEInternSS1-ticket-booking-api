@@ -3,25 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using TicketBooking.Data.DataModel;
 using TicketBooking.Data.DbContext;
 using TicketBooking.Data.Infrastructure;
-using TicketBooking.Model.Models;
 
 namespace TicketBooking.Data.Repository
 {
+    public interface IFlightScheRepository : IRepository<FlightSchedule>
     {
+
     }
 
-    public class FlightRepository : GenericRepository<Flight>, IFlightRepository
+    public class FlightScheRepository : GenericRepository<FlightSchedule>, IFlightScheRepository
     {
-        public FlightRepository(TicketBookingDbContext context) : base(context)
+        public FlightScheRepository(TicketBookingDbContext context) : base(context)
         {
-            
-        }
 
-        {
         }
     }
 }
