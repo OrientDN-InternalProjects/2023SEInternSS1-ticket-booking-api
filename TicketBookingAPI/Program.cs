@@ -27,6 +27,11 @@ using TicketBooking.Service.Services.SendMailService;
 using TicketBooking.Common.EnvironmentSetting;
 using TicketBooking.Service.Services.Payment;
 using TicketBooking.Service.Services.TicketService;
+using TicketBooking.Service.Services.FlightScheService;
+using TicketBooking.Service.Services.FlightService;
+using TicketBooking.Service.Services.AirportService;
+using TicketBooking.Data.DbSeeder;
+using TicketBooking.Common.AppExceptions;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -49,17 +54,15 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFramework
     .AddDefaultTokenProviders();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
-builder.Services.AddScoped<IAuthenticateService, AuthenticateService>();
-builder.Services.AddScoped<ISendMailService, SendMailService>();
-builder.Services.AddScoped<IBillRepository, BillRepository>();
-builder.Services.AddScoped<IPaymentService, PaymentService>();
-builder.Services.AddScoped<IExportTicket, ExportTicketService>();
 builder.Services.AddScoped<IAircraftDataSeeder, AircraftDataSeeder>();
 builder.Services.AddScoped<IAirportDataSeeder, AirportDataSeeder>();
 builder.Services.AddScoped<ISeatClassDataSeeder, SeatClassDataSeeder>();
 builder.Services.AddScoped<IDataSeeder, DataSeeder>();
 builder.Services.AddScoped<IFlightValidation, FlightValidation>();
-
+builder.Services.AddScoped<IAuthenticateService, AuthenticateService>();
+builder.Services.AddScoped<ISendMailService, SendMailService>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<IExportTicket, ExportTicketService>();
 
 builder.Services.AddAuthentication(options => {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -110,6 +113,7 @@ builder.Services.AddScoped<IPassengerRepository, PassengerRepository>();
 builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 builder.Services.AddScoped<IFlightScheduleRepository, FlightScheduleRepository>();
 builder.Services.AddScoped<IAirportRepository, AirportRepository>();
+builder.Services.AddScoped<IBillRepository, BillRepository>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 var app = builder.Build();

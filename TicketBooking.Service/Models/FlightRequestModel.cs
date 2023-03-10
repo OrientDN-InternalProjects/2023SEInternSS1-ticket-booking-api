@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TicketBooking.Data.DataModel;
 
-namespace TicketBooking.Model.Models
+namespace TicketBooking.Service.Models
 {
     public class FlightRequestModel
     {

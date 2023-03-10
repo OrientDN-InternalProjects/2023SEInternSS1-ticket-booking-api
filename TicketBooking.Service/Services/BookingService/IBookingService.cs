@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TicketBooking.Data.DataModel;
 using TicketBooking.Service.Models;
 
 namespace TicketBooking.Service.Services.BookingService
@@ -11,7 +12,7 @@ namespace TicketBooking.Service.Services.BookingService
     {
         Task<string> RequestBooking(BookingRequestModel model);
         Task<Response> CancelBooking(Guid bookingId);
-        Task<Response> ConfirmMailBooking(Guid bookingId);
+        Task<Response> GetByBookingCode(string bookingCode);
 
     }
 }

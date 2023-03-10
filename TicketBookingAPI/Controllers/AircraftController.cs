@@ -10,7 +10,6 @@ using TicketBooking.Data;
 using TicketBooking.Data.DbContext;
 
 using TicketBooking.Service.Services.AircraftService;
-using TicketBooking.Model.Models;
 using TicketBooking.Service.Models;
 
 namespace TicketBookingAPI.Controllers
@@ -27,7 +26,7 @@ namespace TicketBookingAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddAircraft(AircraftViewModel aircraftModel)
+        public async Task<IActionResult> AddAircraft(AircraftViewModel aircraftModel)
         {
             if (aircraftModel == null)
             {
@@ -38,9 +37,8 @@ namespace TicketBookingAPI.Controllers
             {
                 return NotFound();
             }
-
-            await AircraftService.InsertAsync(aircraftModel);
-            return Accepted(aircraftModel.Id);
+            
+            return Accepted(await AircraftService.InsertAsync(aircraftModel));
         }
 
         [HttpDelete]
@@ -59,9 +57,9 @@ namespace TicketBookingAPI.Controllers
         }
 
         [HttpGet("aircrafts")]
-        public async Task<ActionResult> GetAircraft() => Ok(await Aircraftservice.GetAircraftAsync());
+        public async Task<ActionResult> GetAircraft() => Ok(await AircraftService.GetAircraftAsync());
 
         [HttpGet("aircraft/{id}")]
-        public async Task<ActionResult> GetAircraftbyId(Guid id) => Ok(await Aircraftservice.GetAircraftAsync(id));
+        public async Task<ActionResult> GetAircraftbyId(Guid id) => Ok(await AircraftService.GetAircraftAsync(id));
     }
 }

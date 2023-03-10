@@ -12,6 +12,7 @@ namespace TicketBooking.Data.Repository
 {
     public interface IAirportRepository : IRepository<Airport>
     {
+        Task<Airport> GetByAirportCode(string code);
     }
 
     public class AirportRepository : GenericRepository<Airport>, IAirportRepository

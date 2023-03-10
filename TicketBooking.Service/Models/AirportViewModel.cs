@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using TicketBooking.Data.DataModel;
 
-namespace TicketBooking.Model.Models
+namespace TicketBooking.Service.Models
 {
     public class AirportViewModel
     {

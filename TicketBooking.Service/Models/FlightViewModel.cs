@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using TicketBooking.Data.DataModel;
 
-namespace TicketBooking.Model.Models
+namespace TicketBooking.Service.Models
 {
     public class FlightViewModel
     {
+        public Guid Id { get; set; }
         public string AircraftModel { set; get; }
 
         public string AircraftManufacture { get; set; }

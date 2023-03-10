@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using System.Data.Common;
+using TicketBooking.Common.AppExceptions;
 using TicketBooking.Common.Constant;
 using TicketBooking.Data.DataModel;
 using TicketBooking.Data.Infrastructure;
 using TicketBooking.Data.Repository;
 using TicketBooking.Model.DataModel;
 using TicketBooking.Service.Models;
+using TicketBooking.Service.Services.FlightService;
 using TicketBooking.Service.Services.SendMailService;
 
 namespace TicketBooking.Service.Services.BookingService
@@ -15,7 +17,6 @@ namespace TicketBooking.Service.Services.BookingService
     {
         private readonly IBookingRepository bookingRepo;
         private readonly IBookingListRepository bookingListRepo;
-        private readonly IBookingSeatRepository bookingSeatRepo;
         private readonly IBookingServiceRepository bookingServiceRepo;
         private readonly IPassengerRepository passengerRepo;
         private readonly ITicketRepository ticketRepo;
@@ -25,7 +26,6 @@ namespace TicketBooking.Service.Services.BookingService
         private readonly IExtraServiceRepository extraServiceRepo;
         private readonly IMapper mapper;
         private readonly UserManager<ApplicationUser> userManager;
-        private readonly ISendMailService sendMailService;
         private readonly IFlightScheduleRepository scheduleRepo;
         private readonly IAirportRepository airportRepo;
         private readonly IAircraftRepository aircraftRepo;
@@ -35,14 +35,12 @@ namespace TicketBooking.Service.Services.BookingService
             , IMapper mapper
             , ITicketRepository tickeetRepo
             , IPassengerRepository passenger
-            , IBookingSeatRepository bookingSeat
             , IBookingListRepository bookingList
             , IContactDetailRepository contactRepo
             , IFlightRepository flightRepo
             , IBookingServiceRepository serviceRepository
             , IExtraServiceRepository extra
             , UserManager<ApplicationUser> userManager
-            , ISendMailService sendMailService
             , IFlightScheduleRepository scheduleRepo,
                 IAirportRepository airportRepo,
                 IAircraftRepository aircraftRepo)
@@ -52,14 +50,12 @@ namespace TicketBooking.Service.Services.BookingService
             this.mapper = mapper;
             this.ticketRepo = tickeetRepo;
             bookingListRepo = bookingList;
-            bookingSeatRepo = bookingSeat;
             passengerRepo = passenger;
             this.contactRepo = contactRepo;
             this.flightRepo = flightRepo;
             bookingServiceRepo = serviceRepository;
             extraServiceRepo = extra;
             this.userManager = userManager;
-            this.sendMailService = sendMailService;
             this.scheduleRepo = scheduleRepo;
             this.airportRepo = airportRepo;
             this.aircraftRepo = aircraftRepo;
@@ -67,21 +63,51 @@ namespace TicketBooking.Service.Services.BookingService
 
         public async Task<string> RequestBooking(BookingRequestModel model)
         {
-            var flight = await flightRepo.GetFlight(model.FlightId);
-            var backFlight = await flightRepo.GetFlight(model.RoundFlightId.Value);
+            var flight = await flightRepo.GetById(model.FlightId);
+            var scheduleCheck = await scheduleRepo.GetById(flight.ScheduleId);
+            var backFlight = await flightRepo.GetById(model.RoundFlightId.Value);
             var contact = await contactRepo.GetById(model.ContactId.Value);
             var seatType = string.Empty;
+            var nowDate = DateTime.Now;
+            int result = DateTime.Compare(nowDate.Date, scheduleCheck.DepartureTime.Date);
+
             if (flight == null || contact == null)
             {
                 return "Please check your data input ";
 
             }
 
+            if (flight.IsFlightActive == false)
+            {
+                return "No flight to book";
+            }
+
+            if (result < 0)
+            {
+                return "Flight is outdated";
+            }
+            
+            if((nowDate.Hour - scheduleCheck.DepartureTime.Hour) < 3)
+            {
+                return "Too late booking";
+            }
+
+            if(model.Passes.Count >flight.RemainBusinessSeat && model.IsBusiness == true)
+            {
+                return "No Business seat remain";
+            }
+
+            if (model.Passes.Count > flight.RemainEconomySeat && model.IsBusiness == false)
+            {
+                return "No Economy seat remain";
+            }
+
+
             var booking = new Booking
             {
                 NumberPeople = model.Passes.Count,
                 DateBooking = DateTime.Now,
-                Reference = $"BK{contact.Id.ToString().Substring(0, 4)}",
+                Reference = $"BK{contact.Id.ToString().Substring(0, 2)}{DateTime.Now.Hour.ToString()}",
                 TotalPrice = 0,
                 IsPaid = false,
                 IsRoundFlight = model.IsRoundFlight,
@@ -119,10 +145,14 @@ namespace TicketBooking.Service.Services.BookingService
                 };
                 if (model.IsBusiness == true)
                 {
+                    seatType = SeatClassType.Business.ToString();
                     bookingList.FlightPrice = flight.BusinessPrice * bookingList.NumberSeat;
                 }
                 else
+                {
+                    seatType = SeatClassType.Economy.ToString();
                     bookingList.FlightPrice = flight.EconomyPrice * bookingList.NumberSeat;
+                }
                 await bookingListRepo.Add(bookingList);
                 await unitOfWork.CompletedAsync();
                 var list = await ExtraService(bookingList, model.Services);
@@ -148,13 +178,13 @@ namespace TicketBooking.Service.Services.BookingService
                 };
                 if (model.IsBusiness == true)
                 {
-                    seatType = "Business";
+                    seatType = SeatClassType.Business.ToString();
                     goFlight.FlightPrice = flight.BusinessPrice * goFlight.NumberSeat;
                     roundFlight.FlightPrice = backFlight.BusinessPrice * roundFlight.NumberSeat;
                 }
                 else
                 {
-                    seatType = "Economy";
+                    seatType = SeatClassType.Economy.ToString();
                     goFlight.FlightPrice = flight.EconomyPrice * goFlight.NumberSeat;
                     roundFlight.FlightPrice = backFlight.EconomyPrice * roundFlight.NumberSeat;
                 }
@@ -375,9 +405,35 @@ namespace TicketBooking.Service.Services.BookingService
             return airports;
         }
 
-        public Task<Response> ConfirmMailBooking(Guid bookingId)
+        public async Task<Response> GetByBookingCode(string bookingCode)
         {
-            throw new NotImplementedException();
+            var bookingResult = bookingRepo.Find(booking => booking.Reference.Contains(bookingCode)).FirstOrDefault();
+
+            if (bookingResult == null)
+            {
+                return new Response
+                {
+                    Status = false,
+                    Message = "Invalid booking"
+                };    
+            }
+            var booking = mapper.Map<BookingViewModel>(bookingResult);
+            if (bookingResult.IsPaid == false)
+            {
+
+                return new Response
+                {
+                    Status = true,
+                    Message = "Booking is not Paid",
+                    Data = booking
+                };
+            }
+            return new Response
+            {
+                Status = true,
+                Message = "Your booking:",
+                Data = booking
+            };
         }
     }
 }

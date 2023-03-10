@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using TicketBooking.Data.DataModel;
 using TicketBooking.Data.Infrastructure;
 using AutoMapper;
-using TicketBooking.Model.Models;
 using TicketBooking.Data.Repository;
 using TicketBooking.Data.DataModel;
 using TicketBooking.Service.Models;
@@ -51,12 +50,12 @@ namespace TicketBooking.Service.Services.AircraftService
             await unitOfWork.CompletedAsync();
         }
 
-        public async Task<bool> InsertAsync(AircraftViewModel aircraftDto)
+        public async Task<string> InsertAsync(AircraftViewModel aircraftDto)
         {
             var aircraft = mapper.Map<Aircraft>(aircraftDto);
             await aircraftRepo.Add(aircraft);
             await unitOfWork.CompletedAsync();
-            return true;
+            return "Add succesfully";
         }
 
         public async Task<bool> RemoveAsync(Guid id)

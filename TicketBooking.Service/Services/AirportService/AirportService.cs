@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using TicketBooking.Data.DataModel;
 using TicketBooking.Data.Infrastructure;
 using TicketBooking.Data.Repository;
-using TicketBooking.Model.Models;
+using TicketBooking.Service.Models;
 
 namespace TicketBooking.Service.Services.AirportService
 {
@@ -49,21 +49,23 @@ namespace TicketBooking.Service.Services.AirportService
             return airport == null ? throw new Exception("ID cannot be found") : mapper.Map<AirportViewModel>(airport);
         }
 
-        public async Task<int> UpdateAirportAsync(AirportViewModel airportViewModel)
+        public async Task<string> UpdateAirportAsync(AirportViewModel airportViewModel)
         {
             var airport = mapper.Map<Airport>(airportViewModel);
-            await airportRepo.Update(airport);
-            return await unitOfWork.CompletedAsync();
+            airportRepo.Update(airport);
+            await unitOfWork.CompletedAsync();
+            return "Update success";
         }
 
-        public async Task<int> InsertAsync(AirportViewModel airportViewModel)
+        public async Task<string> InsertAsync(AirportViewModel airportViewModel)
         {
             var airport = mapper.Map<Airport>(airportViewModel);
             await airportRepo.Add(airport);
-            return await unitOfWork.CompletedAsync();
+            await unitOfWork.CompletedAsync();
+            return "Insert success";
         }
 
-        public async Task<int> RemoveAsync(Guid id)
+        public async Task<string> RemoveAsync(Guid id)
         {
             var airport = airportRepo.Find(c => c.Id == id).FirstOrDefault();
             if (airport == null)
@@ -74,7 +76,8 @@ namespace TicketBooking.Service.Services.AirportService
             else
             {
                 await airportRepo.Remove(airport.Id);
-                return await unitOfWork.CompletedAsync();
+                await unitOfWork.CompletedAsync();
+                return "Remove success";
             }
         }
     }

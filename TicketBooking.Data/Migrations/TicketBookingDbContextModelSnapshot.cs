@@ -199,6 +199,11 @@ namespace TicketBooking.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
                     b.Property<string>("Country")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -442,6 +447,12 @@ namespace TicketBooking.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
+
+                    b.Property<int>("RemainBusinessSeat")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RemainEconomySeat")
+                        .HasColumnType("int");
 
                     b.Property<int>("RemainingSeat")
                         .HasColumnType("int");

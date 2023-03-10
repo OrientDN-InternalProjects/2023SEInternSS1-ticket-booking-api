@@ -33,7 +33,8 @@ namespace TicketBooking.Data.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     City = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Country = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                    Country = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -344,6 +345,8 @@ namespace TicketBooking.Data.Migrations
                     AircraftId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TotalSeat = table.Column<int>(type: "int", nullable: false),
                     RemainingSeat = table.Column<int>(type: "int", nullable: false),
+                    RemainEconomySeat = table.Column<int>(type: "int", nullable: false),
+                    RemainBusinessSeat = table.Column<int>(type: "int", nullable: false),
                     IsFlightActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     DefaultBaggage = table.Column<int>(type: "int", nullable: false),
                     BusinessPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),

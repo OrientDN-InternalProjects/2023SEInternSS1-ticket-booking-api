@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using TicketBooking.Data;
 using TicketBooking.Data.Infrastructure;
 using TicketBooking.Data.Repository;
-using TicketBooking.Model.Models;
+using TicketBooking.Service.Models;
 
 namespace TicketBooking.Service.Services.FlightScheService
 {
@@ -14,8 +14,8 @@ namespace TicketBooking.Service.Services.FlightScheService
     {
         Task<IEnumerable<FlightScheViewModel>> GetFlightScheAsync();
         Task<FlightScheViewModel> GetFlightScheAsync(Guid id);
-        Task<int> UpdateFlightScheAsync(FlightScheViewModel flightScheViewModel);
-        Task<int> InsertAsync(FlightScheViewModel flightScheViewModel);
-        Task<int> RemoveAsync(Guid id);
+        Task<string> UpdateFlightScheAsync(FlightScheViewModel flightScheViewModel);
+        Task<string> InsertAsync(FlightScheViewModel flightScheViewModel);
+        Task<string> RemoveAsync(Guid id);
     }
 }

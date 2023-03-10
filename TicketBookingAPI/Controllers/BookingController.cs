@@ -56,6 +56,24 @@ namespace TicketBookingAPI.Controllers
             return BadRequest(result);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetByBookingCode(string code)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            logger.LogInformation("Search booking");
+            var result = await bookingService.GetByBookingCode(code);
+
+            if (result.Status == true)
+                return StatusCode(StatusCodes.Status200OK, result);
+
+            logger.LogError("Search failed");
+            return BadRequest(result);
+        }
+
         [HttpPost("request-contact")]
         public async Task<IActionResult> CreateContact([FromBody] ContactViewModel contact)
         {

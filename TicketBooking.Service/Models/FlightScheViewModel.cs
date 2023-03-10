@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using TicketBooking.Data.DataModel;
 using TicketBooking.Data;
 
-namespace TicketBooking.Model.Models
+namespace TicketBooking.Service.Models
 {
     public class FlightScheViewModel
     {

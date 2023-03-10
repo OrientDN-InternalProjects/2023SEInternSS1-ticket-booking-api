@@ -1,12 +1,15 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using System.Collections.Generic;
+using TicketBooking.Common.AppExceptions;
 using TicketBooking.Common.EnvironmentSetting;
 using TicketBooking.Data.DataModel;
 using TicketBooking.Data.Infrastructure;
 using TicketBooking.Data.Repository;
 using TicketBooking.Model.DataModel;
 using TicketBooking.Service.Models;
+using TicketBooking.Service.Services.FlightService;
 using TicketBooking.Service.Services.SendMailService;
 
 namespace TicketBooking.Service.Services.Payment
@@ -21,6 +24,9 @@ namespace TicketBooking.Service.Services.Payment
         private readonly IContactDetailRepository contactRepo;
         private readonly ISendMailService sendMailService;
         private readonly ITicketRepository ticketRepo;
+        private readonly IFlightService flightService;
+        private readonly IBookingListRepository bookingListRepo;
+        private readonly IFlightRepository flightRepo;
 
         public PaymentService(IOptions<VnpaySettings> options
             , IConfiguration _configuration
@@ -29,7 +35,10 @@ namespace TicketBooking.Service.Services.Payment
             , IBookingRepository bookingRepo
             , ISendMailService sendMailService
             , IContactDetailRepository contactDetail
-            , ITicketRepository ticketRepo)
+            , ITicketRepository ticketRepo
+            , IBookingListRepository bookingListRepo
+            , IFlightService flightService
+            , IFlightRepository flightRepo)
         {
             this.vnpaySettings = options.Value;
             this.configuration = _configuration;
@@ -39,6 +48,9 @@ namespace TicketBooking.Service.Services.Payment
             this.sendMailService = sendMailService;
             contactRepo = contactDetail;
             this.ticketRepo = ticketRepo;
+            this.flightService = flightService;
+            this.bookingListRepo = bookingListRepo;
+            this.flightRepo = flightRepo;
         }
 
         public async Task<string> CreatePaymentUrl(PaymentInformationModel model, HttpContext context)
@@ -83,21 +95,27 @@ namespace TicketBooking.Service.Services.Payment
             var response = await pay.GetFullResponseData(collections, configuration["Vnpay:HashSecret"]);
             await SendTicket(response);
             await SavePayment(response);
+            await ChangeNumSeat(response);
             return response;
         }
 
         public async Task SendTicket(PaymentResponseModel response)
         {
+            var booking = await bookingRepo.GetById(new Guid(response.OrderDescription));
+            var tickets = ticketRepo.Find(ticket => ticket.BookingId == booking.Id).ToList();
+            var bookingList = bookingListRepo.Find(x => x.BookingId == booking.Id);
+            var contact = await contactRepo.GetById((Guid)booking.ContactId);
+            var combined = string.Empty;
+            //SeatClassType type;
+            //Enum.TryParse<SeatClassType>(tickets[0].SeatClass, out type);
             if (response.PaymentStatus != "Success")
             {
                 return;
             }
-            var booking = await bookingRepo.GetById(new Guid(response.OrderDescription));
-            var tickets = ticketRepo.Find(ticket => ticket.BookingId == booking.Id).ToList();
-            var contact = await contactRepo.GetById((Guid)booking.ContactId);
-            var combined = string.Empty;
+
             foreach (var ticket in tickets)
             {
+
                 string caText = $"Passenger Name:{ticket.PassengerName}, Location From:{ticket.LocationFrom}, Location To:{ticket.LocationTo}, Seat Class:{ticket.SeatClass}, Departure Time:{ticket.DepartureTime}, AirlineName{ticket.AirlineName}, AircraftModel{ticket.AircraftModel}, BookingCode{ticket.BookingCode}";
                 combined += caText;
             }
@@ -114,6 +132,7 @@ namespace TicketBooking.Service.Services.Payment
         public async Task SavePayment(PaymentResponseModel response)
         {
             var booking = await bookingRepo.GetById(new Guid(response.OrderDescription));
+
             var bill = new Bill()
             {
                 Amount = response.Amount,
@@ -133,6 +152,24 @@ namespace TicketBooking.Service.Services.Payment
             booking.Bills.Add(bill);
             bookingRepo.Update(booking);
             await unitOfWork.CompletedAsync();
+        }
+        public async Task ChangeNumSeat(PaymentResponseModel response)
+        {
+            var booking = await bookingRepo.GetById(new Guid(response.OrderDescription));
+            var tickets = ticketRepo.Find(ticket => ticket.BookingId == booking.Id).ToList();
+            var bookingList = bookingListRepo.Find(x => x.BookingId == booking.Id).ToList();
+            var flights = new List<Flight>();
+            SeatClassType type;
+            Enum.TryParse<SeatClassType>(tickets[0].SeatClass, out type);
+            foreach(var item in bookingList)
+            {
+                var flight = await flightRepo.GetById((Guid)item.FlightId);
+                flights.Add(flight);
+            }
+            foreach (var item in flights) 
+            {
+                await flightService.UpdateFlightSeat(item.Id, type, booking.NumberPeople);
+            }
         }
     }
 }
