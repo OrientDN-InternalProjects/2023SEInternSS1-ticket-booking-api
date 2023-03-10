@@ -14,9 +14,6 @@ namespace TicketBooking.Service.Models
         public Guid AircraftId { set; get; }
 
         [Required]
-        public bool IsFlightActive { set; get; }
-
-        [Required]
         public int DefaultBaggage { set; get; }
 
         public decimal BusinessPrice { set; get; }
