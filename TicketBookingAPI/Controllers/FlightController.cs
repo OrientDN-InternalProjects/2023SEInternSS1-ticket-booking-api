@@ -29,7 +29,7 @@ namespace TicketBookingAPI.Controllers
         }
 
 
-        [HttpPost("add_flight")]
+        [HttpPost("add-flight")]
         [Authorize(Roles = "Admin", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> AddFlight(FlightRequestModel flightModel)
         {
@@ -114,6 +114,12 @@ namespace TicketBookingAPI.Controllers
                 return BadRequest("Update remaining seat failed");
             }
         }
-        
-}
+
+        [HttpPatch("UpdateFlightStatus")]
+        [Authorize(Roles = "Admin", AuthenticationSchemes = "Bearer")]
+        public async Task<IActionResult> UpdateFlightStatus(Guid id)
+        {
+            return Ok(await flightservice.DeactiveFlightStatus(id));
+        }
+    }
 }
