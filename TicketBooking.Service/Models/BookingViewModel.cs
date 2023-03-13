@@ -19,5 +19,6 @@ namespace TicketBooking.Service.Models
         public bool IsPaid { get; set; }
         public string? Status { get; set; }
         public bool IsRoundFlight { get; set; }
+        public List<TicketViewModel> Tickets { get; set; }
     }
 }

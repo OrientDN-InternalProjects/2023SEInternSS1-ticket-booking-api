@@ -53,6 +53,7 @@ namespace TicketBooking.Service.Helper
             .ForMember(dest => dest.ArrivalAirportId, act => act.MapFrom(src => src.ArrivalAirportId));
 
             CreateMap<AirportViewModel, Airport>().ReverseMap();
+            CreateMap<TicketViewModel, Ticket>().ReverseMap();
         }
 
     }

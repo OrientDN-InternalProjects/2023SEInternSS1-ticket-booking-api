@@ -25,9 +25,8 @@ namespace TicketBooking.Data.DataModel
         [Display(Name = "Date Booking")]
         public DateTime DateBooking { get; set; }
 
-        [Required]
         [MaxLength(6)]
-        public string Reference { get; set; }
+        public string? Reference { get; set; }
 
         [Required]
         [Display(Name = "Total Price")]

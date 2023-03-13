@@ -82,7 +82,7 @@ namespace TicketBooking.Service.Services.BookingService
                 return "No flight to book";
             }
 
-            if (result < 0)
+            if (result > 0)
             {
                 return "Flight is outdated";
             }
@@ -107,7 +107,6 @@ namespace TicketBooking.Service.Services.BookingService
             {
                 NumberPeople = model.Passes.Count,
                 DateBooking = DateTime.Now,
-                Reference = $"BK{contact.Id.ToString().Substring(0, 2)}{DateTime.Now.Hour.ToString()}",
                 TotalPrice = 0,
                 IsPaid = false,
                 IsRoundFlight = model.IsRoundFlight,
@@ -125,6 +124,7 @@ namespace TicketBooking.Service.Services.BookingService
             }
 
             await bookingRepo.AddBooking(booking);
+            booking.Reference = $"BK{contact.Id.ToString().Substring(0, 2).ToUpper()}{booking.Id.ToString().Substring(0, 2).ToUpper()}";
             if (model.Passes.Count > 0)
             {
                 booking = await AddPassenger(booking, model.Passes);
@@ -408,7 +408,7 @@ namespace TicketBooking.Service.Services.BookingService
         public async Task<Response> GetByBookingCode(string bookingCode)
         {
             var bookingResult = bookingRepo.Find(booking => booking.Reference.Contains(bookingCode)).FirstOrDefault();
-
+            var tikets = ticketRepo.Find(ticket => ticket.BookingId == bookingResult.Id).ToList();
             if (bookingResult == null)
             {
                 return new Response
@@ -418,6 +418,13 @@ namespace TicketBooking.Service.Services.BookingService
                 };    
             }
             var booking = mapper.Map<BookingViewModel>(bookingResult);
+            foreach(var ticket in tikets)
+            {
+                var tick = mapper.Map<TicketViewModel>(ticket);
+                booking.Tickets.Add(tick);
+            }
+            
+           
             if (bookingResult.IsPaid == false)
             {
 
