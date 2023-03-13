@@ -99,6 +99,17 @@ namespace TicketBookingAPI.Controllers
             
             return Ok(await flightservice.GetFlightAsync(flightrequest));
         }
+        
+        [HttpGet("GetflightByRequestWithPaging")]
+        public async Task<IActionResult> GetFlightByRequestPaging([FromQuery] FlightRequest flightrequest, [FromQuery] RequestParam request)
+        {
+            if ((await flightservice.GetFlightPagingAsync(flightrequest, request)) == null)
+            {
+                return BadRequest("No flight matches with the ID");
+            }
+            
+            return Ok(await flightservice.GetFlightPagingAsync(flightrequest, request));
+        }
 
         // This controller is for logic demo purpose.
         // It will be removed after being integrated into booking service

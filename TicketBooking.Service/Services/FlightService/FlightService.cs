@@ -68,6 +68,14 @@ namespace TicketBooking.Service.Services.FlightService
                 ? throw new Exception("None flight match request")
                 : mapper.Map<IEnumerable<FlightViewModel>>(flight);
         }
+        
+        public async Task<IEnumerable<FlightViewModel>> GetFlightPagingAsync(FlightRequest flightModel, RequestParam request)
+        {
+            var flight = await flightRepo.GetFlightPagingByRequest(flightModel, request);
+            return flight == null
+                ? throw new Exception("None flight match request")
+                : mapper.Map<IEnumerable<FlightViewModel>>(flight);
+        }
 
         public async Task<int> UpdateFlightAsync(FlightUpdateModel flightUpdateModel)
         {

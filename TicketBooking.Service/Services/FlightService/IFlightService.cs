@@ -18,6 +18,7 @@ namespace TicketBooking.Service.Services.FlightService
         Task<string> RemoveAsync(Guid id);
         Task<bool> UpdateFlightSeat(Guid flightId, SeatClassType type, int number);
         Task<IEnumerable<FlightViewModel>> GetFlightAsync(FlightRequest flightModel);
+        Task<IEnumerable<FlightViewModel>> GetFlightPagingAsync(FlightRequest flightModel, RequestParam request);
         Task<string> DeactiveFlightStatus(Guid flightId, bool status = false);
     }
 }
