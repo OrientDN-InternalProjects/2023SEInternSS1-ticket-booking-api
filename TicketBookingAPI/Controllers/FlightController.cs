@@ -114,6 +114,12 @@ namespace TicketBookingAPI.Controllers
                 return BadRequest("Update remaining seat failed");
             }
         }
+
+        [HttpPut("UpdateFlightStatus")]
+        public async Task<IActionResult> UpdateFlightStatus(Guid id)
+        {
+            return Ok(await flightservice.DeactiveFlightStatus(id));
+        }
         
 }
 }
