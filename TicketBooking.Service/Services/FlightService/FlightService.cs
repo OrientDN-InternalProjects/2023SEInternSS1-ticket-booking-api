@@ -28,9 +28,9 @@ namespace TicketBooking.Service.Services.FlightService
         private readonly ILogger<Flight> logger;
 
         public FlightService(IUnitOfWork unitOfWork, IMapper mapper,
-            IFlightRepository flightRepo, IAircraftRepository aircraftRepo,
-            IAirportService airportService, IFlightScheServices flightScheServices,
-            IFlightScheRepository flightScheRepo, ILogger<Flight> logger)
+                             IFlightRepository flightRepo, IAircraftRepository aircraftRepo,
+                             IAirportService airportService, IFlightScheServices flightScheServices,
+                             IFlightScheRepository flightScheRepo, ILogger<Flight> logger)
         {
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
@@ -51,10 +51,8 @@ namespace TicketBooking.Service.Services.FlightService
             {
                 throw new Exception("No flight available now");
             }
-            else
-            {
-                return mapper.Map<IEnumerable<FlightViewModel>>(flight);
-            }
+            
+            return mapper.Map<IEnumerable<FlightViewModel>>(flight);
         }
 
         public async Task<FlightViewModel> GetFlightAsync(Guid id)
