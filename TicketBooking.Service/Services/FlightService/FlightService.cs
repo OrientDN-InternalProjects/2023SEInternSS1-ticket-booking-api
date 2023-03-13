@@ -112,7 +112,7 @@ namespace TicketBooking.Service.Services.FlightService
                 RemainBusinessSeat = tempAircarftModel.NumColumnSeat * tempAircarftModel.NumRowBusiness,
                 ScheduleId = Guid.NewGuid(),
                 DefaultBaggage = flightRequestModel.DefaultBaggage,
-                IsFlightActive = flightRequestModel.IsFlightActive,
+                IsFlightActive = true, // true as default - flight is available, customer can book it
                 BusinessPrice = flightRequestModel.BusinessPrice,
                 EconomyPrice = flightRequestModel.EconomyPrice
             };
