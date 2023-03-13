@@ -30,7 +30,7 @@ namespace TicketBookingAPI.Controllers
 
 
         [HttpPost("add_flight")]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> AddFlight(FlightRequestModel flightModel)
         {
             if (flightModel == null)
@@ -56,7 +56,7 @@ namespace TicketBookingAPI.Controllers
         }
 
         [HttpDelete]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> RemoveFlight(Guid id)
         {
             await flightservice.RemoveAsync(id);
@@ -64,7 +64,7 @@ namespace TicketBookingAPI.Controllers
         }
 
         [HttpPut]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> UpdateFlight(FlightUpdateModel flightUpdateModel)
         {
             var result = await flightservice.UpdateFlightAsync(flightUpdateModel);
