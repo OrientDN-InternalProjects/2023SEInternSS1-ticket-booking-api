@@ -8,7 +8,6 @@ using TicketBooking.Data.DataModel;
 using TicketBooking.Data.DbContext;
 using TicketBooking.Data.Infrastructure;
 using TicketBooking.Model.DataModel;
-using TicketBooking.Service.Models;
 
 namespace TicketBooking.Data.Repository
 {
@@ -20,7 +19,7 @@ namespace TicketBooking.Data.Repository
 
         Task<IEnumerable<Flight>> GetFlightByRequest(FlightRequest flightrequest);
         
-        Task<IEnumerable<Flight>> GetFlightPagingByRequest(FlightRequest flightrequest, RequestParam request);
+        Task<IEnumerable<Flight>> GetFlightPagingByRequest(FlightRequest request);
     }
 
     public class FlightRepository : GenericRepository<Flight>, IFlightRepository
@@ -113,16 +112,16 @@ namespace TicketBooking.Data.Repository
             return await query.ToListAsync();
         }
 
-        public async Task<IEnumerable<Flight>> GetFlightPagingByRequest(FlightRequest flightrequest, RequestParam request)
+        public async Task<IEnumerable<Flight>> GetFlightPagingByRequest(FlightRequest request)
         {
-            var convertedDate = flightrequest.DepartDate.Date;
+            var convertedDate = request.DepartDate.Date;
 
             var departGUID = await (from a in _context.Airports
-                                    where a.Code == flightrequest.DepartCode
+                                    where a.Code == request.DepartCode
                                     select a.Id).ToListAsync();
 
             var arrivalGUID = await (from a in _context.Airports
-                                     where a.Code == flightrequest.ArrivalCode
+                                     where a.Code == request.ArrivalCode
                                      select a.Id).ToListAsync();
 
             var query = (from f in _context.Flights
@@ -156,7 +155,7 @@ namespace TicketBooking.Data.Repository
                                 DepartureTime = f.Schedule.DepartureTime,
                                 ArrivalTime = f.Schedule.ArrivalTime
                             }
-                        }).Skip(3).Take(10);
+                        }).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize);
 
             return await query.ToListAsync();
         }

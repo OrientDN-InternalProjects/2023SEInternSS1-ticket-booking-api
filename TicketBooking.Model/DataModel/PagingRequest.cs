@@ -1,15 +1,16 @@
-﻿namespace TicketBooking.Service.Models
+﻿
+namespace TicketBooking.Model.DataModel
 {
-    public class RequestParam
+    public class PagingRequest
     {
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
-        public RequestParam()
+        public PagingRequest()
         {
             this.PageNumber = 1;
             this.PageSize = 10;
         }
-        public RequestParam(int pageNumber, int pageSize)
+        public PagingRequest(int pageNumber, int pageSize)
         {
             this.PageNumber = pageNumber < 1 ? 1 : pageNumber;
             this.PageSize = pageSize > 10 ? 10 : pageSize;

@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+
 namespace TicketBooking.Model.DataModel
 {
-    public class FlightRequest
+    public class FlightRequest : PagingRequest
     {
         [Required]
         public string DepartCode { set; get; }
@@ -12,8 +13,6 @@ namespace TicketBooking.Model.DataModel
 
         [Required]
         public DateTime DepartDate { set; get; }
-
-
     }
 }
 
