@@ -2,6 +2,7 @@
 using TicketBooking.Data.DataModel;
 using TicketBooking.Data.Infrastructure;
 using AutoMapper;
+using NLog;
 using TicketBooking.Data.Repository;
 using TicketBooking.Service.Services.AirportService;
 using TicketBooking.Service.Services.FlightScheService;
@@ -18,10 +19,13 @@ namespace TicketBooking.Service.Services.FlightService
         private readonly IAircraftRepository aircraftRepo;
         private readonly IAirportService airportService;
         private readonly IFlightScheServices flightScheServices;
+        private readonly IFlightScheduleRepository flightScheRepo;
+        private readonly IAirportRepository airportRepo;
 
         public FlightService(IUnitOfWork unitOfWork, IMapper mapper,
                              IFlightRepository flightRepo, IAircraftRepository aircraftRepo,
-                             IAirportService airportService, IFlightScheServices flightScheServices)
+                             IAirportService airportService, IFlightScheServices flightScheServices,
+                             IFlightScheduleRepository flightScheRepo, IAirportRepository airportRepo)
         {
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
@@ -29,39 +33,77 @@ namespace TicketBooking.Service.Services.FlightService
             this.aircraftRepo = aircraftRepo;
             this.airportService = airportService;
             this.flightScheServices = flightScheServices;
+            this.flightScheRepo = flightScheRepo;
+            this.airportRepo = airportRepo;
         }
 
 
         public async Task<IEnumerable<FlightViewModel>> GetFlightAsync()
         {
-            var flight = await flightRepo.GetAllFlight();
-
-            if (flight == null)
+            var flights = await flightRepo.GetAllFlight();
+            var flightSche = new List<FlightSchedule>();
+            var airports = new List<Airport>();
+            
+            foreach(var flight in flights)
             {
-                throw new Exception("No flight available now");
+                await flightScheRepo.GetById(flight.ScheduleId);
+                await aircraftRepo.GetById(flight.AircraftId);
+                await airportRepo.GetById(flight.Schedule.DepartureAirportId);
+                await airportRepo.GetById(flight.Schedule.ArrivalAirportId);
             }
             
-            return mapper.Map<IEnumerable<FlightViewModel>>(flight);
+            return flights.Any() 
+                    ? mapper.Map<IEnumerable<FlightViewModel>>(flights) 
+                    : throw new Exception("No flight available now");
         }
 
         public async Task<FlightViewModel> GetFlightAsync(Guid id)
         {
             var flight = await flightRepo.GetFlightById(id);
+            var flightSche = new List<FlightSchedule>();
+            var airports = new List<Airport>();
+            
+            await flightScheRepo.GetById(flight.ScheduleId);
+            await aircraftRepo.GetById(flight.AircraftId);
+            await airportRepo.GetById(flight.Schedule.DepartureAirportId);
+            await airportRepo.GetById(flight.Schedule.ArrivalAirportId);
+            
             return flight == null ? throw new Exception("ID does not exist") : mapper.Map<FlightViewModel>(flight);
         }
 
         public async Task<IEnumerable<FlightViewModel>> GetFlightAsync(FlightRequest flightModel)
         {
-            var flight = await flightRepo.GetFlightByRequest(flightModel);
-            return flight == null
-                ? throw new Exception("None flight match request")
-                : mapper.Map<IEnumerable<FlightViewModel>>(flight);
+            var flights = await flightRepo.GetFlightByRequest(flightModel);
+            var flightSche = new List<FlightSchedule>();
+            var airports = new List<Airport>();
+            
+            foreach(var flight in flights)
+            {
+                await flightScheRepo.GetById(flight.ScheduleId);
+                await aircraftRepo.GetById(flight.AircraftId);
+                await airportRepo.GetById(flight.Schedule.DepartureAirportId);
+                await airportRepo.GetById(flight.Schedule.ArrivalAirportId);
+            }
+            
+            return flights.Any()
+                ? mapper.Map<IEnumerable<FlightViewModel>>(flights) :
+                throw new Exception("None flight match request");
         }
         
         public async Task<IEnumerable<FlightViewModel>> GetFlightPagingAsync(FlightRequest request)
         {
-            var flight = await flightRepo.GetFlightPagingByRequest(request);
-            return flight == null ? throw new Exception("None flight match request") : mapper.Map<IEnumerable<FlightViewModel>>(flight);
+            var flights = await flightRepo.GetFlightPagingByRequest(request);
+            var flightSche = new List<FlightSchedule>();
+            var airports = new List<Airport>();
+            
+            foreach(var flight in flights)
+            {
+                await flightScheRepo.GetById(flight.ScheduleId);
+                await aircraftRepo.GetById(flight.AircraftId);
+                await airportRepo.GetById(flight.Schedule.DepartureAirportId);
+                await airportRepo.GetById(flight.Schedule.ArrivalAirportId);
+            }
+            return flights.Any() ? mapper.Map<IEnumerable<FlightViewModel>>(flights) : throw new Exception("None flight match request");
         }
 
         public async Task<int> UpdateFlightAsync(FlightUpdateModel flightUpdateModel)
