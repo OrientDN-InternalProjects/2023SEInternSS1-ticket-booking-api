@@ -31,36 +31,11 @@ namespace TicketBooking.Data.Repository
 
         public async Task<IEnumerable<Flight>> GetAllFlight()
         {
-
             var query = from f in _context.Flights
-                        join fs in _context.FlightSchedules on f.ScheduleId equals fs.Id
-                        join ar in _context.Aircrafts on f.AircraftId equals ar.Id
-                        select new Flight
-                        {
-                            Id = f.Id,
-                            AircraftId = f.AircraftId,
-                            Aircraft = f.Aircraft,
-                            TotalSeat = f.TotalSeat,
-                            RemainingSeat = f.RemainingSeat,
-                            RemainBusinessSeat = f.RemainBusinessSeat,
-                            RemainEconomySeat = f.RemainEconomySeat,
-                            IsFlightActive = f.IsFlightActive,
-                            DefaultBaggage = f.DefaultBaggage,
-                            BusinessPrice = f.BusinessPrice,
-                            EconomyPrice = f.EconomyPrice,
-                            ScheduleId = f.ScheduleId,
-                            Schedule = new FlightSchedule()
-                            {
-                                Id = f.Schedule.Id,
-                                DepartureAirportId = f.Schedule.DepartureAirportId,
-                                AirportDepart = f.Schedule.AirportDepart,
-                                ArrivalAirportId = f.Schedule.ArrivalAirportId,
-                                AirportArrival = f.Schedule.AirportArrival,
-                                DepartureTime = f.Schedule.DepartureTime,
-                                ArrivalTime = f.Schedule.ArrivalTime
-                            }
-                        };
-
+                join ar in _context.Aircrafts on f.AircraftId equals ar.Id
+                join fs in _context.FlightSchedules on f.ScheduleId equals fs.Id
+                select f;
+            
             return await query.ToListAsync();
         }
 
@@ -83,31 +58,7 @@ namespace TicketBooking.Data.Repository
                                && (departGUID.Contains(fs.DepartureAirportId))
                                    && (arrivalGUID.Contains(fs.ArrivalAirportId))
                                    && f.IsFlightActive == true)
-                        select new Flight
-                        {
-                            Id = f.Id,
-                            AircraftId = f.AircraftId,
-                            Aircraft = f.Aircraft,
-                            TotalSeat = f.TotalSeat,
-                            RemainingSeat = f.RemainingSeat,
-                            RemainBusinessSeat = f.RemainBusinessSeat,
-                            RemainEconomySeat = f.RemainEconomySeat,
-                            IsFlightActive = f.IsFlightActive,
-                            DefaultBaggage = f.DefaultBaggage,
-                            BusinessPrice = f.BusinessPrice,
-                            EconomyPrice = f.EconomyPrice,
-                            ScheduleId = f.ScheduleId,
-                            Schedule = new FlightSchedule()
-                            {
-                                Id = f.Schedule.Id,
-                                DepartureAirportId = f.Schedule.DepartureAirportId,
-                                AirportDepart = f.Schedule.AirportDepart,
-                                ArrivalAirportId = f.Schedule.ArrivalAirportId,
-                                AirportArrival = f.Schedule.AirportArrival,
-                                DepartureTime = f.Schedule.DepartureTime,
-                                ArrivalTime = f.Schedule.ArrivalTime
-                            }
-                        };
+                        select f;
 
             return await query.ToListAsync();
         }
@@ -131,31 +82,7 @@ namespace TicketBooking.Data.Repository
                                && (departGUID.Contains(fs.DepartureAirportId))
                                    && (arrivalGUID.Contains(fs.ArrivalAirportId))
                                    && f.IsFlightActive == true)
-                        select new Flight
-                        {
-                            Id = f.Id,
-                            AircraftId = f.AircraftId,
-                            Aircraft = f.Aircraft,
-                            TotalSeat = f.TotalSeat,
-                            RemainingSeat = f.RemainingSeat,
-                            RemainBusinessSeat = f.RemainBusinessSeat,
-                            RemainEconomySeat = f.RemainEconomySeat,
-                            IsFlightActive = f.IsFlightActive,
-                            DefaultBaggage = f.DefaultBaggage,
-                            BusinessPrice = f.BusinessPrice,
-                            EconomyPrice = f.EconomyPrice,
-                            ScheduleId = f.ScheduleId,
-                            Schedule = new FlightSchedule()
-                            {
-                                Id = f.Schedule.Id,
-                                DepartureAirportId = f.Schedule.DepartureAirportId,
-                                AirportDepart = f.Schedule.AirportDepart,
-                                ArrivalAirportId = f.Schedule.ArrivalAirportId,
-                                AirportArrival = f.Schedule.AirportArrival,
-                                DepartureTime = f.Schedule.DepartureTime,
-                                ArrivalTime = f.Schedule.ArrivalTime
-                            }
-                        }).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize);
+                        select f).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize);
 
             return await query.ToListAsync();
         }
@@ -166,31 +93,7 @@ namespace TicketBooking.Data.Repository
                         join fs in _context.FlightSchedules on f.ScheduleId equals fs.Id
                         join ar in _context.Aircrafts on f.AircraftId equals ar.Id
                         where (f.Id == Id)
-                        select new Flight
-                        {
-                            Id = f.Id,
-                            AircraftId = f.AircraftId,
-                            Aircraft = f.Aircraft,
-                            TotalSeat = f.TotalSeat,
-                            RemainingSeat = f.RemainingSeat,
-                            RemainBusinessSeat = f.RemainBusinessSeat,
-                            RemainEconomySeat = f.RemainEconomySeat,
-                            IsFlightActive = f.IsFlightActive,
-                            DefaultBaggage = f.DefaultBaggage,
-                            BusinessPrice = f.BusinessPrice,
-                            EconomyPrice = f.EconomyPrice,
-                            ScheduleId = f.ScheduleId,
-                            Schedule = new FlightSchedule()
-                            {
-                                Id = f.Schedule.Id,
-                                DepartureAirportId = f.Schedule.DepartureAirportId,
-                                AirportDepart = f.Schedule.AirportDepart,
-                                ArrivalAirportId = f.Schedule.ArrivalAirportId,
-                                AirportArrival = f.Schedule.AirportArrival,
-                                DepartureTime = f.Schedule.DepartureTime,
-                                ArrivalTime = f.Schedule.ArrivalTime
-                            }
-                        }).FirstOrDefault();
+                        select f).FirstOrDefault();
 
             return query;
         }
