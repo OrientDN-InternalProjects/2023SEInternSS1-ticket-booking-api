@@ -25,6 +25,7 @@ namespace TicketBookingAPI.Controllers
             {
                 return BadRequest(ModelState);
             }
+            
             logger.LogInformation("Start Payment");
             var url = await paymentService.CreatePaymentUrl(model, HttpContext);
             if (url != null)

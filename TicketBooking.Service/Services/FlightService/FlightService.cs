@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using TicketBooking.Common.AppExceptions;
+﻿using TicketBooking.Common.AppExceptions;
 using TicketBooking.Data.DataModel;
 using TicketBooking.Data.Infrastructure;
 using AutoMapper;
-using Microsoft.Extensions.Logging;
 using TicketBooking.Data.Repository;
-using TicketBooking.Data.DbContext;
 using TicketBooking.Service.Services.AirportService;
 using TicketBooking.Service.Services.FlightScheService;
 using TicketBooking.Service.Models;
@@ -24,13 +18,10 @@ namespace TicketBooking.Service.Services.FlightService
         private readonly IAircraftRepository aircraftRepo;
         private readonly IAirportService airportService;
         private readonly IFlightScheServices flightScheServices;
-        private readonly IFlightScheRepository flightScheRepo;
-        private readonly ILogger<Flight> logger;
 
         public FlightService(IUnitOfWork unitOfWork, IMapper mapper,
                              IFlightRepository flightRepo, IAircraftRepository aircraftRepo,
-                             IAirportService airportService, IFlightScheServices flightScheServices,
-                             IFlightScheRepository flightScheRepo, ILogger<Flight> logger)
+                             IAirportService airportService, IFlightScheServices flightScheServices)
         {
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
@@ -38,8 +29,6 @@ namespace TicketBooking.Service.Services.FlightService
             this.aircraftRepo = aircraftRepo;
             this.airportService = airportService;
             this.flightScheServices = flightScheServices;
-            this.flightScheRepo = flightScheRepo;
-            this.logger = logger;
         }
 
 
@@ -68,6 +57,12 @@ namespace TicketBooking.Service.Services.FlightService
                 ? throw new Exception("None flight match request")
                 : mapper.Map<IEnumerable<FlightViewModel>>(flight);
         }
+        
+        public async Task<IEnumerable<FlightViewModel>> GetFlightPagingAsync(FlightRequest request)
+        {
+            var flight = await flightRepo.GetFlightPagingByRequest(request);
+            return flight == null ? throw new Exception("None flight match request") : mapper.Map<IEnumerable<FlightViewModel>>(flight);
+        }
 
         public async Task<int> UpdateFlightAsync(FlightUpdateModel flightUpdateModel)
         {
@@ -81,18 +76,10 @@ namespace TicketBooking.Service.Services.FlightService
 
             // Update flight information
             flight.Id = flightUpdateModel.Id;
-            flight.AircraftId = (flightUpdateModel.AircraftId != null)
-                ? flightUpdateModel.AircraftId
-                : flight.AircraftId;
-            flight.DefaultBaggage = (flightUpdateModel.DefaultBaggage != null)
-                ? flightUpdateModel.DefaultBaggage
-                : flight.DefaultBaggage;
-            flight.BusinessPrice = (flightUpdateModel.BusinessPrice != null)
-                ? flightUpdateModel.BusinessPrice
-                : flight.BusinessPrice;
-            flight.EconomyPrice = (flightUpdateModel.EconomyPrice != null)
-                ? flightUpdateModel.EconomyPrice
-                : flight.EconomyPrice;
+            flight.AircraftId = (flightUpdateModel.AircraftId != null) ? flightUpdateModel.AircraftId : flight.AircraftId;
+            flight.DefaultBaggage = (flightUpdateModel.DefaultBaggage != null) ? flightUpdateModel.DefaultBaggage : flight.DefaultBaggage;
+            flight.BusinessPrice = (flightUpdateModel.BusinessPrice != null) ? flightUpdateModel.BusinessPrice : flight.BusinessPrice;
+            flight.EconomyPrice = (flightUpdateModel.EconomyPrice != null) ? flightUpdateModel.EconomyPrice : flight.EconomyPrice;
 
 
             flightRepo.Update(flight);

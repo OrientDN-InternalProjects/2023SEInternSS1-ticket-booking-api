@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using TicketBooking.Common.AppExceptions;
 using TicketBooking.Service.Services.FlightService;
 using TicketBooking.Model.DataModel;
+using TicketBooking.Data.Repository;
 using TicketBooking.Service.Models;
 
 namespace TicketBookingAPI.Controllers
@@ -98,6 +99,17 @@ namespace TicketBookingAPI.Controllers
             }
             
             return Ok(await flightservice.GetFlightAsync(flightrequest));
+        }
+        
+        [HttpGet("get-paging-flight-with-request")]
+        public async Task<IActionResult> GetFlightByRequestPaging([FromQuery] FlightRequest request)
+        {
+            if ((await flightservice.GetFlightPagingAsync(request)) == null)
+            {
+                return BadRequest("No flight matches with the ID");
+            }
+            
+            return Ok(await flightservice.GetFlightPagingAsync(request));
         }
 
         // This controller is for logic demo purpose.

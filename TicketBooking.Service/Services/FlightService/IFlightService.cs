@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using TicketBooking.Common.AppExceptions;
 using TicketBooking.Model.DataModel;
 using TicketBooking.Service.Models;
+using TicketBooking.Data.Repository;
 
 namespace TicketBooking.Service.Services.FlightService
 {
@@ -18,6 +19,7 @@ namespace TicketBooking.Service.Services.FlightService
         Task<string> RemoveAsync(Guid id);
         Task<bool> UpdateFlightSeat(Guid flightId, SeatClassType type, int number);
         Task<IEnumerable<FlightViewModel>> GetFlightAsync(FlightRequest flightModel);
+        Task<IEnumerable<FlightViewModel>> GetFlightPagingAsync(FlightRequest request);
         Task<string> DeactiveFlightStatus(Guid flightId, bool status = false);
     }
 }
