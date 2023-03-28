@@ -407,7 +407,7 @@ namespace TicketBooking.Service.Services.BookingService
 
         public async Task<Response> GetByBookingCode(string bookingCode)
         {
-            var bookingResult = bookingRepo.Find(booking => booking.Reference.Contains(bookingCode)).FirstOrDefault();
+            var bookingResult = bookingRepo.Find(booking => booking.Reference.Equals(bookingCode)).FirstOrDefault();
             var tikets = ticketRepo.Find(ticket => ticket.BookingId == bookingResult.Id).ToList();
             if (bookingResult == null)
             {
