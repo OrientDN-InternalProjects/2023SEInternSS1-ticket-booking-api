@@ -56,7 +56,7 @@ namespace TicketBookingAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpGet]
+        [HttpGet("get-booking")]
         public async Task<IActionResult> GetByBookingCode(string code)
         {
             if (!ModelState.IsValid)
@@ -71,7 +71,7 @@ namespace TicketBookingAPI.Controllers
                 return StatusCode(StatusCodes.Status200OK, result);
 
             logger.LogError("Search failed");
-            return BadRequest(result);
+            return Ok(result);
         }
 
         [HttpPost("request-contact")]
