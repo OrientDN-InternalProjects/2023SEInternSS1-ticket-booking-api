@@ -90,5 +90,22 @@ namespace TicketBookingAPI.Controllers
             }
             return BadRequest(ModelState);
         }
+        [HttpGet("get-service")]
+        public async Task<IActionResult> GetService()
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            logger.LogInformation("get service");
+            var result = await bookingService.GetService();
+
+            if (result != null)
+                return StatusCode(StatusCodes.Status200OK, result);
+
+            logger.LogError("Get failed");
+            return BadRequest(result);
+        }
     }
 }

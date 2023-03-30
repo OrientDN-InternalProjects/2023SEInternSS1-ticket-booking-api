@@ -14,7 +14,7 @@ namespace TicketBooking.Service.Models
     public class BookingRequestModel
     {
         [Required]
-        public Guid? ContactId { get; set; }
+        public ContactViewModel Contact { get; set; }
         [Required]
         public bool IsRoundFlight { get; set; }
         public bool IsBusiness { get; set; }
@@ -22,6 +22,6 @@ namespace TicketBooking.Service.Models
         public Guid FlightId { get; set; }
         public Guid? RoundFlightId { get; set; }
         public List<PassengerViewModel> Passes { get; set; }
-        public List<Guid> Services { get; set; }
+        public List<Guid> ExtraServices { get; set; }
     }
 }

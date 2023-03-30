@@ -66,7 +66,7 @@ namespace TicketBooking.Service.Services.BookingService
             var flight = await flightRepo.GetById(model.FlightId);
             var scheduleCheck = await scheduleRepo.GetById(flight.ScheduleId);
             var backFlight = await flightRepo.GetById(model.RoundFlightId.Value);
-            var contact = await contactRepo.GetById(model.ContactId.Value);
+            var contact = await CreateContactInfo(model.Contact);
             var seatType = string.Empty;
             var nowDate = DateTime.Now;
             int result = DateTime.Compare(nowDate.Date, scheduleCheck.DepartureTime.Date);
@@ -86,13 +86,8 @@ namespace TicketBooking.Service.Services.BookingService
             {
                 return "Flight is outdated";
             }
-            
-            if((nowDate.Hour - scheduleCheck.DepartureTime.Hour) < 3)
-            {
-                return "Too late booking";
-            }
 
-            if(model.Passes.Count >flight.RemainBusinessSeat && model.IsBusiness == true)
+            if (model.Passes.Count > flight.RemainBusinessSeat && model.IsBusiness == true)
             {
                 return "No Business seat remain";
             }
@@ -155,7 +150,7 @@ namespace TicketBooking.Service.Services.BookingService
                 }
                 await bookingListRepo.Add(bookingList);
                 await unitOfWork.CompletedAsync();
-                var list = await ExtraService(bookingList, model.Services);
+                var list = await ExtraService(bookingList, model.ExtraServices);
                 bookingListRepo.Update(list);
                 booking.TotalPrice += list.FlightPrice;
                 booking.BookingLists?.Add(list);
@@ -191,8 +186,8 @@ namespace TicketBooking.Service.Services.BookingService
                 await bookingListRepo.Add(goFlight);
                 await bookingListRepo.Add(roundFlight);
                 await unitOfWork.CompletedAsync();
-                goFlight = await ExtraService(goFlight, model.Services);
-                roundFlight = await ExtraService(roundFlight, model.Services);
+                goFlight = await ExtraService(goFlight, model.ExtraServices);
+                roundFlight = await ExtraService(roundFlight, model.ExtraServices);
                 bookingListRepo.Update(goFlight);
                 bookingListRepo.Update(roundFlight);
                 booking.BookingLists?.Add(goFlight);
@@ -225,7 +220,13 @@ namespace TicketBooking.Service.Services.BookingService
             return booking;
         }
 
-
+        public async Task<ContactDetail> CreateContactInfo(ContactViewModel contact)
+        {
+            var contactDetail = mapper.Map<ContactDetail>(contact);
+            await contactRepo.Add(contactDetail);
+            await unitOfWork.CompletedAsync();
+            return contactDetail;
+        }
 
         public async Task<BookingList> ExtraService(BookingList bookingList, List<Guid> extraServices)
         {
@@ -293,7 +294,7 @@ namespace TicketBooking.Service.Services.BookingService
             var schedules = await AddScheduleAsync(flights);
             var airports = await AddAirport(schedules);
 
-            foreach(var flight in flights)
+            foreach (var flight in flights)
             {
                 var aircraft = await aircraftRepo.GetById(flight.AircraftId);
                 aircrafts.Add(aircraft);
@@ -329,7 +330,7 @@ namespace TicketBooking.Service.Services.BookingService
                         PassengerId = passenger.Id,
                     };
                     ticketGo.Booking = booking;
-                    ticketGo.Passenger= passenger;
+                    ticketGo.Passenger = passenger;
                     ticketRound.Passenger = passenger;
                     ticketRound.Booking = booking;
                     await ticketRepo.AddTicket(ticketRound);
@@ -415,16 +416,11 @@ namespace TicketBooking.Service.Services.BookingService
                 {
                     Status = false,
                     Message = "Invalid booking"
-                };    
+                };
             }
             var booking = mapper.Map<BookingViewModel>(bookingResult);
-            foreach(var ticket in tikets)
-            {
-                var tick = mapper.Map<TicketViewModel>(ticket);
-                booking.Tickets.Add(tick);
-            }
-            
-           
+
+
             if (bookingResult.IsPaid == false)
             {
 
@@ -441,6 +437,17 @@ namespace TicketBooking.Service.Services.BookingService
                 Message = "Your booking:",
                 Data = booking
             };
+        }
+
+        public async Task<IEnumerable<ExtraService>> GetService()
+        {
+            var services = await extraServiceRepo.GetAll();
+            if (services == null)
+            {
+                throw new Exception("No data to display");
+            }
+
+            return services;
         }
     }
 }
