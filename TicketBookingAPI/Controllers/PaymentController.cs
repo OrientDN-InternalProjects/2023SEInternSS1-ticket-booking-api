@@ -41,7 +41,7 @@ namespace TicketBookingAPI.Controllers
             logger.LogInformation("Start save bill");
             var response = await paymentService.PaymentExecute(Request.Query);
 
-            return Ok(response);
+            return Redirect("http://localhost:5173/success");
         }
     }
 }
